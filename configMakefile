@@ -1,0 +1,36 @@
+# infoware - C++ System information Library
+#
+# Written in 2016 by nabijaczleweli <nab@gmail.com> and ThePhD <phdofthehouse@gmail.com>
+#
+# To the extent possible under law, the author(s) have dedicated all copyright and related
+# and neighboring rights to this software to the public domain worldwide. This software is
+# distributed without any warranty.
+#
+# You should have received a copy of the CC0 Public Domain Dedication along with this software.
+# If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
+
+
+ifeq "$(OS)" "Windows_NT"
+	DLL = .dll
+	PREDLL =
+	PIC =
+	EXE = .exe
+else
+	PREDLL = lib
+	PIC = -fPIC
+	ifeq "$(OS)" "Darwin"
+		DLL = .dylib
+	else
+		DLL = .so
+	endif
+	EXE =
+endif
+
+ifeq "$(BUILD)" ""
+	BUILD = out
+endif
+
+OBJ = .o
+ARCH = .a
+AR = ar
+CXXAR = -pedantic -O3 -fomit-frame-pointer -std=c++14 -Wall -Wextra -pipe

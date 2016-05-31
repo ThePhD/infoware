@@ -10,27 +10,14 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#include "infoware.hpp"
+#pragma once
 
 
-#ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-
-
-// http://stackoverflow.com/a/150971/2851815
-unsigned int iware::cpu::cores() noexcept {
-	SYSTEM_INFO sysinfo;
-	GetSystemInfo(&sysinfo);
-
-	return sysinfo.dwNumberOfProcessors;
+namespace iware {
+	namespace cpu {
+		/// Returns the amount of processors available.
+		///
+		/// Each hypercore is considered a processor.
+		unsigned int cores() noexcept;
+	}
 }
-#else
-#include <unistd.h>
-
-
-// http://stackoverflow.com/a/150971/2851815
-unsigned int iware::cpu::cores() noexcept {
-	return sysconf(_SC_NPROCESSORS_ONLN);
-}
-#endif

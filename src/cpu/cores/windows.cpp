@@ -10,11 +10,21 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-namespace iware {
-	namespace cpu {
-		/// Returns the amount of processors available.
-		///
-		/// Each hypercore is considered a processor.
-		unsigned int cores() noexcept;
-	}
+#ifdef _WIN32
+
+
+#include "infoware/cpu.hpp"
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
+
+// http://stackoverflow.com/a/150971/2851815
+unsigned int iware::cpu::cores() noexcept {
+	SYSTEM_INFO sysinfo;
+	GetSystemInfo(&sysinfo);
+
+	return sysinfo.dwNumberOfProcessors;
 }
+
+
+#endif

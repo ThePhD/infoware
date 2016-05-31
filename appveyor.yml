@@ -18,8 +18,14 @@ build: off
 build_script:
   - git submodule update --init --recursive
   - make
+
+test: off
+test_script:
   - "bash -c \"for e in $(ls out/examples); do echo -n \\\"$e: \\\"; out/examples/$e; done\""
 
 notifications:
   - provider: Email
+    to:
+      - nabijaczleweli@gmail.com
+      - phdofthehouse@gmail.com
     on_build_status_changed: true

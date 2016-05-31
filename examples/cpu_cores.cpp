@@ -13,6 +13,7 @@
 #include "infoware/infoware.hpp"
 #include <iostream>
 
+
 int main() {
 	std::cout << iware::cpu::cores() << '\n';
 }

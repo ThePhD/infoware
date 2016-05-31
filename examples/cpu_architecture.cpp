@@ -10,17 +10,28 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#ifndef _WIN32
+#include "infoware/infoware.hpp"
+#include <iostream>
 
 
-#include "infoware/cpu.hpp"
-#include <unistd.h>
+int main() {
+	switch(iware::cpu::architecture()) {
+		case iware::cpu::architecture_t::x64:
+			std::cout << "x64";
+			break;
+		case iware::cpu::architecture_t::ARM:
+			std::cout << "ARM";
+			break;
+		case iware::cpu::architecture_t::itanium:
+			std::cout << "IA64";
+			break;
+		case iware::cpu::architecture_t::x86:
+			std::cout << "x86";
+			break;
+		case iware::cpu::architecture_t::unknown:
+			std::cout << "Unknown architecture";
+			break;
+	}
 
-
-// http://stackoverflow.com/a/150971/2851815
-unsigned int iware::cpu::cores() noexcept {
-	return sysconf(_SC_NPROCESSORS_ONLN);
+	std::cout << '\n';
 }
-
-
-#endif

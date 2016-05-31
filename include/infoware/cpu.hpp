@@ -15,9 +15,21 @@
 
 namespace iware {
 	namespace cpu {
+		enum class architecture_t {
+			x64,
+			ARM,
+			itanium,
+			x86,
+			unknown,
+		};
+
+
 		/// Returns the amount of processors available.
 		///
 		/// Each hypercore is considered a processor.
 		unsigned int cores() noexcept;
+
+		/// Returns the architecture of the current CPU.
+		architecture_t architecture() noexcept;
 	}
 }

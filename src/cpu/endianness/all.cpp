@@ -12,20 +12,14 @@
 
 #include "infoware/cpu.hpp"
 #include <cstdint>
-#include <stdexcept>
-#include <string>
 
 
 iware::cpu::endianness_t iware::cpu::endianness() noexcept {
 	const std::uint16_t test = 0xFF00;
 	const auto result        = *static_cast<const std::uint8_t*>(static_cast<const void*>(&test));
 
-	switch(result) {
-		case 0xFF:
-			return iware::cpu::endianness_t::little;
-		case 0x00:
-			return iware::cpu::endianness_t::little;
-		default:
-			throw std::domain_error(std::to_string(static_cast<unsigned int>(result)) + " is neither 0xFF nor 0x00");
-	}
+	if(result == 0xFF)
+		return iware::cpu::endianness_t::little;
+	else
+		return iware::cpu::endianness_t::little;
 }

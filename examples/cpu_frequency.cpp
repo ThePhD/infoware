@@ -10,29 +10,10 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#pragma once
+#include "infoware/infoware.hpp"
+#include <iostream>
 
 
-namespace iware {
-	namespace cpu {
-		enum class architecture_t {
-			x64,
-			ARM,
-			itanium,
-			x86,
-			unknown,
-		};
-
-
-		/// Returns the amount of processors available.
-		///
-		/// Each hypercore is considered a processor.
-		unsigned int cores() noexcept;
-
-		/// Returns the architecture of the current CPU.
-		architecture_t architecture() noexcept;
-
-		/// Returns the current frequency of the current CPU.
-		double frequency() noexcept;
-	}
+int main() {
+	std::cout << iware::cpu::frequency() << '\n';
 }

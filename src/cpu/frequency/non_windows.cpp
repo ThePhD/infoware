@@ -10,29 +10,28 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#pragma once
+#ifndef _WIN32
 
 
-namespace iware {
-	namespace cpu {
-		enum class architecture_t {
-			x64,
-			ARM,
-			itanium,
-			x86,
-			unknown,
-		};
+#include "infoware/cpu.hpp"
+#include <fstream>
+#include <string>
 
 
-		/// Returns the amount of processors available.
-		///
-		/// Each hypercore is considered a processor.
-		unsigned int cores() noexcept;
+double iware::cpu::frequency() noexcept {
+	ifstream cpuinfo("/proc/cpuinfo");
 
-		/// Returns the architecture of the current CPU.
-		architecture_t architecture() noexcept;
+	if(!cpuinfo.is_open() || !cpuinfo)
+		return 0;
 
-		/// Returns the current frequency of the current CPU.
-		double frequency() noexcept;
-	}
+	for(std::string line; std::getline(cpuinfo, line);)
+		if(line.find_first_of("cpu MHz") == 0) {
+			const auto colon_id = line.find_first_of(':');
+			return std::strtod(line.c_str() + colon_id + 1, nullptr);
+		}
+
+	return 0;
 }
+
+
+#endif

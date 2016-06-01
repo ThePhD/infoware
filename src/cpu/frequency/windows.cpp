@@ -10,29 +10,19 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#pragma once
+#ifdef _WIN32
 
 
-namespace iware {
-	namespace cpu {
-		enum class architecture_t {
-			x64,
-			ARM,
-			itanium,
-			x86,
-			unknown,
-		};
+#include "infoware/cpu.hpp"
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 
 
-		/// Returns the amount of processors available.
-		///
-		/// Each hypercore is considered a processor.
-		unsigned int cores() noexcept;
-
-		/// Returns the architecture of the current CPU.
-		architecture_t architecture() noexcept;
-
-		/// Returns the current frequency of the current CPU.
-		double frequency() noexcept;
-	}
+double iware::cpu::frequency() noexcept {
+	LARGE_INTEGER freq;
+	QueryPerformanceFrequency(&freq);
+	return freq.QuadPart / 1000.;
 }
+
+
+#endif

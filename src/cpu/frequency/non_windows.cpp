@@ -18,7 +18,7 @@
 #include <string>
 
 
-double iware::cpu::frequency() noexcept {
+unsigned int iware::cpu::frequency() noexcept {
 	ifstream cpuinfo("/proc/cpuinfo");
 
 	if(!cpuinfo.is_open() || !cpuinfo)
@@ -27,7 +27,7 @@ double iware::cpu::frequency() noexcept {
 	for(std::string line; std::getline(cpuinfo, line);)
 		if(line.find_first_of("cpu MHz") == 0) {
 			const auto colon_id = line.find_first_of(':');
-			return std::strtod(line.c_str() + colon_id + 1, nullptr);
+			return std::strtod(line.c_str() + colon_id + 1, nullptr) * 1'000'000;
 		}
 
 	return 0;

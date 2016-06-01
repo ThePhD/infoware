@@ -37,8 +37,8 @@ namespace iware {
 		/// Returns the architecture of the current CPU.
 		architecture_t architecture() noexcept;
 
-		/// Returns the current frequency of the current CPU.
-		double frequency() noexcept;
+		/// Returns the current frequency of the current CPU in Hz.
+		unsigned int frequency() noexcept;
 
 		/// Returns the current endianness of the current CPU.
 		endianness_t endianness() noexcept;

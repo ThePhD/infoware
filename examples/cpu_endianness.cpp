@@ -10,7 +10,7 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#include "infoware/infoware.hpp"
+#include "infoware/cpu.hpp"
 #include <iostream>
 
 
@@ -21,7 +21,6 @@ int main() {
 			break;
 		case iware::cpu::endianness_t::big:
 			std::cout << "Big-Endian";
-			break;
 			break;
 	}
 

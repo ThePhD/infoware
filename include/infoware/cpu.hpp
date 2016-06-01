@@ -23,6 +23,11 @@ namespace iware {
 			unknown,
 		};
 
+		enum class endianness_t {
+			little,
+			big,
+		};
+
 
 		/// Returns the amount of processors available.
 		///
@@ -34,5 +39,8 @@ namespace iware {
 
 		/// Returns the current frequency of the current CPU.
 		double frequency() noexcept;
+
+		/// Returns the current endianness of the current CPU.
+		endianness_t endianness() noexcept;
 	}
 }

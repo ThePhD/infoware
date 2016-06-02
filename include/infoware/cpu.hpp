@@ -13,6 +13,9 @@
 #pragma once
 
 
+#include <string>
+
+
 namespace iware {
 	namespace cpu {
 		enum class architecture_t {
@@ -42,5 +45,8 @@ namespace iware {
 
 		/// Returns the current endianness of the current CPU.
 		endianness_t endianness() noexcept;
+
+		/// Returns the CPU's vendor.
+		std::string vendor();
 	}
 }

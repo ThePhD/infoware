@@ -10,27 +10,25 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#ifndef _WIN32
+#ifdef _WIN32
 
 
 #include "infoware/cpu.hpp"
-#include <fstream>
-#include <string>
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 
 
-unsigned int iware::cpu::frequency() noexcept {
-	std::ifstream cpuinfo("/proc/cpuinfo");
+std::string iware::cpu::vendor() {
+	HKEY hkey;
+	if(RegOpenKeyEx(HKEY_LOCAL_MACHINE, R"(HARDWARE\DESCRIPTION\System\CentralProcessor\0)", 0, KEY_READ, &hkey))
+		return {};
 
-	if(!cpuinfo.is_open() || !cpuinfo)
-		return 0;
+	char identifier[13];
+	unsigned long identifier_len = sizeof identifier;
+	if(RegQueryValueEx(hkey, "VendorIdentifier", nullptr, nullptr, static_cast<unsigned char*>(static_cast<void*>(identifier)), &identifier_len))
+		return {};
 
-	for(std::string line; std::getline(cpuinfo, line);)
-		if(line.find_first_of("cpu MHz") == 0) {
-			const auto colon_id = line.find_first_of(':');
-			return std::strtod(line.c_str() + colon_id + 1, nullptr) * 1'000'000;
-		}
-
-	return 0;
+	return identifier;
 }
 
 

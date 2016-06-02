@@ -10,28 +10,10 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#ifndef _WIN32
-
-
 #include "infoware/cpu.hpp"
-#include <fstream>
-#include <string>
+#include <iostream>
 
 
-unsigned int iware::cpu::frequency() noexcept {
-	std::ifstream cpuinfo("/proc/cpuinfo");
-
-	if(!cpuinfo.is_open() || !cpuinfo)
-		return 0;
-
-	for(std::string line; std::getline(cpuinfo, line);)
-		if(line.find_first_of("cpu MHz") == 0) {
-			const auto colon_id = line.find_first_of(':');
-			return std::strtod(line.c_str() + colon_id + 1, nullptr) * 1'000'000;
-		}
-
-	return 0;
+int main() {
+	std::cout << iware::cpu::vendor() << '\n';
 }
-
-
-#endif

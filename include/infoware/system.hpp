@@ -23,11 +23,6 @@ namespace iware {
 		/// Always returns 0 on Linuxish kernels, as it can not be detected there.
 		unsigned int keyboard_amount() noexcept;
 
-		/// Get amount of connected "joysticks".
-		///
-		/// Always returns 0 on Windows, as it can not be detected there.
-		unsigned int joystick_amount() noexcept;
-
 		/// Get amount of other connected HIDs.
 		///
 		/// Always returns 0 on Linuxish kernels, as it can not be detected there.

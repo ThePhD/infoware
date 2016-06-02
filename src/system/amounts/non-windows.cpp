@@ -42,11 +42,6 @@ unsigned int iware::system::keyboard_amount() noexcept {
 	return 0;
 }
 
-// https://www.kernel.org/doc/Documentation/input/input.txt section 3.2.3
-unsigned int iware::system::joystick_amount() noexcept {
-	return count_expansions("/dev/input/js*");
-}
-
 unsigned int iware::system::other_HID_amount() noexcept {
 	return 0;
 }

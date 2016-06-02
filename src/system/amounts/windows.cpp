@@ -41,10 +41,6 @@ unsigned int iware::system::keyboard_amount() noexcept {
 	return device_amount(RIM_TYPEKEYBOARD);
 }
 
-unsigned int iware::system::joystick_amount() noexcept {
-	return 0;
-}
-
 unsigned int iware::system::other_HID_amount() noexcept {
 	return device_amount(RIM_TYPEHID);
 }

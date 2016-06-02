@@ -10,8 +10,10 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#pragma once
+#include "infoware/detail/scope.hpp"
 
 
-#include "cpu.hpp"
-#include "system.hpp"
+iware::detail::quickscope_wrapper::~quickscope_wrapper() {
+	if(func)
+		func();
+}

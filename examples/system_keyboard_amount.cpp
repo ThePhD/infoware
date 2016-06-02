@@ -10,8 +10,10 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#pragma once
+#include "infoware/system.hpp"
+#include <iostream>
 
 
-#include "cpu.hpp"
-#include "system.hpp"
+int main() {
+	std::cout << iware::system::keyboard_amount() << '\n';
+}

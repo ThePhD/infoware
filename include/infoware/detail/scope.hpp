@@ -13,5 +13,16 @@
 #pragma once
 
 
-#include "cpu.hpp"
-#include "system.hpp"
+#include <functional>
+
+
+namespace iware {
+	namespace detail {
+		struct quickscope_wrapper {
+			std::function<void()> func;
+
+			quickscope_wrapper(const quickscope_wrapper&) = delete;
+			~quickscope_wrapper();
+		};
+	}
+}

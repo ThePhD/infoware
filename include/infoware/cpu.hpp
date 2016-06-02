@@ -48,5 +48,8 @@ namespace iware {
 
 		/// Returns the CPU's vendor.
 		std::string vendor();
+
+		/// Returns the CPU's model name.
+		std::string model_name();
 	}
 }

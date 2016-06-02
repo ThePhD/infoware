@@ -10,29 +10,10 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#ifndef _WIN32
-
-
 #include "infoware/cpu.hpp"
-#include <fstream>
-#include <string>
+#include <iostream>
 
 
-std::string iware::cpu::vendor() {
-	std::ifstream cpuinfo("/proc/cpuinfo");
-
-	if(!cpuinfo.is_open() || !cpuinfo)
-		return 0;
-
-	for(std::string line; std::getline(cpuinfo, line);)
-		if(line.find_first_of("vendor") == 0) {
-			const auto colon_id    = line.find_first_of(':');
-			const auto nonspace_id = line.find_first_not_of(" \t", colon_id) + 1;
-			return line.c_str() + nonspace_id;
-		}
-
-	return {};
+int main() {
+	std::cout << iware::cpu::model_name() << '\n';
 }
-
-
-#endif

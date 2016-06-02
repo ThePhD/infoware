@@ -10,25 +10,37 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#ifdef _WIN32
+#ifndef _WIN32
 
 
 #include "infoware/cpu.hpp"
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#include <fstream>
+#include <string>
+
+
+static std::string cpuinfo_value(const char* key) {
+	std::ifstream cpuinfo("/proc/cpuinfo");
+
+	if(!cpuinfo.is_open() || !cpuinfo)
+		return 0;
+
+	for(std::string line; std::getline(cpuinfo, line);)
+		if(line.find_first_of(key) == 0) {
+			const auto colon_id    = line.find_first_of(':');
+			const auto nonspace_id = line.find_first_not_of(" \t", colon_id) + 1;
+			return line.c_str() + nonspace_id;
+		}
+
+	return {};
+}
 
 
 std::string iware::cpu::vendor() {
-	HKEY hkey;
-	if(RegOpenKeyEx(HKEY_LOCAL_MACHINE, R"(HARDWARE\DESCRIPTION\System\CentralProcessor\0)", 0, KEY_READ, &hkey))
-		return {};
+	return cpuinfo_value("vendor");
+}
 
-	char identifier[13];
-	unsigned long identifier_len = sizeof identifier;
-	if(RegQueryValueEx(hkey, "VendorIdentifier", nullptr, nullptr, static_cast<unsigned char*>(static_cast<void*>(identifier)), &identifier_len))
-		return {};
-
-	return identifier;
+std::string iware::cpu::model_name() {
+	return cpuinfo_value("model name");
 }
 
 

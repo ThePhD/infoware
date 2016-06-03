@@ -10,17 +10,10 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#ifndef _WIN32
-
-
 #include "infoware/cpu.hpp"
-#include <unistd.h>
+#include <iostream>
 
 
-// http://stackoverflow.com/a/150971/2851815
-unsigned int iware::cpu::cores() noexcept {
-	return sysconf(_SC_NPROCESSORS_ONLN);
+int main() {
+	std::cout << iware::cpu::quantities().physical << '\n';
 }
-
-
-#endif

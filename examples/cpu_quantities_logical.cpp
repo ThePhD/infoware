@@ -10,21 +10,10 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#ifdef _WIN32
-
-
 #include "infoware/cpu.hpp"
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#include <iostream>
 
 
-// http://stackoverflow.com/a/150971/2851815
-unsigned int iware::cpu::cores() noexcept {
-	SYSTEM_INFO sysinfo;
-	GetSystemInfo(&sysinfo);
-
-	return sysinfo.dwNumberOfProcessors;
+int main() {
+	std::cout << iware::cpu::quantities().logical << '\n';
 }
-
-
-#endif

@@ -31,11 +31,18 @@ namespace iware {
 			big,
 		};
 
+		struct quantities_t {
+			/// Hyperthreads.
+			unsigned int logical;
+			/// Physical "cores".
+			unsigned int physical;
+			/// Physical CPU units/packages/sockets.
+			unsigned int packages;
+		};
 
-		/// Returns the amount of processors available.
-		///
-		/// Each hypercore is considered a processor.
-		unsigned int cores() noexcept;
+
+		/// Returns the quantity of CPU at various gradation.
+		quantities_t quantities();
 
 		/// Returns the architecture of the current CPU.
 		architecture_t architecture() noexcept;

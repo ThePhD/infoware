@@ -15,5 +15,5 @@
 
 
 int main() {
-	std::cout << iware::cpu::cores() << '\n';
+	std::cout << iware::cpu::quantities().packages << '\n';
 }

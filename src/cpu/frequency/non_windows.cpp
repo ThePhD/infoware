@@ -25,7 +25,7 @@ unsigned int iware::cpu::frequency() noexcept {
 		return 0;
 
 	for(std::string line; std::getline(cpuinfo, line);)
-		if(line.find_first_of("cpu MHz") == 0) {
+		if(line.find("cpu MHz") == 0) {
 			const auto colon_id = line.find_first_of(':');
 			return std::strtod(line.c_str() + colon_id + 1, nullptr) * 1'000'000;
 		}

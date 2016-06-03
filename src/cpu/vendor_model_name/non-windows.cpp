@@ -25,7 +25,7 @@ static std::string cpuinfo_value(const char* key) {
 		return 0;
 
 	for(std::string line; std::getline(cpuinfo, line);)
-		if(line.find_first_of(key) == 0) {
+		if(line.find(key) == 0) {
 			const auto colon_id    = line.find_first_of(':');
 			const auto nonspace_id = line.find_first_not_of(" \t", colon_id) + 1;
 			return line.c_str() + nonspace_id;

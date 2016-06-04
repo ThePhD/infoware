@@ -31,6 +31,15 @@ namespace iware {
 			big,
 		};
 
+		enum class instruction_set_t {
+			/// 3D-now
+			ThreeD_now,
+			MMX,
+			SSE,
+			SSE2,
+			SSE3,
+		};
+
 		struct quantities_t {
 			/// Hyperthreads.
 			unsigned int logical;
@@ -58,5 +67,10 @@ namespace iware {
 
 		/// Returns the CPU's model name.
 		std::string model_name();
+
+		/// Returns whether an instruction set is supported by the current CPU.
+		///
+		/// `noexcept` on Windows
+		bool instruction_set_supported(instruction_set_t set);
 	}
 }

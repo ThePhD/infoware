@@ -32,7 +32,6 @@ namespace iware {
 		};
 
 		enum class instruction_set_t {
-			/// 3D-now
 			ThreeD_now,
 			MMX,
 			SSE,

@@ -22,12 +22,15 @@
 
 
 static std::pair<const char* const*, const char* const*> instruction_set_to_names(iware::cpu::instruction_set_t set) {
-	static const char* mmx[]  = {"mmx"};
-	static const char* sse[]  = {"sse"};
-	static const char* sse2[] = {"sse2"};
-	static const char* sse3[] = {"ssse3", "sse3"};
+	static const char* mmx[]       = {"mmx"};
+	static const char* threednow[] = {"3dnow", "3dnowext"};
+	static const char* sse[]       = {"sse"};
+	static const char* sse2[]      = {"sse2"};
+	static const char* sse3[]      = {"ssse3", "sse3"};
 
 	switch(set) {
+		case iware::cpu::instruction_set_t::ThreeD_now:
+			return {threednow, threednow + sizeof threednow / sizeof(*threednow)};
 		case iware::cpu::instruction_set_t::MMX:
 			return {mmx, mmx + sizeof mmx / sizeof(*mmx)};
 		case iware::cpu::instruction_set_t::SSE:

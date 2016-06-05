@@ -13,8 +13,19 @@
 #pragma once
 
 
+#include <cstdint>
+
+
 namespace iware {
 	namespace system {
+		struct memory_t {
+			std::size_t physical_available;
+			std::size_t physical_total;
+			std::size_t virtual_available;
+			std::size_t virtual_total;
+		};
+
+
 		/// Get amount of connected mice.
 		unsigned int mouse_amount() noexcept;
 
@@ -27,5 +38,8 @@ namespace iware {
 		///
 		/// Always returns 0 on Linuxish kernels, as it can not be detected there.
 		unsigned int other_HID_amount() noexcept;
+
+		/// Get RAM statistics.
+		memory_t memory() noexcept;
 	}
 }

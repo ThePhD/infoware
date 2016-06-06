@@ -10,9 +10,5 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#pragma once
-
-
-#include "cpu.hpp"
-#include "gpu.hpp"
-#include "system.hpp"
+// OpenGL is literaly hitler to initialise a windowless context for, so no game.
+// Leave it for someone smarter than me :G

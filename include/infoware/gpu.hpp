@@ -13,6 +13,29 @@
 #pragma once
 
 
-#include "cpu.hpp"
-#include "gpu.hpp"
-#include "system.hpp"
+#include <cstdint>
+#include <string>
+#include <vector>
+
+
+namespace iware {
+	namespace gpu {
+		enum class vendor_t {
+			intel,
+			AMD,
+			NVidia,
+			unknown,
+		};
+
+		struct device_properties_t {
+			vendor_t vendor;
+			std::string name;
+			std::size_t memory_size;
+			std::size_t cache_size;
+		};
+
+
+		/// Returns all GPU's properties.
+		std::vector<device_properties_t> device_properties();
+	}
+}

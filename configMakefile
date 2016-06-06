@@ -11,26 +11,37 @@
 
 
 ifeq "$(OS)" "Windows_NT"
-	DLL = .dll
-	PREDLL =
-	PIC =
-	EXE = .exe
+	DLL := .dll
+	PREDLL :=
+	PIC :=
+	EXE := .exe
 else
-	PREDLL = lib
-	PIC = -fPIC
+	PREDLL := lib
+	PIC := -fPIC
 	ifeq "$(OS)" "Darwin"
-		DLL = .dylib
+		DLL := .dylib
 	else
-		DLL = .so
+		DLL := .so
 	endif
-	EXE =
+	EXE :=
 endif
 
 ifeq "$(BUILD)" ""
-	BUILD = out
+	BUILD := out
 endif
 
-OBJ = .o
-ARCH = .a
-AR = ar
-CXXAR = -pedantic -O3 -fomit-frame-pointer -std=c++14 -Wall -Wextra -pipe
+ifdef USE_OPENCL
+	LDAR_OPENCL := -lOpenCL
+	CXXAR_OPENCL := -DINFOWARE_USE_OPENCL
+else
+	LDAR_OPENCL :=
+	CXXAR_OPENCL :=
+endif
+
+LDAR := $(LDAR_OPENCL)
+CXXAR_LIB := $(CXXAR_OPENCL)
+
+OBJ := .o
+ARCH := .a
+AR := ar
+CXXAR := -pedantic -O3 -fomit-frame-pointer -std=c++14 -Wall -Wextra -pipe

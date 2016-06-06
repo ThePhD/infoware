@@ -10,9 +10,15 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#pragma once
+#ifndef INFOWARE_USE_OPENCL
 
 
-#include "cpu.hpp"
-#include "gpu.hpp"
-#include "system.hpp"
+#include "infoware/gpu.hpp"
+
+
+std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
+	return {};
+}
+
+
+#endif

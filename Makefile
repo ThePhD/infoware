@@ -31,7 +31,7 @@ stlib : $(BUILD)/libinfoware$(ARCH)
 
 
 $(BUILD)/$(PREDLL)infoware$(DLL) : $(OBJECTS)
-	$(CXX) $(CXXAR) -shared $(PIC) -o$@ $^
+	$(CXX) $(CXXAR) -shared $(PIC) -o$@ $^ $(LDAR)
 
 $(BUILD)/libinfoware$(ARCH) : $(OBJECTS)
 	$(AR) crs $@ $^
@@ -39,8 +39,8 @@ $(BUILD)/libinfoware$(ARCH) : $(OBJECTS)
 
 $(BUILD)/obj/%$(OBJ) : src/%.cpp
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXAR) $(PIC) -Iinclude -c -o$@ $^
+	$(CXX) $(CXXAR) $(CXXAR_LIB) $(PIC) -Iinclude -c -o$@ $^
 
 $(BUILD)/examples/%$(EXE) : examples/%.cpp $(OBJECTS)
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXAR) -Iinclude -o$@ $^
+	$(CXX) $(CXXAR) -Iinclude -o$@ $^ $(LDAR)

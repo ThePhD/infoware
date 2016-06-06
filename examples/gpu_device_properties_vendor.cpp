@@ -10,9 +10,25 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#pragma once
+#include "infoware/gpu.hpp"
+#include <iostream>
 
 
-#include "cpu.hpp"
-#include "gpu.hpp"
-#include "system.hpp"
+int main() {
+	for(auto&& props : iware::gpu::device_properties())
+		switch(props.vendor) {
+			case iware::gpu::vendor_t::intel:
+				std::cout << "Intel ";
+				break;
+			case iware::gpu::vendor_t::AMD:
+				std::cout << "AMD ";
+				break;
+			case iware::gpu::vendor_t::NVidia:
+				std::cout << "NVidia ";
+				break;
+			case iware::gpu::vendor_t::unknown:
+				std::cout << "Unknown ";
+				break;
+		}
+	std::cout << '\n';
+}

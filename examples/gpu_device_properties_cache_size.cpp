@@ -10,9 +10,12 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#pragma once
+#include "infoware/gpu.hpp"
+#include <iostream>
 
 
-#include "cpu.hpp"
-#include "gpu.hpp"
-#include "system.hpp"
+int main() {
+	for(auto&& props : iware::gpu::device_properties())
+		std::cout << props.cache_size << ' ';
+	std::cout << '\n';
+}

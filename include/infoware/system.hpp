@@ -25,6 +25,21 @@ namespace iware {
 			std::size_t virtual_total;
 		};
 
+		enum class kernel_t {
+			windows_nt,
+			linux,
+			darwin,
+			unknown,
+		};
+
+		struct kernel_info_t {
+			kernel_t variant;
+			unsigned int major;
+			unsigned int minor;
+			unsigned int patch;
+			unsigned int build_number;
+		};
+
 
 		/// Get amount of connected mice.
 		unsigned int mouse_amount() noexcept;
@@ -41,5 +56,8 @@ namespace iware {
 
 		/// Get RAM statistics.
 		memory_t memory() noexcept;
+
+		/// Get kernel information.
+		kernel_info_t kernel_info() noexcept;
 	}
 }

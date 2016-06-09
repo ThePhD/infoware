@@ -14,6 +14,7 @@
 
 
 #include <string>
+#include <cstdint>
 
 
 namespace iware {
@@ -39,6 +40,13 @@ namespace iware {
 			SSE3,
 		};
 
+		enum class cache_type_t {
+			unified,
+			instruction,
+			data,
+			trace,
+		};
+
 		struct quantities_t {
 			/// Hyperthreads.
 			unsigned int logical;
@@ -48,9 +56,18 @@ namespace iware {
 			unsigned int packages;
 		};
 
+		struct cache_t {
+			unsigned int size;
+			unsigned int line_size;
+			std::uint8_t associativity;
+			cache_type_t type;
+		};
+
 
 		/// Returns the quantity of CPU at various gradation.
 		quantities_t quantities();
+
+		cache_t cache(unsigned int level);
 
 		/// Returns the architecture of the current CPU.
 		architecture_t architecture() noexcept;

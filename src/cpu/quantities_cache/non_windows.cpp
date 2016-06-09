@@ -17,6 +17,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <fstream>
+#include <string>
 #include <unistd.h>
 #include <vector>
 
@@ -42,6 +43,61 @@ iware::cpu::quantities_t iware::cpu::quantities() {
 	std::sort(package_ids.begin(), package_ids.end());
 	package_ids.erase(std::unique(package_ids.begin(), package_ids.end()), package_ids.end());
 	ret.packages = package_ids.size();
+
+	return ret;
+}
+
+// http://superuser.com/a/203481
+iware::cpu::cache_t iware::cpu::cache(unsigned int level) {
+	std::string prefix("/sys/devices/system/cpu/cpu0/cache/index" + std::to_string(level) + '/');
+	iware::cpu::cache_t ret{};
+
+	{
+		std::ifstream size(prefix + "size");
+		if(size.is_open() && size) {
+			char suffix;
+			size >> ret.size >> suffix;
+			switch(suffix) {
+				case 'G':
+					ret.size *= 1024;
+				case 'M':
+					ret.size *= 1024;
+				case 'K':
+					ret.size *= 1024;
+			}
+		}
+	}
+
+	{
+		std::ifstream line_size(prefix + "coherency_line_size");
+		if(line_size.is_open() && line_size)
+			line_size >> ret.line_size;
+	}
+
+	{
+		std::ifstream associativity(prefix + "associativity");
+		if(associativity.is_open() && associativity) {
+			unsigned int tmp;
+			associativity >> tmp;
+			ret.associativity = tmp;
+		}
+	}
+
+	{
+		std::ifstream type(prefix + "type");
+		if(type.is_open() && type) {
+			std::string tmp;
+			type >> tmp;
+			if(tmp.find("nified") == 1)
+				ret.type = iware::cpu::cache_type_t::unified;
+			else if(tmp.find("nstruction") == 1)
+				ret.type = iware::cpu::cache_type_t::instruction;
+			else if(tmp.find("ata") == 1)
+				ret.type = iware::cpu::cache_type_t::data;
+			else if(tmp.find("race") == 1)
+				ret.type = iware::cpu::cache_type_t::trace;
+		}
+	}
 
 	return ret;
 }

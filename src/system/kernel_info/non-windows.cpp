@@ -35,7 +35,7 @@ iware::system::kernel_info_t iware::system::kernel_info() noexcept {
 	else if(!std::strcmp(uts.sysname, "Darwin"))
 		kernel = iware::system::kernel_t::darwin;
 
-	return {iware::system::kernel_t::linux, major, minor, patch, build_number};
+	return {kernel, major, minor, patch, build_number};
 }
 
 

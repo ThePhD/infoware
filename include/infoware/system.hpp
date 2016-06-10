@@ -14,6 +14,7 @@
 
 
 #include <cstdint>
+#include <vector>
 
 
 namespace iware {
@@ -40,6 +41,12 @@ namespace iware {
 			unsigned int build_number;
 		};
 
+		struct display_t {
+			unsigned int width;
+			unsigned int height;
+			unsigned int dpi;
+		};
+
 
 		/// Get amount of connected mice.
 		unsigned int mouse_amount() noexcept;
@@ -59,5 +66,8 @@ namespace iware {
 
 		/// Get kernel information.
 		kernel_info_t kernel_info() noexcept;
+
+		/// Get information about displays.
+		std::vector<display_t> displays();
 	}
 }

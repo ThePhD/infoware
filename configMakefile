@@ -15,6 +15,7 @@ ifeq "$(OS)" "Windows_NT"
 	PREDLL :=
 	PIC :=
 	EXE := .exe
+	LDAR_OS := -lgdi32
 else
 	PREDLL := lib
 	PIC := -fPIC
@@ -24,6 +25,7 @@ else
 		DLL := .so
 	endif
 	EXE :=
+	LDAR_OS :=
 endif
 
 ifeq "$(BUILD)" ""
@@ -38,7 +40,7 @@ else
 	CXXAR_OPENCL :=
 endif
 
-LDAR := $(LDAR_OPENCL)
+LDAR := $(LDAR_OPENCL) $(LDAR_OS)
 CXXAR_LIB := $(CXXAR_OPENCL)
 
 OBJ := .o

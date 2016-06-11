@@ -67,6 +67,9 @@ namespace iware {
 		/// Returns the quantity of CPU at various gradation.
 		quantities_t quantities();
 
+		/// Get CPU's cache properties.
+		///
+		/// `level` is the cache level (3 -> L3 cache).
 		cache_t cache(unsigned int level);
 
 		/// Returns the architecture of the current CPU.

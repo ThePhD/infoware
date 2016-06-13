@@ -24,10 +24,11 @@ std::vector<iware::system::display_t> iware::system::displays() {
 
 	if(const auto display_name = getenv("DISPLAY"))
 		if(const auto display = XOpenDisplay(display_name))
-			for(auto i = 0u; i < display->nscreens; ++i) {
-				const auto& screen = display.screens[i];
+			for(int i = 0; i < ScreenCount(display); ++i) {
+				const unsigned int width = DisplayWidth(display, i);
 				// 25.4 millimeters per inch
-				ret.emplace_back({screen.width, screen.height, 25.4 * screen.mwidth / screen.width, screen.root_depth});
+				ret.emplace_back(iware::system::display_t{width, DisplayHeight(display, i), static_cast<unsigned int>(25.4 * DisplayWidthMM(display, i) / width),
+				                                          DefaultDepth(display, i)});
 			}
 
 	return {};

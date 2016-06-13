@@ -40,8 +40,16 @@ else
 	CXXAR_OPENCL :=
 endif
 
-LDAR := $(LDAR_OPENCL) $(LDAR_OS)
-CXXAR_LIB := $(CXXAR_OPENCL)
+ifdef USE_X11
+	LDAR_X11 := -lX11
+	CXXAR_X11 := -DINFOWARE_USE_X11
+else
+	LDAR_X11 :=
+	CXXAR_X11 :=
+endif
+
+LDAR := $(LDAR_OS) $(LDAR_OPENCL) $(LDAR_X11)
+CXXAR_LIB := $(CXXAR_OPENCL) $(CXXAR_X11)
 
 OBJ := .o
 ARCH := .a

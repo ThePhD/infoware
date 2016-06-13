@@ -22,7 +22,7 @@
 std::vector<iware::system::display_t> iware::system::displays() {
 	std::vector<iware::system::display_t> ret;
 
-	if(const auto display_name = getenv("DISPLAY"))
+	if(const auto display_name = std::getenv("DISPLAY"))
 		if(const auto display = XOpenDisplay(display_name))
 			for(int i = 0; i < ScreenCount(display); ++i) {
 				const unsigned int width = DisplayWidth(display, i);
@@ -31,7 +31,7 @@ std::vector<iware::system::display_t> iware::system::displays() {
 				                                          DefaultDepth(display, i)});
 			}
 
-	return {};
+	return ret;
 }
 
 

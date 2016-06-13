@@ -27,7 +27,7 @@ std::vector<iware::system::display_t> iware::system::displays() {
 			for(auto i = 0u; i < display->nscreens; ++i) {
 				const auto& screen = display.screens[i];
 				// 25.4 millimeters per inch
-				return {screen.width, screen.height, 25.4 * screen.mwidth / screen.width};
+				ret.emplace_back({screen.width, screen.height, 25.4 * screen.mwidth / screen.width, screen.root_depth});
 			}
 
 	return {};

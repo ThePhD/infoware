@@ -45,6 +45,8 @@ namespace iware {
 			unsigned int width;
 			unsigned int height;
 			unsigned int dpi;
+			/// Bits Per Pixel a.k.a. depth
+			unsigned int bpp;
 		};
 
 

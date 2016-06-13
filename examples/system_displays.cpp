@@ -16,6 +16,6 @@
 
 int main() {
 	for(auto&& display : iware::system::displays())
-		std::cout << display.width << 'x' << display.height << '@' << display.dpi << "DPI ";
+		std::cout << display.width << 'x' << display.height << '@' << display.dpi << "DPI+" << display.bpp << "BPP ";
 	std::cout << '\n';
 }

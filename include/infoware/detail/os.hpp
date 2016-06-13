@@ -40,7 +40,7 @@ namespace iware {
 
 #define INFOWARE_LINUX 1
 
-#define FURROVINELINUX32 1
+#define INFOWARE_LINUX32 1
 #define INFOWARE_X86 1
 
 #else /* Or something else */

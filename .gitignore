@@ -12,3 +12,5 @@
 !*Makefile
 !LICENSE
 !README.md
+!*.sln
+!*.vcxproj*

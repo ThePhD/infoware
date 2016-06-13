@@ -18,15 +18,16 @@
 #include <windows.h>
 
 
-template <unsigned int IdentLen>
-static std::string central_processor_subkey(const char* key) {
+template <unsigned int IdentLen, typename T, std::size_t KeyLen>
+static std::string central_processor_subkey(const T(&key)[KeyLen]) {
 	HKEY hkey;
-	if(RegOpenKeyEx(HKEY_LOCAL_MACHINE, R"(HARDWARE\DESCRIPTION\System\CentralProcessor\0)", 0, KEY_READ, &hkey))
+	if(RegOpenKeyExW(HKEY_LOCAL_MACHINE, LR"(HARDWARE\DESCRIPTION\System\CentralProcessor\0)", 0, KEY_READ, &hkey))
 		return {};
 
 	char identifier[IdentLen];
-	unsigned long identifier_len = sizeof identifier;
-	if(RegQueryValueEx(hkey, key, nullptr, nullptr, static_cast<unsigned char*>(static_cast<void*>(identifier)), &identifier_len))
+	DWORD identifier_len = sizeof identifier;
+	LPBYTE lpdata = static_cast<LPBYTE>(static_cast<void*>(&identifier[0]));
+	if(RegQueryValueExW(hkey, key, nullptr, nullptr, lpdata, &identifier_len))
 		return {};
 
 	return identifier;
@@ -34,11 +35,11 @@ static std::string central_processor_subkey(const char* key) {
 
 
 std::string iware::cpu::vendor() {
-	return central_processor_subkey<13>("VendorIdentifier");
+	return central_processor_subkey<13>(L"VendorIdentifier");
 }
 
 std::string iware::cpu::model_name() {
-	return central_processor_subkey<65>("ProcessorNameString");
+	return central_processor_subkey<65>(L"ProcessorNameString");
 }
 
 

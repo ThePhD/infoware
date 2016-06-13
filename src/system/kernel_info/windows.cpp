@@ -9,27 +9,92 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
+#include <infoware/detail/os.hpp>
 
-#ifdef _WIN32
+
+#ifdef INFOWARE_WIN
 
 
 #include "infoware/system.hpp"
+#include <memory>
+#include <cstddef>
+
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
 
-// https://msdn.microsoft.com/en-us/library/windows/desktop/ms724439(v=vs.85).aspx
 iware::system::kernel_info_t iware::system::kernel_info() noexcept {
-	const auto version = GetVersion();
+#if 0 // Last resort if VC++ continues to be an ASS with its sdl checks
+	OSVERSIONINFOEXW osinfoexw{ sizeof(OSVERSIONINFOEXW) };
+	if (GetVersionExW(reinterpret_cast<OSVERSIONINFOW*>(&osinfoexw)) == 0) {
+		// Shit hit the fan, fam...
+	}
 
-	unsigned int major_version = LOBYTE(LOWORD(version));
-	unsigned int minor_version = HIBYTE(LOWORD(version));
+	unsigned int major_version = osinfoexw.dwMajorVersion;
+	unsigned int minor_version = osinfoexw.dwMinorVersion;
+	unsigned int build = osinfoexw.dwBuildNumber;
 
-	unsigned int build{};
-	if(version < 0x80000000)
-		build = HIWORD(version);
+	return{ iware::system::kernel_t::windows_nt, major_version, minor_version, 0, build };
+#else
+	static const auto& osfiletarget = L"\\kernel32.dll";
+	static const std::size_t osfiletargetsize = sizeof(osfiletargetsize) / sizeof(L"");
+	static const std::size_t pathsize = _MAX_PATH + 14;
 
-	return {iware::system::kernel_t::windows_nt, major_version, minor_version, 0, build};
+	// zero-init all entries with {}
+	WCHAR path[pathsize]{};
+
+	UINT getsysdirresult = GetSystemDirectoryW(path, pathsize);
+	if (getsysdirresult == 0 || getsysdirresult >= pathsize) {
+		// TODO: Shit hit the fan, fam
+	}
+	std::copy(osfiletarget, osfiletarget + osfiletargetsize, path);
+
+	//
+	// Based on example code from this article
+	// http://support.microsoft.com/kb/167597
+	//
+
+	DWORD handle{};
+#if (_WIN32_WINNT >= _WIN32_WINNT_VISTA)
+	DWORD len = GetFileVersionInfoSizeExW(FILE_VER_GET_NEUTRAL, path, &handle);
+#else
+	DWORD len = GetFileVersionInfoSizeW(path, &handle);
+#endif
+	if (!len) {
+		// TODO: shit's lit, fam
+	}
+
+	std::unique_ptr<uint8_t[]> buff(new (std::nothrow) uint8_t[len]);
+	if (!buff) {
+		// TODO: shit's lit, fam
+	}
+
+#if (_WIN32_WINNT >= _WIN32_WINNT_VISTA)
+	if (!GetFileVersionInfoExW(FILE_VER_GET_NEUTRAL, path, 0, len, buff.get()) == 0) {
+#else
+	if (!GetFileVersionInfoW(path, 0, len, buff.get()) == 0) {
+#endif
+		// TODO: shit's lit, fam
+	}
+
+	VS_FIXEDFILEINFO *vInfo = nullptr;
+	UINT infoSize;
+
+	if (!VerQueryValueW(buff.get(), L"\\", reinterpret_cast<LPVOID*>(&vInfo), &infoSize)) {
+		// TODO: shit's lit, fam
+	}
+
+	if (!infoSize) {
+		// TODO: shit's lit, fam
+	}
+	uint32_t major = HIWORD(vInfo->dwFileVersionMS);
+	uint32_t minor = LOWORD(vInfo->dwFileVersionMS);
+	uint32_t patch = HIWORD(vInfo->dwFileVersionLS);
+	uint32_t build = LOWORD(vInfo->dwFileVersionLS);
+
+	iware::system::kernel_info_t ki{ kernel_t::windows_nt, major, minor, patch, build };
+	return ki;
+#endif
 }
 
 

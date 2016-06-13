@@ -38,7 +38,7 @@ bool iware::cpu::instruction_set_supported(iware::cpu::instruction_set_t set) {
 			break;
 	}
 
-	return IsProcessorFeaturePresent(feature);
+	return IsProcessorFeaturePresent(feature) != 0;
 }
 
 

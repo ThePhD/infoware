@@ -12,7 +12,7 @@
 
 #pragma once
 
-
+#include <infoware/detail/api.hpp>
 #include <cstdint>
 #include <vector>
 
@@ -20,10 +20,10 @@
 namespace iware {
 	namespace system {
 		struct memory_t {
-			std::size_t physical_available;
-			std::size_t physical_total;
-			std::size_t virtual_available;
-			std::size_t virtual_total;
+			uint64_t physical_available;
+			uint64_t physical_total;
+			uint64_t virtual_available;
+			uint64_t virtual_total;
 		};
 
 		enum class kernel_t {
@@ -51,25 +51,25 @@ namespace iware {
 
 
 		/// Get amount of connected mice.
-		unsigned int mouse_amount() noexcept;
+		infoware_api unsigned int mouse_amount() noexcept;
 
 		/// Get amount of connected keyboards.
 		///
 		/// Always returns 0 on Linuxish kernels, as it can not be detected there.
-		unsigned int keyboard_amount() noexcept;
+		infoware_api unsigned int keyboard_amount() noexcept;
 
 		/// Get amount of other connected HIDs.
 		///
 		/// Always returns 0 on Linuxish kernels, as it can not be detected there.
-		unsigned int other_HID_amount() noexcept;
+		infoware_api unsigned int other_HID_amount() noexcept;
 
 		/// Get RAM statistics.
-		memory_t memory() noexcept;
+		infoware_api memory_t memory() noexcept;
 
 		/// Get kernel information.
-		kernel_info_t kernel_info() noexcept;
+		infoware_api kernel_info_t kernel_info() noexcept;
 
 		/// Get information about displays.
-		std::vector<display_t> displays();
+		infoware_api std::vector<display_t> displays();
 	}
 }

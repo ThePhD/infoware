@@ -11,6 +11,7 @@
 
 
 #ifndef _WIN32
+#ifndef INFOWARE_USE_X11
 
 
 #include "infoware/system.hpp"
@@ -21,4 +22,5 @@ std::vector<iware::system::display_t> iware::system::displays() {
 }
 
 
+#endif
 #endif

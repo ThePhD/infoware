@@ -51,25 +51,25 @@ namespace iware {
 
 
 		/// Get amount of connected mice.
-		infoware_api unsigned int mouse_amount() noexcept;
+		INFOWARE_API unsigned int mouse_amount() noexcept;
 
 		/// Get amount of connected keyboards.
 		///
 		/// Always returns 0 on Linuxish kernels, as it can not be detected there.
-		infoware_api unsigned int keyboard_amount() noexcept;
+		INFOWARE_API unsigned int keyboard_amount() noexcept;
 
 		/// Get amount of other connected HIDs.
 		///
 		/// Always returns 0 on Linuxish kernels, as it can not be detected there.
-		infoware_api unsigned int other_HID_amount() noexcept;
+		INFOWARE_API unsigned int other_HID_amount() noexcept;
 
 		/// Get RAM statistics.
-		infoware_api memory_t memory() noexcept;
+		INFOWARE_API memory_t memory() noexcept;
 
 		/// Get kernel information.
-		infoware_api kernel_info_t kernel_info() noexcept;
+		INFOWARE_API kernel_info_t kernel_info() noexcept;
 
 		/// Get information about displays.
-		infoware_api std::vector<display_t> displays();
+		INFOWARE_API std::vector<display_t> displays();
 	}
 }

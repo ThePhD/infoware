@@ -24,17 +24,17 @@ namespace iware {
 #ifdef INFOWARE_INTERNAL_COMPILING
 
 #ifdef INFOWARE_DLL
-#define infoware_export __declspec( dllexport )
+#define INFOWARE_EXPORT __declspec( dllexport )
 #else
-#define infoware_export 
+#define INFOWARE_EXPORT 
 #endif // INFOWARE_DLL 
 
 #else
 
 #ifdef INFOWARE_DLL
-#define infoware_export __declspec( dllimport )
+#define INFOWARE_EXPORT __declspec( dllimport )
 #else
-#define infoware_export 
+#define INFOWARE_EXPORT 
 #endif // INFOWARE_DLL 
 
 #endif // INFOWARE_INTERNAL_COMPILING
@@ -42,13 +42,13 @@ namespace iware {
 #elif defined(INFOWARE_GCC) || defined(INFOWARE_CLANG)
 
 #ifdef INFOWARE_INTERNAL_COMPILING
-#define infoware_export
+#define INFOWARE_EXPORT
 #else
-#define infoware_export
+#define INFOWARE_EXPORT
 #endif // INFOWARE_INTERNAL_COMPILING
 
 #endif // WIN32 || APPLE || LINUX 
 
-#define infoware_api infoware_export
+#define INFOWARE_API INFOWARE_EXPORT
 
 }

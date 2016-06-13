@@ -36,6 +36,6 @@ namespace iware {
 
 
 		/// Returns all GPU's properties.
-		infoware_api std::vector<device_properties_t> device_properties();
+		INFOWARE_API std::vector<device_properties_t> device_properties();
 	}
 }

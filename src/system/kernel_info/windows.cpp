@@ -20,12 +20,13 @@
 #include <windows.h>
 
 
+// Get OS (platform) version from kernel32.dll because GetVersion is deprecated in Win8+
+// https://msdn.microsoft.com/en-us/library/windows/desktop/ms724439(v=vs.85).aspx
 iware::system::kernel_info_t iware::system::kernel_info() {
 	std::string path;
 	path.resize(GetSystemDirectory(nullptr, 0) - 1);
 	GetSystemDirectory(&path[0], path.size() + 1);
 	path += "\\kernel32.dll";
-
 
 	const auto ver_info_len = GetFileVersionInfoSize(path.c_str(), nullptr);
 	auto ver_info           = std::make_unique<std::uint8_t[]>(ver_info_len);

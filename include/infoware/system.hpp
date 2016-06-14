@@ -12,7 +12,7 @@
 
 #pragma once
 
-#include <infoware/detail/api.hpp>
+
 #include <cstdint>
 #include <vector>
 #include <string>
@@ -20,10 +20,10 @@
 namespace iware {
 	namespace system {
 		struct memory_t {
-			uint64_t physical_available;
-			uint64_t physical_total;
-			uint64_t virtual_available;
-			uint64_t virtual_total;
+			std::uint64_t physical_available;
+			std::uint64_t physical_total;
+			std::uint64_t virtual_available;
+			std::uint64_t virtual_total;
 		};
 
 		enum class kernel_t {
@@ -39,8 +39,6 @@ namespace iware {
 			unsigned int minor;
 			unsigned int patch;
 			unsigned int build_number;
-			std::string name;
-			std::string friendly_name;
 		};
 
 		struct display_t {
@@ -53,25 +51,25 @@ namespace iware {
 
 
 		/// Get amount of connected mice.
-		INFOWARE_API unsigned int mouse_amount() noexcept;
+		unsigned int mouse_amount() noexcept;
 
 		/// Get amount of connected keyboards.
 		///
 		/// Always returns 0 on Linuxish kernels, as it can not be detected there.
-		INFOWARE_API unsigned int keyboard_amount() noexcept;
+		unsigned int keyboard_amount() noexcept;
 
 		/// Get amount of other connected HIDs.
 		///
 		/// Always returns 0 on Linuxish kernels, as it can not be detected there.
-		INFOWARE_API unsigned int other_HID_amount() noexcept;
+		unsigned int other_HID_amount() noexcept;
 
 		/// Get RAM statistics.
-		INFOWARE_API memory_t memory() noexcept;
+		memory_t memory() noexcept;
 
 		/// Get kernel information.
-		INFOWARE_API kernel_info_t kernel_info() noexcept;
+		kernel_info_t kernel_info();
 
 		/// Get information about displays.
-		INFOWARE_API std::vector<display_t> displays();
+		std::vector<display_t> displays();
 	}
 }

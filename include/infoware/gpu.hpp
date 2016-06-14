@@ -9,10 +9,10 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
+
 #pragma once
 
 
-#include <infoware/detail/api.hpp>
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -36,6 +36,6 @@ namespace iware {
 
 
 		/// Returns all GPU's properties.
-		INFOWARE_API std::vector<device_properties_t> device_properties();
+		std::vector<device_properties_t> device_properties();
 	}
 }

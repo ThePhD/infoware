@@ -9,9 +9,8 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
-#include <infoware/detail/os.hpp>
 
-#ifdef INFOWARE_WIN
+#ifdef _WIN32
 
 
 #include "infoware/system.hpp"
@@ -22,15 +21,11 @@
 iware::system::memory_t iware::system::memory() noexcept {
 	MEMORYSTATUSEX mem;
 	mem.dwLength = sizeof(mem);
-	if (GlobalMemoryStatusEx(&mem) == 0) {
-		return{};
-	}
+	if(!GlobalMemoryStatusEx(&mem))
+		return {};
 
 	return {
-		mem.ullTotalPhys,
-		mem.ullAvailPhys,
-		mem.ullTotalVirtual,
-		mem.ullAvailVirtual,
+	    mem.ullTotalPhys, mem.ullAvailPhys, mem.ullTotalVirtual, mem.ullAvailVirtual,
 	};
 }
 

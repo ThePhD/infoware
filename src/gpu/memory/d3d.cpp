@@ -10,13 +10,15 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#include <infoware/gpu.hpp>
+#ifdef INFOWARE_USE_D3D
 
-#if defined INFOWARE_USE_D3D
+
+#include <infoware/gpu.hpp>
 
 
 std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
-
+	return {};
 }
+
 
 #endif

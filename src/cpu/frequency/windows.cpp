@@ -21,7 +21,7 @@
 unsigned int iware::cpu::frequency() noexcept {
 	LARGE_INTEGER freq;
 	QueryPerformanceFrequency(&freq);
-	return static_cast<unsigned int>(freq.QuadPart * 1000);
+	return freq.QuadPart * 1000;
 }
 
 

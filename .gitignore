@@ -14,3 +14,4 @@
 !README.md
 !*.sln
 !*.vcxproj*
+*.vcxproj.user

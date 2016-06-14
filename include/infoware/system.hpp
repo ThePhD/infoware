@@ -15,7 +15,7 @@
 #include <infoware/detail/api.hpp>
 #include <cstdint>
 #include <vector>
-
+#include <string>
 
 namespace iware {
 	namespace system {
@@ -39,6 +39,8 @@ namespace iware {
 			unsigned int minor;
 			unsigned int patch;
 			unsigned int build_number;
+			std::string name;
+			std::string friendly_name;
 		};
 
 		struct display_t {

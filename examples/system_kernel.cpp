@@ -33,4 +33,6 @@ int main() {
 	}
 
 	std::cout << " version " << kernel_info.major << '.' << kernel_info.minor << '.' << kernel_info.patch << " buildnum " << kernel_info.build_number << '\n';
+	std::cout << "Name: " << kernel_info.name << '\n';
+	std::cout << "Friendly Name: " << kernel_info.friendly_name << '\n';
 }

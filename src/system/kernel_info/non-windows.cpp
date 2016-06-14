@@ -34,8 +34,11 @@ iware::system::kernel_info_t iware::system::kernel_info() noexcept {
 		kernel = iware::system::kernel_t::linux;
 	else if(!std::strcmp(uts.sysname, "Darwin"))
 		kernel = iware::system::kernel_t::darwin;
+	std::stringstream friendlyname;
+	friendlyname << ( kernel == kernel_t::linux ? "Linux " : kernel == kernel_t::darwin ? "Darwin " : "Generic " );
+	friendlyname << major << "." << minor << "." << patch << "." << build_number;
 
-	return {kernel, major, minor, patch, build_number};
+	return{ kernel, major, minor, patch, build_number, { uts.sysname }, std::move(friendlyname) };
 }
 
 

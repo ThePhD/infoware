@@ -22,8 +22,8 @@ namespace iware {
 	namespace gpu {
 		enum class vendor_t {
 			intel,
-			amd,
-			nvidia,
+			AMD,
+			NVidia,
 			unknown,
 		};
 

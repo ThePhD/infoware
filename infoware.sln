@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "infoware", "infoware.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "generator", "generator.vcxproj", "{D9342D62-9342-43E8-9F82-81C9978C2860}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "examples", "examples.vcxproj", "{D6CE92E4-67C9-45A5-BFF4-1DFD34C8F8E0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{D9342D62-9342-43E8-9F82-81C9978C2860}.Release|x64.Build.0 = Release|x64
 		{D9342D62-9342-43E8-9F82-81C9978C2860}.Release|x86.ActiveCfg = Release|Win32
 		{D9342D62-9342-43E8-9F82-81C9978C2860}.Release|x86.Build.0 = Release|Win32
+		{D6CE92E4-67C9-45A5-BFF4-1DFD34C8F8E0}.Debug|x64.ActiveCfg = Debug|x64
+		{D6CE92E4-67C9-45A5-BFF4-1DFD34C8F8E0}.Debug|x64.Build.0 = Debug|x64
+		{D6CE92E4-67C9-45A5-BFF4-1DFD34C8F8E0}.Debug|x86.ActiveCfg = Debug|Win32
+		{D6CE92E4-67C9-45A5-BFF4-1DFD34C8F8E0}.Debug|x86.Build.0 = Debug|Win32
+		{D6CE92E4-67C9-45A5-BFF4-1DFD34C8F8E0}.Release|x64.ActiveCfg = Release|x64
+		{D6CE92E4-67C9-45A5-BFF4-1DFD34C8F8E0}.Release|x64.Build.0 = Release|x64
+		{D6CE92E4-67C9-45A5-BFF4-1DFD34C8F8E0}.Release|x86.ActiveCfg = Release|Win32
+		{D6CE92E4-67C9-45A5-BFF4-1DFD34C8F8E0}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -45,8 +45,8 @@ std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 
 	std::unique_ptr<IDXGIFactory, release_deleter> factory;
 	IDXGIFactory* pfactory = nullptr;
-	void** vppfactory = reinterpret_cast<void**>(pfactory);
-	HRESULT result = CreateDXGIFactory(__uuidof(IDXGIFactory), vppfactory);
+	void* vpfactory = static_cast<void*>(pfactory);
+	HRESULT result = CreateDXGIFactory(__uuidof(IDXGIFactory), &vpfactory);
 	if (result != S_OK) {
 		// TODO: shit's lit, fam
 		return devices;
@@ -57,14 +57,14 @@ std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 		std::unique_ptr<IDXGIAdapter, release_deleter> dxgiadapter = nullptr;
 		IDXGIAdapter* pdxgiadapter = nullptr;
 		result = factory->EnumAdapters(static_cast<UINT>(adp), &pdxgiadapter);
-		if (result != S_OK) {
+		if (result != S_OK || result == DXGI_ERROR_NOT_FOUND) {
 			break;
 		}
 		DXGI_ADAPTER_DESC adapterdesc;
 		dxgiadapter->GetDesc(&adapterdesc);
 		std::string devicename, vendorname;
 		std::tie( vendorname, devicename ) = detail::identify_device(adapterdesc.VendorId, adapterdesc.DeviceId);
-		devices.push_back({vendor_t::unknown, std::move(vendorname), std::move(devicename), adapterdesc.DedicatedVideoMemory, 0, adapterdesc.DedicatedSystemMemory, adapterdesc.SharedSystemMemory});
+		devices.push_back({in_string(vendorname), std::move(vendorname), std::move(devicename), adapterdesc.DedicatedVideoMemory, 0, adapterdesc.DedicatedSystemMemory, adapterdesc.SharedSystemMemory});
 	}
 
 	return devices;

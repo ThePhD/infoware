@@ -11,6 +11,7 @@
 
 
 #ifndef INFOWARE_USE_OPENCL
+#ifndef INFOWARE_USE_D3D
 
 
 #include "infoware/gpu.hpp"
@@ -21,4 +22,5 @@ std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 }
 
 
+#endif
 #endif

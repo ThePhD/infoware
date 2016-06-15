@@ -19,16 +19,16 @@
 
 
 std::vector<iware::system::display_t> iware::system::displays() {
-	static const auto desktop_dc          = GetDC(nullptr);
-	static const unsigned int desktop_dpi = GetDeviceCaps(desktop_dc, LOGPIXELSX);
-	// https://blogs.msdn.microsoft.com/oldnewthing/20101013-00/?p=12543
-	static const unsigned int desktop_bpp = GetDeviceCaps(desktop_dc, BITSPIXEL) * GetDeviceCaps(desktop_dc, PLANES);
-
-
 	std::vector<iware::system::display_t> ret;
 
 	EnumDisplayMonitors(nullptr, nullptr,
 	                    [](auto, auto hdc, auto rect, auto userdata) {
+		                    static const auto desktop_dc          = GetDC(nullptr);
+		                    static const unsigned int desktop_dpi = GetDeviceCaps(desktop_dc, LOGPIXELSX);
+		                    // https://blogs.msdn.microsoft.com/oldnewthing/20101013-00/?p=12543
+		                    static const unsigned int desktop_bpp = GetDeviceCaps(desktop_dc, BITSPIXEL) * GetDeviceCaps(desktop_dc, PLANES);
+
+
 		                    // https://msdn.microsoft.com/en-us/library/windows/desktop/dn280510(v=vs.85).aspx
 		                    // Doesn't work, can't link to shcore
 		                    //

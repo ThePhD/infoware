@@ -11,8 +11,8 @@
 
 #pragma once
 
-
 #include <infoware/detail/api.hpp>
+#include <infoware/detail/graphics.hpp>
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -29,9 +29,12 @@ namespace iware {
 
 		struct device_properties_t {
 			vendor_t vendor;
+			std::string vendor_name;
 			std::string name;
 			std::size_t memory_size;
 			std::size_t cache_size;
+			std::size_t dedicated_system_memory_size;
+			std::size_t shared_system_memory_size;
 		};
 
 

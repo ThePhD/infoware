@@ -9,16 +9,16 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
+#pragma once
 
-#ifndef INFOWARE_USE_OPENCL
+#include <cstdint>
+#include <string>
 
+namespace iware {
+	namespace detail {
 
-#include "infoware/gpu.hpp"
+		std::pair<std::string, std::string> identify_device(int64_t vendor_pci_id, int64_t device_pci_id) noexcept;
+		std::string identify_vendor(int64_t vendor_pci_id) noexcept;
 
-
-std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
-	return {};
+	}
 }
-
-
-#endif

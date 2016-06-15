@@ -23,19 +23,20 @@ namespace iware {
 	// Use user preferences before defining any defaults
 #else
 	// Otherwise...
-#if defined INFOWARE_WIN32
-#if defined INFOWARE_MINGW
-	// Prefer OpenGL here because MinGW
-#define INFOWARE_USE_OPENGL 1
-#else
-	// Otherwise, VC++ and others do well with D3D
+#if defined(INFOWARE_WIN32)
+#if defined(INFOWARE_VCXX)
+	// VC++ can do D3D
 #define INFOWARE_USE_D3D 1
-#endif 
+#else
+	// Prefer OpenGL here because MinGW + others don't 
+	// really do the whole D3D thing well
+#define INFOWARE_USE_OPENGL 1
+#endif // VC++ || Other on Windows
 #else
 // Prefer Open-GL on Non-Windows machines
 #define INFOWARE_USE_OPENGL 1
 // TODO: possible to detect with a macro if OpenCL is "around"? (Probably not)
 #endif // Win32 or Not
 
-#endif
+#endif // User Preference || Compiler / Platform-based Setup
 }

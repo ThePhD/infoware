@@ -47,16 +47,17 @@ std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 
 		for(auto j = 0u; j < devices_used; ++j) {
 			char name[256];
+			char vendorname[256];
 			cl_ulong cache;
 			cl_ulong memory;
 
 			clGetDeviceInfo(devices[j], CL_DEVICE_GLOBAL_MEM_CACHE_SIZE, sizeof(cache), &cache, nullptr);
 			clGetDeviceInfo(devices[j], CL_DEVICE_GLOBAL_MEM_SIZE, sizeof(memory), &memory, nullptr);
-			clGetDeviceInfo(devices[j], CL_DEVICE_VENDOR, sizeof name, &name, nullptr);
-			const auto vendor = parse_vendor(name);
+			clGetDeviceInfo(devices[j], CL_DEVICE_VENDOR, sizeof vendorname, &vendorname, nullptr);
+			const auto vendor = parse_vendor(vendorname);
 			clGetDeviceInfo(devices[j], CL_DEVICE_NAME, sizeof name, &name, nullptr);
 
-			ret.push_back({vendor, name, memory, cache});
+			ret.push_back({vendor, vendorname, name, memory, cache});
 		}
 	}
 

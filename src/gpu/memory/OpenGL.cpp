@@ -9,6 +9,7 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
+#ifdef INFOWARE_USE_OPENGL
 
 // OpenGL is literaly hitler to initialise a windowless context for, so no game.
 // Leave it for someone smarter than me :G
@@ -43,3 +44,9 @@
 // [5:52 PM] 🕴: Elim is the greatest man of all time
 // [5:52 PM] Elim | iscicadabannedyet.com: bby, write code and be quiet 😛
 // [5:53 PM] Elim | iscicadabannedyet.com: but yeah, it's p retarded
+
+std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
+	return{};
+}
+
+#endif // Use OpenGL

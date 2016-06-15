@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pci_generator\src\generator.cpp" />
+    <ClCompile Include="pci_generator\src\pci_generator.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D9342D62-9342-43E8-9F82-81C9978C2860}</ProjectGuid>

@@ -28,7 +28,7 @@ struct release_deleter {
 };
 
 iware::gpu::vendor_t in_string(const std::string& v) {
-	if (v.find("NVidia") != std::string::npos) {
+	if (v.find("NVidia") != std::string::npos || v.find("NVIDIA") != std::string::npos) {
 		return iware::gpu::vendor_t::nvidia;
 	}
 	else if (v.find("AMD") != std::string::npos || v.find("ATi") != std::string::npos || v.find("Advanced Micro Devices") != std::string::npos) {
@@ -51,6 +51,7 @@ std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 		// TODO: shit's lit, fam
 		return devices;
 	}
+	pfactory = static_cast<IDXGIFactory*>(vpfactory);
 	factory.reset(pfactory);
 
 	for (std::size_t adp = 0;; ++adp) {
@@ -60,11 +61,13 @@ std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 		if (result != S_OK || result == DXGI_ERROR_NOT_FOUND) {
 			break;
 		}
+		dxgiadapter.reset(pdxgiadapter);
 		DXGI_ADAPTER_DESC adapterdesc;
 		dxgiadapter->GetDesc(&adapterdesc);
 		std::string devicename, vendorname;
 		std::tie( vendorname, devicename ) = detail::identify_device(adapterdesc.VendorId, adapterdesc.DeviceId);
-		devices.push_back({in_string(vendorname), std::move(vendorname), std::move(devicename), adapterdesc.DedicatedVideoMemory, 0, adapterdesc.DedicatedSystemMemory, adapterdesc.SharedSystemMemory});
+		vendor_t vendortype = in_string(vendorname);
+		devices.push_back({vendortype, std::move(vendorname), std::move(devicename), adapterdesc.DedicatedVideoMemory, 0, adapterdesc.DedicatedSystemMemory, adapterdesc.SharedSystemMemory});
 	}
 
 	return devices;

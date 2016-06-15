@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pci_generator\src\generator.cpp">
+    <ClCompile Include="pci_generator\src\pci_generator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

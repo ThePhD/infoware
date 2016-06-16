@@ -42,9 +42,8 @@ static std::string ConvertBSTRToString(BSTR pSrc) {
 	if(!pSrc)
 		return {};
 
-	// convert even embeded NULL
+	// convert even embeded NUL
 	const auto src_len = SysStringLen(pSrc);
-
 	std::string ret;
 	if(const auto len = WideCharToMultiByte(CP_ACP, 0, pSrc, src_len + 1, NULL, 0, 0, 0)) {
 		ret.resize(len + 1, '\0');

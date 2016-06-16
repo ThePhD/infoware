@@ -29,7 +29,7 @@ static std::string distro_name() {
 	for(std::string line; std::getline(release, line);)
 		if(line.find("DISTRIB_DESCRIPTION") == 0) {
 			const auto start_idx = line.find('"') + 1;
-			const auto end_idx = line.size() - 1;
+			const auto end_idx   = line.size() - 1;
 			return line.substr(start_idx, end_idx - start_idx);
 		}
 }

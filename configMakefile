@@ -13,7 +13,7 @@
 ifeq "$(OS)" "Windows_NT"
 	PIC :=
 	EXE := .exe
-	LDAR_OS := -lgdi32 -lversion
+	LDAR_OS := -lgdi32 -lversion -lOle32 -lOleAut32 -lwbemuuid
 else
 	PIC := -fPIC
 	EXE :=

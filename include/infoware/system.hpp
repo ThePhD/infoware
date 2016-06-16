@@ -17,6 +17,7 @@
 #include <vector>
 #include <string>
 
+
 namespace iware {
 	namespace system {
 		struct memory_t {
@@ -34,6 +35,7 @@ namespace iware {
 		};
 
 		struct kernel_info_t {
+			std::string full_name;
 			kernel_t variant;
 			unsigned int major;
 			unsigned int minor;

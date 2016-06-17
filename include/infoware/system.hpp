@@ -35,8 +35,16 @@ namespace iware {
 		};
 
 		struct kernel_info_t {
-			std::string full_name;
 			kernel_t variant;
+			unsigned int major;
+			unsigned int minor;
+			unsigned int patch;
+			unsigned int build_number;
+		};
+
+		struct OS_info_t {
+			std::string name;
+			std::string full_name;
 			unsigned int major;
 			unsigned int minor;
 			unsigned int patch;
@@ -70,6 +78,9 @@ namespace iware {
 
 		/// Get kernel information.
 		kernel_info_t kernel_info();
+
+		/// Get kernel information.
+		OS_info_t OS_info();
 
 		/// Get information about displays.
 		std::vector<display_t> displays();

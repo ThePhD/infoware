@@ -16,23 +16,7 @@
 #include "infoware/system.hpp"
 #include <cstdlib>
 #include <cstring>
-#include <fstream>
 #include <sys/utsname.h>
-
-
-static std::string distro_name() {
-	std::ifstream release("/etc/lsb-release");
-
-	if(!release.is_open() || !release)
-		return {};
-
-	for(std::string line; std::getline(release, line);)
-		if(line.find("DISTRIB_DESCRIPTION") == 0) {
-			const auto start_idx = line.find('"') + 1;
-			const auto end_idx   = line.size() - 1;
-			return line.substr(start_idx, end_idx - start_idx);
-		}
-}
 
 
 iware::system::kernel_info_t iware::system::kernel_info() {
@@ -51,7 +35,7 @@ iware::system::kernel_info_t iware::system::kernel_info() {
 	else if(!std::strcmp(uts.sysname, "Darwin"))
 		kernel = iware::system::kernel_t::darwin;
 
-	return {distro_name(), kernel, major, minor, patch, build_number};
+	return {kernel, major, minor, patch, build_number};
 }
 
 

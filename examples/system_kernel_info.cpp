@@ -17,8 +17,6 @@
 int main() {
 	const auto kernel_info = iware::system::kernel_info();
 
-	std::cout << kernel_info.full_name << ": ";
-
 	switch(kernel_info.variant) {
 		case iware::system::kernel_t::windows_nt:
 			std::cout << "Windows NT";

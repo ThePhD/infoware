@@ -116,11 +116,14 @@
     <ClInclude Include="include\infoware\detail\api.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\infoware\detail\graphics.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\infoware\detail\pci.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="appveyor.yml" />
+    <None Include=".travis.yml" />
+    <None Include=".clang-format" />
   </ItemGroup>
 </Project>

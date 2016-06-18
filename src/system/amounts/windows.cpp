@@ -20,7 +20,7 @@
 
 // https://msdn.microsoft.com/en-us/library/windows/desktop/ms645598(v=vs.85).aspx
 // https://msdn.microsoft.com/en-us/library/windows/desktop/ms645568(v=vs.85).aspx
-static unsigned int device_amount(unsigned int device_type) noexcept {
+static std::size_t device_amount(unsigned int device_type) noexcept {
 	// Assuming 64 is enough for anyone
 	RAWINPUTDEVICELIST input_devices[64];
 	unsigned int input_devices_n = sizeof(input_devices) / sizeof(RAWINPUTDEVICELIST);
@@ -33,15 +33,15 @@ static unsigned int device_amount(unsigned int device_type) noexcept {
 }
 
 
-unsigned int iware::system::mouse_amount() noexcept {
+std::size_t iware::system::mouse_amount() noexcept {
 	return device_amount(RIM_TYPEMOUSE);
 }
 
-unsigned int iware::system::keyboard_amount() noexcept {
+std::size_t iware::system::keyboard_amount() noexcept {
 	return device_amount(RIM_TYPEKEYBOARD);
 }
 
-unsigned int iware::system::other_HID_amount() noexcept {
+std::size_t iware::system::other_HID_amount() noexcept {
 	return device_amount(RIM_TYPEHID);
 }
 

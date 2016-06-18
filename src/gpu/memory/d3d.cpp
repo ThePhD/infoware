@@ -19,6 +19,7 @@
 #include <memory>
 #include <locale>
 #include <tuple>
+#include <codecvt>
 
 struct release_deleter {
 	template <typename T>
@@ -29,15 +30,28 @@ struct release_deleter {
 
 iware::gpu::vendor_t in_string(const std::string& v) {
 	if (v.find("NVidia") != std::string::npos || v.find("NVIDIA") != std::string::npos) {
-		return iware::gpu::vendor_t::nvidia;
+		return iware::gpu::vendor_t::NVidia;
 	}
 	else if (v.find("AMD") != std::string::npos || v.find("ATi") != std::string::npos || v.find("Advanced Micro Devices") != std::string::npos) {
-		return iware::gpu::vendor_t::amd;
+		return iware::gpu::vendor_t::AMD;
 	}
 	else if (v.find("Intel") != std::string::npos) {
 		return iware::gpu::vendor_t::intel;
 	}
+	else if (v.find("Microsoft") != std::string::npos) {
+		return iware::gpu::vendor_t::microsoft;
+	}
+	else if (v.find("Qualcomm") != std::string::npos) {
+		return iware::gpu::vendor_t::qualcomm;
+	}
 	return iware::gpu::vendor_t::unknown;
+}
+
+static std::string std_wide_to_string(const wchar_t* b, const wchar_t* e) {
+	using convert_typeX = std::codecvt_utf8<wchar_t>;
+	std::wstring_convert<convert_typeX, wchar_t> converterX;
+
+	return converterX.to_bytes(b, e);
 }
 
 std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
@@ -66,8 +80,11 @@ std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 		dxgiadapter->GetDesc(&adapterdesc);
 		std::string devicename, vendorname;
 		std::tie( vendorname, devicename ) = detail::identify_device(adapterdesc.VendorId, adapterdesc.DeviceId);
+		if (devicename == "unknown") {
+			devicename = std_wide_to_string(adapterdesc.Description, adapterdesc.Description + std::char_traits<wchar_t>::length(adapterdesc.Description));
+		}
 		vendor_t vendortype = in_string(vendorname);
-		devices.push_back({vendortype, std::move(vendorname), std::move(devicename), adapterdesc.DedicatedVideoMemory, 0, adapterdesc.DedicatedSystemMemory, adapterdesc.SharedSystemMemory});
+		devices.push_back({vendortype, devicename, adapterdesc.DedicatedVideoMemory, adapterdesc.SharedSystemMemory});
 	}
 
 	return devices;

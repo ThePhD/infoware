@@ -18,10 +18,10 @@
 #include <windows.h>
 
 
-unsigned int iware::cpu::frequency() noexcept {
+std::int64_t iware::cpu::frequency() noexcept {
 	LARGE_INTEGER freq;
 	QueryPerformanceFrequency(&freq);
-	return freq.QuadPart * 1000;
+	return static_cast<int64_t>(freq.QuadPart * 1000);
 }
 
 

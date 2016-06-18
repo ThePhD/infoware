@@ -36,10 +36,10 @@ namespace iware {
 
 		struct kernel_info_t {
 			kernel_t variant;
-			unsigned int major;
-			unsigned int minor;
-			unsigned int patch;
-			unsigned int build_number;
+			std::uint32_t major;
+			std::uint32_t minor;
+			std::uint32_t patch;
+			std::uint32_t build_number;
 		};
 
 		struct OS_info_t {
@@ -52,26 +52,26 @@ namespace iware {
 		};
 
 		struct display_t {
-			unsigned int width;
-			unsigned int height;
-			unsigned int dpi;
+			std::uint32_t width;
+			std::uint32_t height;
+			std::uint32_t dpi;
 			/// Bits Per Pixel a.k.a. depth
-			unsigned int bpp;
+			std::uint32_t bpp;
 		};
 
 
 		/// Get amount of connected mice.
-		unsigned int mouse_amount() noexcept;
+		std::size_t mouse_amount() noexcept;
 
 		/// Get amount of connected keyboards.
 		///
 		/// Always returns 0 on Linuxish kernels, as it can not be detected there.
-		unsigned int keyboard_amount() noexcept;
+		std::size_t keyboard_amount() noexcept;
 
 		/// Get amount of other connected HIDs.
 		///
 		/// Always returns 0 on Linuxish kernels, as it can not be detected there.
-		unsigned int other_HID_amount() noexcept;
+		std::size_t other_HID_amount() noexcept;
 
 		/// Get RAM statistics.
 		memory_t memory() noexcept;

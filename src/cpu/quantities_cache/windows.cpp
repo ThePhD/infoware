@@ -40,7 +40,7 @@ iware::cpu::quantities_t iware::cpu::quantities() {
 			case RelationProcessorCore:
 				++ret.physical;
 				// A hyperthreaded core supplies more than one logical processor.
-				ret.logical += std::bitset<sizeof(ULONG_PTR) * 8>(info.ProcessorMask).count();
+				ret.logical += static_cast<std::uint32_t>(std::bitset<sizeof(ULONG_PTR) * 8>(info.ProcessorMask).count());
 				break;
 
 			case RelationProcessorPackage:

@@ -36,6 +36,9 @@ bool iware::cpu::instruction_set_supported(iware::cpu::instruction_set_t set) {
 		case iware::cpu::instruction_set_t::SSE3:
 			feature = PF_SSE3_INSTRUCTIONS_AVAILABLE;
 			break;
+		case iware::cpu::instruction_set_t::AVX:
+			feature = PF_XMMI64_INSTRUCTIONS_AVAILABLE;
+			break;
 	}
 
 	return IsProcessorFeaturePresent(feature) != 0;

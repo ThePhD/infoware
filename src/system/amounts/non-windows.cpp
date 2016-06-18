@@ -19,7 +19,7 @@
 
 
 // http://man7.org/linux/man-pages/man3/wordexp.3.html
-static unsigned int count_expansions(const char* of) noexcept {
+static std::size_t count_expansions(const char* of) noexcept {
 	wordexp_t exp{};
 	iware::detail::quickscope_wrapper exp_deleter{[&]() { wordfree(&exp); }};
 
@@ -32,17 +32,17 @@ static unsigned int count_expansions(const char* of) noexcept {
 
 // http://unix.stackexchange.com/questions/25601/how-do-mouse-events-work-in-linux
 // https://www.kernel.org/doc/Documentation/input/input.txt section 3.2.2
-unsigned int iware::system::mouse_amount() noexcept {
+std::size_t iware::system::mouse_amount() noexcept {
 	return count_expansions("/dev/input/mouse*");
 }
 
 // https://www.kernel.org/doc/Documentation/input/input.txt section 3.2.1
 // Doesn't specify that and there doesn't seem to be a way to get it
-unsigned int iware::system::keyboard_amount() noexcept {
+std::size_t iware::system::keyboard_amount() noexcept {
 	return 0;
 }
 
-unsigned int iware::system::other_HID_amount() noexcept {
+std::size_t iware::system::other_HID_amount() noexcept {
 	return 0;
 }
 

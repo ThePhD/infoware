@@ -24,6 +24,8 @@ namespace iware {
 			intel,
 			AMD,
 			NVidia,
+			microsoft,
+			qualcomm,
 			unknown,
 		};
 

@@ -30,6 +30,7 @@ namespace iware {
 		enum class endianness_t {
 			little,
 			big,
+			middle,
 		};
 
 		enum class instruction_set_t {
@@ -38,6 +39,7 @@ namespace iware {
 			SSE,
 			SSE2,
 			SSE3,
+			AVX,
 		};
 
 		enum class cache_type_t {
@@ -49,16 +51,16 @@ namespace iware {
 
 		struct quantities_t {
 			/// Hyperthreads.
-			unsigned int logical;
+			std::uint32_t logical;
 			/// Physical "cores".
-			unsigned int physical;
+			std::uint32_t physical;
 			/// Physical CPU units/packages/sockets.
-			unsigned int packages;
+			std::uint32_t packages;
 		};
 
 		struct cache_t {
-			unsigned int size;
-			unsigned int line_size;
+			std::size_t size;
+			std::size_t line_size;
 			std::uint8_t associativity;
 			cache_type_t type;
 		};
@@ -76,7 +78,7 @@ namespace iware {
 		architecture_t architecture() noexcept;
 
 		/// Returns the current frequency of the current CPU in Hz.
-		unsigned int frequency() noexcept;
+		std::int64_t frequency() noexcept;
 
 		/// Returns the current endianness of the current CPU.
 		endianness_t endianness() noexcept;

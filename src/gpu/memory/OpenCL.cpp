@@ -10,6 +10,7 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
+#ifndef INFOWARE_USE_D3D
 #ifdef INFOWARE_USE_OPENCL
 
 
@@ -54,10 +55,9 @@ std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 			clGetDeviceInfo(devices[j], CL_DEVICE_GLOBAL_MEM_CACHE_SIZE, sizeof(cache), &cache, nullptr);
 			clGetDeviceInfo(devices[j], CL_DEVICE_GLOBAL_MEM_SIZE, sizeof(memory), &memory, nullptr);
 			clGetDeviceInfo(devices[j], CL_DEVICE_VENDOR, sizeof vendorname, &vendorname, nullptr);
-			const auto vendor = parse_vendor(vendorname);
 			clGetDeviceInfo(devices[j], CL_DEVICE_NAME, sizeof name, &name, nullptr);
 
-			ret.push_back({vendor, vendorname, name, memory, cache});
+			ret.push_back({parse_vendor(vendorname), vendorname, name, memory, cache});
 		}
 	}
 
@@ -65,4 +65,5 @@ std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 }
 
 
+#endif
 #endif

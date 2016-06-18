@@ -30,7 +30,6 @@ namespace iware {
 		enum class endianness_t {
 			little,
 			big,
-			middle,
 		};
 
 		enum class instruction_set_t {

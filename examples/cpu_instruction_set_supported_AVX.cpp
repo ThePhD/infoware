@@ -10,14 +10,10 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#include <infoware/gpu.hpp>
+#include "infoware/cpu.hpp"
+#include <iostream>
 
-#ifdef _WIN32
 
-std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
-	// TODO: the implementation details for hitting the hardware directly through the OS and somesuch
-	// are going to go here
-	return {};
+int main() {
+	std::cout << std::boolalpha << iware::cpu::instruction_set_supported(iware::cpu::instruction_set_t::AVX) << '\n';
 }
-
-#endif // Windows

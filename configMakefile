@@ -14,7 +14,13 @@ ifeq "$(OS)" "Windows_NT"
 	PIC :=
 	EXE := .exe
 	LDAR_OS := -lgdi32 -lversion -lOle32 -lOleAut32 -lwbemuuid
+	OPENGL_LIB_LINK_NAME := -lopengl32
 else
+	ifeq "$(OS)" "Darwin"
+		OPENGL_LIB_LINK_NAME := -lGL
+	else
+		OPENGL_LIB_LINK_NAME := -framework OpenGL
+	endif
 	PIC := -fPIC
 	EXE :=
 	LDAR_OS :=
@@ -41,15 +47,23 @@ else
 endif
 
 ifdef USE_D3D
-	LDAR_D3D := -LD3D11
+	LDAR_D3D := -ldxgi
 	CXXAR_D3D := -DINFOWARE_USE_D3D
 else
 	LDAR_D3D :=
 	CXXAR_D3D :=
 endif
 
-LDAR := $(LDAR_OS) $(LDAR_OPENCL) $(LDAR_X11) $(LDAR_D3D)
-CXXAR_LIB := $(CXXAR_OPENCL) $(CXXAR_X11) $(CXXAR_D3D)
+ifdef USE_OPENGL
+	LDAR_OPENGL := $(OPENGL_LIB_LINK_NAME)
+	CXXAR_OPENGL := -DINFOWARE_USE_OPENGL
+else
+	LDAR_OPENGL :=
+	CXXAR_OPENGL :=
+endif
+
+LDAR := $(LDAR_OS) $(LDAR_OPENCL) $(LDAR_X11) $(LDAR_D3D) $(LDAR_OPENGL)
+CXXAR_LIB := $(CXXAR_OPENCL) $(CXXAR_X11) $(CXXAR_D3D) $(CXXAR_OPENGL)
 
 OBJ := .o
 ARCH := .a

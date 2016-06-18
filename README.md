@@ -6,12 +6,15 @@ C++ Library for pulling system and hardware information, without hitting the com
 No non-built-in ones by default.<br />
 Some libraries are required for extended functionality. See the [Configurability](#configurability) section below for details.
 
-On Windows one needs to link to `gdi32`, `version`, `Ole32`, `OleAut32` and `wbemuuid`. If one uses D3D on windows, then `dxgi` is also necessary.
+On Windows one needs to link to `gdi32`, `version`, `Ole32`, `OleAut32` and `wbemuuid`.
 
 ## Configurability
 |`Makefile` definition|C++ preprocessor macro|              Meaning              |Linker library|Priority|
 |---------------------|----------------------|-----------------------------------|--------------|--------|
 |      `USE_X11`      |  `INFOWARE_USE_X11`  |   Use X11 for display detection   |     `X11`    |        |
-|     `USE_OPENCL`    | `INFOWARE_USE_OPENCL`|    Use OpenCL for GPU detection   |   `OpenCL`   |  >D3D  |
-|      `USE_D3D`      |  `INFOWARE_USE_D3D`  |      Use D3D for GPU detection    |     `D3D`    | <OpenCL|
+|      `USE_D3D`      |  `INFOWARE_USE_D3D`  |      Use D3D for GPU detection    |    `dxgi`    | >OpenCL|
+|     `USE_OPENCL`    | `INFOWARE_USE_OPENCL`|    Use OpenCL for GPU detection   |   `OpenCL`   |  <D3D  |
+|     `USE_OPENGL`    | `INFOWARE_USE_OPENGL`|    Use OpenGL for GPU detection   |OS-dependent\*| <OpenGL|
 
+
+\*Consult the `OPENGL_LIB_LINK_NAME` variable in `configMakefile` for options

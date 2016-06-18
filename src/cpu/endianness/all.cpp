@@ -19,7 +19,7 @@ iware::cpu::endianness_t iware::cpu::endianness() noexcept {
 	const auto result        = *static_cast<const std::uint8_t*>(static_cast<const void*>(&test));
 
 	if(result == 0xFF)
-		return iware::cpu::endianness_t::little;
+		return iware::cpu::endianness_t::big;
 	else
 		return iware::cpu::endianness_t::little;
 }

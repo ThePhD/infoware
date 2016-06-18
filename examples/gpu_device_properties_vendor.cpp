@@ -26,6 +26,12 @@ int main() {
 			case iware::gpu::vendor_t::NVidia:
 				std::cout << "NVidia ";
 				break;
+			case iware::gpu::vendor_t::microsoft:
+				std::cout << "Microsoft ";
+				break;
+			case iware::gpu::vendor_t::qualcomm:
+				std::cout << "Qualcomm ";
+				break;
 			case iware::gpu::vendor_t::unknown:
 				std::cout << "Unknown ";
 				break;

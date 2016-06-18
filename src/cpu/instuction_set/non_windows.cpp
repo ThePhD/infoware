@@ -27,6 +27,7 @@ static std::pair<const char* const*, const char* const*> instruction_set_to_name
 	static const char* sse[]       = {"sse"};
 	static const char* sse2[]      = {"sse2"};
 	static const char* sse3[]      = {"ssse3", "sse3"};
+	static const char* avx[]       = {"avx"};
 
 	switch(set) {
 		case iware::cpu::instruction_set_t::ThreeD_now:
@@ -39,6 +40,8 @@ static std::pair<const char* const*, const char* const*> instruction_set_to_name
 			return {sse2, sse2 + sizeof sse2 / sizeof(*sse2)};
 		case iware::cpu::instruction_set_t::SSE3:
 			return {sse3, sse3 + sizeof sse3 / sizeof(*sse3)};
+		case iware::cpu::instruction_set_t::AVX:
+			return {avx, avx + sizeof avx / sizeof(*avx)};
 		default:
 			return {nullptr, nullptr};
 	}

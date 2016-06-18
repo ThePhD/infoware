@@ -9,7 +9,11 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
+
+#ifndef INFOWARE_USE_D3D
+#ifndef INFOWARE_USE_OPENCL
 #ifdef INFOWARE_USE_OPENGL
+
 
 // OpenGL is literaly hitler to initialise a windowless context for, so no game.
 // Leave it for someone smarter than me :G
@@ -31,7 +35,8 @@
 // [5:49 PM] Elim | iscicadabannedyet.com: yes
 // [5:49 PM] 🕴: cool
 // [5:49 PM] 🕴: And what on non-Windows?
-// [5:50 PM] Elim | iscicadabannedyet.com: On OS X, one doesn't need to jump through such hoops because the Apple lords integrated OpenGL 4.1 and below inside of their system SDK
+// [5:50 PM] Elim | iscicadabannedyet.com: On OS X, one doesn't need to jump through such hoops because the Apple lords integrated OpenGL 4.1 and below inside
+//                                         of their system SDK
 // [5:50 PM] Elim | iscicadabannedyet.com: As for lunix, it's EGL over there
 // [5:50 PM] Elim | iscicadabannedyet.com: https://www.khronos.org/registry/egl/sdk/docs/man/html/eglCreateContext.xhtml
 // [5:50 PM] 🕴: So I don't need to set up anything on OSX, it will work OOTB?(edited)
@@ -45,8 +50,12 @@
 // [5:52 PM] Elim | iscicadabannedyet.com: bby, write code and be quiet 😛
 // [5:53 PM] Elim | iscicadabannedyet.com: but yeah, it's p retarded
 
+
 std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
-	return{};
+	return {};
 }
 
-#endif // Use OpenGL
+
+#endif
+#endif
+#endif

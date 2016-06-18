@@ -10,16 +10,17 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#include <infoware/gpu.hpp>
+#ifdef INFOWARE_USE_D3D
 
-#if defined(INFOWARE_USE_D3D)
 
-#include <infoware/detail/pci.hpp>
-#include <d3d11.h>
-#include <memory>
-#include <locale>
-#include <tuple>
+#include "infoware/detail/pci.hpp"
+#include "infoware/gpu.hpp"
 #include <codecvt>
+#include <d3d11.h>
+#include <locale>
+#include <memory>
+#include <tuple>
+
 
 struct release_deleter {
 	template <typename T>
@@ -28,66 +29,51 @@ struct release_deleter {
 	}
 };
 
-iware::gpu::vendor_t in_string(const std::string& v) {
-	if (v.find("NVidia") != std::string::npos || v.find("NVIDIA") != std::string::npos) {
+
+static iware::gpu::vendor_t vendor_from_name(const std::string& v) {
+	if(v.find("NVidia") != std::string::npos || v.find("NVIDIA") != std::string::npos)
 		return iware::gpu::vendor_t::NVidia;
-	}
-	else if (v.find("AMD") != std::string::npos || v.find("ATi") != std::string::npos || v.find("Advanced Micro Devices") != std::string::npos) {
+	else if(v.find("AMD") != std::string::npos || v.find("ATi") != std::string::npos || v.find("Advanced Micro Devices") != std::string::npos)
 		return iware::gpu::vendor_t::AMD;
-	}
-	else if (v.find("Intel") != std::string::npos) {
+	else if(v.find("Intel") != std::string::npos)
 		return iware::gpu::vendor_t::intel;
-	}
-	else if (v.find("Microsoft") != std::string::npos) {
+	else if(v.find("Microsoft") != std::string::npos)
 		return iware::gpu::vendor_t::microsoft;
-	}
-	else if (v.find("Qualcomm") != std::string::npos) {
+	else if(v.find("Qualcomm") != std::string::npos)
 		return iware::gpu::vendor_t::qualcomm;
-	}
-	return iware::gpu::vendor_t::unknown;
+	else
+		return iware::gpu::vendor_t::unknown;
 }
 
-static std::string std_wide_to_string(const wchar_t* b, const wchar_t* e) {
-	using convert_typeX = std::codecvt_utf8<wchar_t>;
-	std::wstring_convert<convert_typeX, wchar_t> converterX;
-
-	return converterX.to_bytes(b, e);
+static std::string std_wide_to_string(const wchar_t* begin, const wchar_t* end) {
+	return std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>{}.to_bytes(begin, end);
 }
+
 
 std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
+	void* factory_raw;
+	if(CreateDXGIFactory(__uuidof(IDXGIFactory), &factory_raw) != S_OK)
+		return {};
+	std::unique_ptr<IDXGIFactory, release_deleter> factory(static_cast<IDXGIFactory*>(factory_raw));
+
 	std::vector<iware::gpu::device_properties_t> devices{};
-
-	std::unique_ptr<IDXGIFactory, release_deleter> factory;
-	IDXGIFactory* pfactory = nullptr;
-	void* vpfactory = static_cast<void*>(pfactory);
-	HRESULT result = CreateDXGIFactory(__uuidof(IDXGIFactory), &vpfactory);
-	if (result != S_OK) {
-		// TODO: shit's lit, fam
-		return devices;
-	}
-	pfactory = static_cast<IDXGIFactory*>(vpfactory);
-	factory.reset(pfactory);
-
-	for (std::size_t adp = 0;; ++adp) {
-		std::unique_ptr<IDXGIAdapter, release_deleter> dxgiadapter = nullptr;
-		IDXGIAdapter* pdxgiadapter = nullptr;
-		result = factory->EnumAdapters(static_cast<UINT>(adp), &pdxgiadapter);
-		if (result != S_OK || result == DXGI_ERROR_NOT_FOUND) {
+	for(auto aid = 0u;; ++aid) {
+		IDXGIAdapter* adapter_raw;
+		const auto adapter_result = factory->EnumAdapters(aid, &adapter_raw);
+		if(adapter_result != S_OK || adapter_result == DXGI_ERROR_NOT_FOUND)
 			break;
-		}
-		dxgiadapter.reset(pdxgiadapter);
-		DXGI_ADAPTER_DESC adapterdesc;
-		dxgiadapter->GetDesc(&adapterdesc);
-		std::string devicename, vendorname;
-		std::tie( vendorname, devicename ) = detail::identify_device(adapterdesc.VendorId, adapterdesc.DeviceId);
-		if (devicename == "unknown") {
-			devicename = std_wide_to_string(adapterdesc.Description, adapterdesc.Description + std::char_traits<wchar_t>::length(adapterdesc.Description));
-		}
-		vendor_t vendortype = in_string(vendorname);
-		devices.push_back({vendortype, devicename, adapterdesc.DedicatedVideoMemory, adapterdesc.SharedSystemMemory});
-	}
+		std::unique_ptr<IDXGIAdapter, release_deleter> adapter(static_cast<IDXGIAdapter*>(adapter_raw));
 
+		DXGI_ADAPTER_DESC adapterdesc;
+		adapter->GetDesc(&adapterdesc);
+
+		auto device = iware::detail::identify_device(adapterdesc.VendorId, adapterdesc.DeviceId);
+		if(device.device_name == "unknown")
+			device.device_name = std_wide_to_string(adapterdesc.Description, adapterdesc.Description + std::char_traits<wchar_t>::length(adapterdesc.Description));
+		devices.push_back({vendor_from_name(device.vendor_name), device.device_name, adapterdesc.DedicatedVideoMemory, adapterdesc.SharedSystemMemory});
+	}
 	return devices;
 }
+
 
 #endif

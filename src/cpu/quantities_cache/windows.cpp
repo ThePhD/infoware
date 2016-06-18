@@ -20,7 +20,7 @@
 #include <windows.h>
 
 
-std::vector<SYSTEM_LOGICAL_PROCESSOR_INFORMATION> cpuinfo_buffer() {
+static std::vector<SYSTEM_LOGICAL_PROCESSOR_INFORMATION> cpuinfo_buffer() {
 	std::vector<SYSTEM_LOGICAL_PROCESSOR_INFORMATION> buffer;
 
 	DWORD byte_count = 0;

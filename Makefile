@@ -18,20 +18,16 @@ OBJECTS := $(patsubst src/%.cpp,$(BUILD)/obj/%$(OBJ),$(SOURCES))
 EXAMPLES := $(wildcard examples/*.cpp)
 
 
-.PHONY : clean all dll stlib examples
+.PHONY : clean all stlib examples
 
-all : dll stlib examples
+all : stlib examples
 
 clean :
 	rm -rf $(BUILD)
 
 examples : $(patsubst examples/%.cpp,$(BUILD)/examples/%$(EXE),$(EXAMPLES))
-dll : $(BUILD)/$(PREDLL)infoware$(DLL)
 stlib : $(BUILD)/libinfoware$(ARCH)
 
-
-$(BUILD)/$(PREDLL)infoware$(DLL) : $(OBJECTS)
-	$(CXX) $(CXXAR) -shared $(PIC) -o$@ $^ $(LDAR)
 
 $(BUILD)/libinfoware$(ARCH) : $(OBJECTS)
 	$(AR) crs $@ $^
@@ -41,6 +37,6 @@ $(BUILD)/obj/%$(OBJ) : src/%.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXAR) $(CXXAR_LIB) $(PIC) -Iinclude -c -o$@ $^
 
-$(BUILD)/examples/%$(EXE) : examples/%.cpp $(OBJECTS)
+$(BUILD)/examples/%$(EXE) : examples/%.cpp stlib
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXAR) -Iinclude -o$@ $^ $(LDAR)
+	$(CXX) $(CXXAR) -Iinclude -o$@ $< -L$(BUILD) -linfoware $(LDAR)

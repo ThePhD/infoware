@@ -13,5 +13,5 @@
 !LICENSE
 !README.md
 !*.sln
-!*.vcxproj*
-*.vcxproj.user
+!*.vcxproj
+!*.vcxproj.filter

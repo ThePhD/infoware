@@ -9,10 +9,10 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
+
 #pragma once
 
-#include <infoware/detail/api.hpp>
-#include <infoware/detail/graphics.hpp>
+
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -22,23 +22,20 @@ namespace iware {
 	namespace gpu {
 		enum class vendor_t {
 			intel,
-			amd,
-			nvidia,
+			AMD,
+			NVidia,
 			unknown,
 		};
 
 		struct device_properties_t {
 			vendor_t vendor;
-			std::string vendor_name;
 			std::string name;
 			std::size_t memory_size;
 			std::size_t cache_size;
-			std::size_t dedicated_system_memory_size;
-			std::size_t shared_system_memory_size;
 		};
 
 
 		/// Returns all GPU's properties.
-		INFOWARE_API std::vector<device_properties_t> device_properties();
+		std::vector<device_properties_t> device_properties();
 	}
 }

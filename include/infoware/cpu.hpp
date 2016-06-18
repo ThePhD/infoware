@@ -13,9 +13,8 @@
 #pragma once
 
 
-#include <infoware/detail/api.hpp>
-#include <string>
 #include <cstdint>
+#include <string>
 
 
 namespace iware {
@@ -66,31 +65,31 @@ namespace iware {
 
 
 		/// Returns the quantity of CPU at various gradation.
-		INFOWARE_API quantities_t quantities();
+		quantities_t quantities();
 
 		/// Get CPU's cache properties.
 		///
 		/// `level` is the cache level (3 -> L3 cache).
-		INFOWARE_API cache_t cache(unsigned int level);
+		cache_t cache(unsigned int level);
 
 		/// Returns the architecture of the current CPU.
-		INFOWARE_API architecture_t architecture() noexcept;
+		architecture_t architecture() noexcept;
 
 		/// Returns the current frequency of the current CPU in Hz.
-		INFOWARE_API unsigned int frequency() noexcept;
+		unsigned int frequency() noexcept;
 
 		/// Returns the current endianness of the current CPU.
-		INFOWARE_API endianness_t endianness() noexcept;
+		endianness_t endianness() noexcept;
 
 		/// Returns the CPU's vendor.
-		INFOWARE_API std::string vendor();
+		std::string vendor();
 
 		/// Returns the CPU's model name.
-		INFOWARE_API std::string model_name();
+		std::string model_name();
 
 		/// Returns whether an instruction set is supported by the current CPU.
 		///
 		/// `noexcept` on Windows
-		INFOWARE_API bool instruction_set_supported(instruction_set_t set);
+		bool instruction_set_supported(instruction_set_t set);
 	}
 }

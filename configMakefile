@@ -11,19 +11,11 @@
 
 
 ifeq "$(OS)" "Windows_NT"
-	DLL := .dll
-	PREDLL :=
 	PIC :=
 	EXE := .exe
-	LDAR_OS := -lgdi32
+	LDAR_OS := -lgdi32 -lversion -lOle32 -lOleAut32 -lwbemuuid
 else
-	PREDLL := lib
 	PIC := -fPIC
-	ifeq "$(OS)" "Darwin"
-		DLL := .dylib
-	else
-		DLL := .so
-	endif
 	EXE :=
 	LDAR_OS :=
 endif
@@ -48,8 +40,16 @@ else
 	CXXAR_X11 :=
 endif
 
-LDAR := $(LDAR_OS) $(LDAR_OPENCL) $(LDAR_X11)
-CXXAR_LIB := $(CXXAR_OPENCL) $(CXXAR_X11)
+ifdef USE_D3D
+	LDAR_D3D := -LD3D11
+	CXXAR_D3D := -DINFOWARE_USE_D3D
+else
+	LDAR_D3D :=
+	CXXAR_D3D :=
+endif
+
+LDAR := $(LDAR_OS) $(LDAR_OPENCL) $(LDAR_X11) $(LDAR_D3D)
+CXXAR_LIB := $(CXXAR_OPENCL) $(CXXAR_X11) $(CXXAR_D3D)
 
 OBJ := .o
 ARCH := .a

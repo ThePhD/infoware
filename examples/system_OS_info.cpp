@@ -10,22 +10,12 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#pragma once
+#include "infoware/system.hpp"
+#include <iostream>
 
 
-namespace iware {
-
-#if  defined(_MSC_VER)
-#define INFOWARE_VCXX 1
-#elif __GNUC__
-#define INFOWARE_GCC 1
-#if defined(__MINGW32__) || defined(__MINGW64__)
-#define INFOWARE_MINGW 1
-#endif // MinGW
-#elif __clang__
-#define INFOWARE_CLANG 1
-#else
-#error Unknown Compiler -- set unique define for this compiler
-#endif // VC++ || GCC || Clang
-
+int main() {
+	const auto OS_info = iware::system::OS_info();
+	std::cout << OS_info.full_name << " (" << OS_info.name << ") version " << OS_info.major << '.' << OS_info.minor << '.' << OS_info.patch << " buildnum "
+	          << OS_info.build_number << '\n';
 }

@@ -59,13 +59,16 @@ int main() {
 		const auto displays = iware::system::displays();
 		std::cout << "\n"
 		             "  Displays:\n";
-		for(auto i = 0u; i < displays.size(); ++i) {
-			const auto& display = displays[i];
-			std::cout << "    #" << (i + 1) << ":\n"
-			          << "      Resolution  : " << display.width << 'x' << display.height << '\n'
-			          << "      DPI         : " << display.dpi << '\n'
-			          << "      Colour depth: " << display.bpp << "b\n";
-		}
+		if(displays.empty())
+			std::cout << "    None connected or no detection method enabled\n";
+		else
+			for(auto i = 0u; i < displays.size(); ++i) {
+				const auto& display = displays[i];
+				std::cout << "    #" << (i + 1) << ":\n"
+				          << "      Resolution  : " << display.width << 'x' << display.height << '\n'
+				          << "      DPI         : " << display.dpi << '\n'
+				          << "      Colour depth: " << display.bpp << "b\n";
+			}
 	}
 
 	std::cout << '\n';
@@ -80,7 +83,7 @@ static const char* kernel_variant_name(iware::system::kernel_t variant) noexcept
 			return "Linux";
 		case iware::system::kernel_t::darwin:
 			return "Darwin";
-		case iware::system::kernel_t::unknown:
+		default:
 			return "Unknown";
 	}
 }

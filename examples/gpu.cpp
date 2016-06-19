@@ -51,7 +51,7 @@ static const char* vendor_name(iware::gpu::vendor_t vendor) noexcept {
 			return "Microsoft";
 		case iware::gpu::vendor_t::qualcomm:
 			return "Qualcomm";
-		case iware::gpu::vendor_t::unknown:
+		default:
 			return "Unknown";
 	}
 }

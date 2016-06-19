@@ -17,7 +17,7 @@ install:
 build: off
 build_script:
   - git submodule update --init --recursive
-  - make
+  - make USE_D3D=true
 
 test: off
 test_script:

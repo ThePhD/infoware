@@ -13,8 +13,10 @@
 #ifdef _WIN32
 
 
+#include "infoware/detail/memory.hpp"
 #include "infoware/detail/scope.hpp"
 #include "infoware/system.hpp"
+#include <memory>
 #include <string>
 #define WIN32_LEAN_AND_MEAN
 #include <wbemidl.h>
@@ -63,35 +65,35 @@ static std::string version_name() {
 	if(FAILED(CoInitializeSecurity(nullptr, -1, nullptr, nullptr, RPC_C_AUTHN_LEVEL_DEFAULT, RPC_C_IMP_LEVEL_IMPERSONATE, nullptr, EOAC_NONE, nullptr)))
 		return {};
 
-	IWbemLocator* webm_loc;
-	if(FAILED(CoCreateInstance(CLSID_WbemLocator, 0, CLSCTX_INPROC_SERVER, IID_IWbemLocator, reinterpret_cast<void**>(&webm_loc))))
+	IWbemLocator* webm_loc_raw;
+	if(FAILED(CoCreateInstance(CLSID_WbemLocator, 0, CLSCTX_INPROC_SERVER, IID_IWbemLocator, reinterpret_cast<void**>(&webm_loc_raw))))
 		return {};
-	iware::detail::quickscope_wrapper webm_loc_destructor{[&] { webm_loc->Release(); }};
+	std::unique_ptr<IWbemLocator, iware::detail::release_deleter> webm_loc(webm_loc_raw);
 
-	IWbemServices* webm_services;
-	if(FAILED(webm_loc->ConnectServer(&ConvertStringToBSTR("ROOT\\CIMV2")[0], nullptr, nullptr, 0, 0, 0, 0, &webm_services)))
+	IWbemServices* webm_services_raw;
+	if(FAILED(webm_loc->ConnectServer(&ConvertStringToBSTR("ROOT\\CIMV2")[0], nullptr, nullptr, 0, 0, 0, 0, &webm_services_raw)))
 		return {};
-	iware::detail::quickscope_wrapper webm_services_destructor{[&] { webm_services->Release(); }};
+	std::unique_ptr<IWbemServices, iware::detail::release_deleter> webm_services(webm_services_raw);
 
-	if(FAILED(CoSetProxyBlanket(webm_services, RPC_C_AUTHN_WINNT, RPC_C_AUTHZ_NONE, nullptr, RPC_C_AUTHN_LEVEL_CALL, RPC_C_IMP_LEVEL_IMPERSONATE, nullptr,
+	if(FAILED(CoSetProxyBlanket(webm_services.get(), RPC_C_AUTHN_WINNT, RPC_C_AUTHZ_NONE, nullptr, RPC_C_AUTHN_LEVEL_CALL, RPC_C_IMP_LEVEL_IMPERSONATE, nullptr,
 	                            EOAC_NONE)))
 		return {};
 
-	IEnumWbemClassObject* query_iterator;
+	IEnumWbemClassObject* query_iterator_raw;
 	if(FAILED(webm_services->ExecQuery(&ConvertStringToBSTR("WQL")[0], &ConvertStringToBSTR("SELECT Name FROM Win32_OperatingSystem")[0],
-	                                   WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &query_iterator)))
+	                                   WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &query_iterator_raw)))
 		return {};
-	iware::detail::quickscope_wrapper query_iterator_destructor{[&] { query_iterator->Release(); }};
+	std::unique_ptr<IEnumWbemClassObject, iware::detail::release_deleter> query_iterator(query_iterator_raw);
 
 	std::string ret;
 	while(query_iterator) {
-		IWbemClassObject* value;
+		IWbemClassObject* value_raw;
 		unsigned long iter_result;
 
-		query_iterator->Next(WBEM_INFINITE, 1, &value, &iter_result);
+		query_iterator->Next(WBEM_INFINITE, 1, &value_raw, &iter_result);
 		if(!iter_result)
 			break;
-		iware::detail::quickscope_wrapper value_destructor{[&] { value->Release(); }};
+		std::unique_ptr<IWbemClassObject, iware::detail::release_deleter> value(value_raw);
 
 		VARIANT val;
 		value->Get(L"Name", 0, &val, 0, 0);

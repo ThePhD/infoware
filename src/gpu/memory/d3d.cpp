@@ -13,6 +13,7 @@
 #ifdef INFOWARE_USE_D3D
 
 
+#include "infoware/detail/memory.hpp"
 #include "infoware/detail/pci.hpp"
 #include "infoware/gpu.hpp"
 #include <codecvt>
@@ -20,14 +21,6 @@
 #include <locale>
 #include <memory>
 #include <tuple>
-
-
-struct release_deleter {
-	template <typename T>
-	void operator()(T* p) const {
-		p->Release();
-	}
-};
 
 
 static iware::gpu::vendor_t vendor_from_name(const std::string& v) {
@@ -54,7 +47,7 @@ std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 	void* factory_raw;
 	if(CreateDXGIFactory(__uuidof(IDXGIFactory), &factory_raw) != S_OK)
 		return {};
-	std::unique_ptr<IDXGIFactory, release_deleter> factory(static_cast<IDXGIFactory*>(factory_raw));
+	std::unique_ptr<IDXGIFactory, iware::detail::release_deleter> factory(static_cast<IDXGIFactory*>(factory_raw));
 
 	std::vector<iware::gpu::device_properties_t> devices{};
 	for(auto aid = 0u;; ++aid) {
@@ -62,7 +55,7 @@ std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 		const auto adapter_result = factory->EnumAdapters(aid, &adapter_raw);
 		if(adapter_result != S_OK || adapter_result == DXGI_ERROR_NOT_FOUND)
 			break;
-		std::unique_ptr<IDXGIAdapter, release_deleter> adapter(static_cast<IDXGIAdapter*>(adapter_raw));
+		std::unique_ptr<IDXGIAdapter, iware::detail::release_deleter> adapter(static_cast<IDXGIAdapter*>(adapter_raw));
 
 		DXGI_ADAPTER_DESC adapterdesc;
 		adapter->GetDesc(&adapterdesc);

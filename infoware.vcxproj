@@ -241,6 +241,9 @@
     <ClCompile Include="src\cpu\endianness\all.cpp" />
     <ClCompile Include="src\cpu\frequency\non_windows.cpp" />
     <ClCompile Include="src\cpu\frequency\windows.cpp" />
+    <ClCompile Include="src\cpu\instuction_set\instruction_set.cpp" />
+    <ClCompile Include="src\cpu\vendor_model_name\vendor_id.cpp" />
+    <ClCompile Include="src\detail\cpuid.cpp" />
     <ClCompile Include="src\cpu\instuction_set\non_windows.cpp" />
     <ClCompile Include="src\cpu\instuction_set\windows.cpp" />
     <ClCompile Include="src\cpu\quantities_cache\non_windows.cpp" />
@@ -250,6 +253,8 @@
     <ClCompile Include="src\detail\pci.generated.cpp" />
     <ClCompile Include="src\detail\scope.cpp" />
     <ClCompile Include="src\gpu\memory\d3d.cpp" />
+    <ClCompile Include="src\gpu\memory\non_windows.cpp" />
+    <ClCompile Include="src\gpu\memory\windows.cpp" />
     <ClCompile Include="src\gpu\memory\OpenCL.cpp" />
     <ClCompile Include="src\gpu\memory\OpenGL.cpp" />
     <ClCompile Include="src\system\amounts\non-windows.cpp" />
@@ -266,6 +271,7 @@
     <ClInclude Include="include\infoware\cpu.hpp" />
     <ClInclude Include="include\infoware\detail\api.hpp" />
     <ClInclude Include="include\infoware\detail\compiler.hpp" />
+    <ClInclude Include="include\infoware\detail\cpuid.hpp" />
     <ClInclude Include="include\infoware\detail\os.hpp" />
     <ClInclude Include="include\infoware\detail\pci.hpp" />
     <ClInclude Include="include\infoware\detail\scope.hpp" />

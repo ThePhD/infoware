@@ -15,6 +15,7 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 
 namespace iware {
@@ -34,11 +35,44 @@ namespace iware {
 
 		enum class instruction_set_t {
 			ThreeD_now,
-			MMX,
-			SSE,
-			SSE2,
-			SSE3,
-			AVX,
+			mmx,
+			sse,
+			sse2,
+			sse3,
+			ssse3,
+			sse4a,
+			sse41,
+			sse42,
+			aes,
+
+			avx,
+			avx2,
+			os_avx,
+
+			avx_512_f,
+			avx_512_cd,
+			avx_512_pf,
+			avx_512_er,
+			avx_512_vl,
+			avx_512_bw,
+			avx_512_bq,
+			avx_512_ifma,
+			avx_512_vbmi,
+			os_avx_512,
+
+			bmi1,
+			bmi2,
+			adx,
+			mpx,
+			sha,
+			prefetch_wt1,
+
+			fma3,
+			fma4,
+
+			xop,
+
+			rd_rand,
 		};
 
 		enum class cache_type_t {
@@ -85,6 +119,9 @@ namespace iware {
 		/// Returns the CPU's vendor.
 		std::string vendor();
 
+		/// Returns the CPU's vendor according to the CPUID instruction
+		std::string vendor_id();
+
 		/// Returns the CPU's model name.
 		std::string model_name();
 
@@ -92,5 +129,8 @@ namespace iware {
 		///
 		/// `noexcept` on Windows
 		bool instruction_set_supported(instruction_set_t set);
+
+		/// Retrieve all of the instruction sets this hardware supports
+		std::vector<instruction_set_t> supported_instruction_sets();
 	}
 }

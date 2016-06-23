@@ -28,7 +28,7 @@ iware::cpu::architecture_t iware::cpu::architecture() noexcept {
 	if(!strcmp(buf.machine, "x86_64"))
 		return iware::cpu::architecture_t::x64;
 	else if(strstr(buf.machine, "arm") == buf.machine)
-		return iware::cpu::architecture_t::ARM;
+		return iware::cpu::architecture_t::arm;
 	else if(!strcmp(buf.machine, "ia64") || !strcmp(buf.machine, "IA64"))
 		return iware::cpu::architecture_t::itanium;
 	else if(!strcmp(buf.machine, "i686"))

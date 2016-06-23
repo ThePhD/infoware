@@ -30,17 +30,17 @@ static std::pair<const char* const*, const char* const*> instruction_set_to_name
 	static const char* avx[]       = {"avx"};
 
 	switch(set) {
-		case iware::cpu::instruction_set_t::ThreeD_now:
+		case iware::cpu::instruction_set_t::s3d_now:
 			return {threednow, threednow + sizeof threednow / sizeof(*threednow)};
-		case iware::cpu::instruction_set_t::MMX:
+		case iware::cpu::instruction_set_t::mmx:
 			return {mmx, mmx + sizeof mmx / sizeof(*mmx)};
-		case iware::cpu::instruction_set_t::SSE:
+		case iware::cpu::instruction_set_t::sse:
 			return {sse, sse + sizeof sse / sizeof(*sse)};
-		case iware::cpu::instruction_set_t::SSE2:
+		case iware::cpu::instruction_set_t::sse2:
 			return {sse2, sse2 + sizeof sse2 / sizeof(*sse2)};
-		case iware::cpu::instruction_set_t::SSE3:
+		case iware::cpu::instruction_set_t::sse3:
 			return {sse3, sse3 + sizeof sse3 / sizeof(*sse3)};
-		case iware::cpu::instruction_set_t::AVX:
+		case iware::cpu::instruction_set_t::avx:
 			return {avx, avx + sizeof avx / sizeof(*avx)};
 		default:
 			return {nullptr, nullptr};
@@ -49,6 +49,11 @@ static std::pair<const char* const*, const char* const*> instruction_set_to_name
 
 
 bool iware::cpu::instruction_set_supported(iware::cpu::instruction_set_t set) {
+	std::vector<iware::cpu::instruction_set_t> ises = supported_instruction_sets();
+	if (std::find(ises.cbegin(), ises.cend(), set) != ises.cend()) {
+		return true;
+	}
+
 	const auto set_names = instruction_set_to_names(set);
 	if(!set_names.first)
 		return false;

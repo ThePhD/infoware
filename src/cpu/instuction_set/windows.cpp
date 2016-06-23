@@ -46,6 +46,8 @@ bool iware::cpu::instruction_set_supported(iware::cpu::instruction_set_t set) {
 		case iware::cpu::instruction_set_t::avx:
 			feature = PF_XMMI64_INSTRUCTIONS_AVAILABLE;
 			break;
+		default:
+			return false;
 	}
 
 	return IsProcessorFeaturePresent(feature) != 0;

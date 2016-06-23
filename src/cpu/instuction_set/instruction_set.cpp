@@ -13,6 +13,7 @@
 #include <infoware/detail/cpuid.hpp>
 
 #ifdef _WIN32
+#include <intrin.h>
 #define INFOWARE_XCR_XFEATURE_ENABLED_MASK _XCR_XFEATURE_ENABLED_MASK
 #else
 #define INFOWARE_XCR_XFEATURE_ENABLED_MASK 0

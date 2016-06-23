@@ -62,6 +62,8 @@ namespace iware {
 			avx_512_ifma,
 			avx_512_vbmi,
 			
+			hle,
+
 			bmi1,
 			bmi2,
 			adx,

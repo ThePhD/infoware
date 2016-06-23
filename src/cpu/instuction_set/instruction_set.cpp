@@ -76,6 +76,8 @@ std::vector<iware::cpu::instruction_set_t> iware::cpu::supported_instruction_set
 			// Both must be present to have AVX
 			ADD_SET_IF(1, 5, instruction_set_t::avx2);
 		}
+		ADD_SET_IF(1, 4, instruction_set_t::hle);
+		
 		ADD_SET_IF(1, 3, instruction_set_t::bmi1);
 		ADD_SET_IF(1, 8, instruction_set_t::bmi2);
 		ADD_SET_IF(1, 19, instruction_set_t::adx);

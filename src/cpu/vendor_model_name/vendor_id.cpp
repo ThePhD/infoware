@@ -10,8 +10,8 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#include "infoware/cpu.hpp"
-#include "infoware/detail/cpuid.hpp"
+#include <infoware/cpu.hpp>
+#include <infoware/detail/cpuid.hpp>
 
 #include <cstring>
 

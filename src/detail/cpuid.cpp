@@ -17,6 +17,8 @@ std::uint64_t iware::detail::xgetbv(std::uint32_t x) {
 
 #else
 
+#include <cpuid.h>
+
 void iware::detail::cpuid(std::int32_t (&out)[4], std::int32_t x) {
 	__cpuid_count(x, 0, out[0], out[1], out[2], out[3]);
 }
@@ -26,6 +28,7 @@ std::uint64_t iware::detail::xgetbv(std::uint32_t index) {
 	__asm__ __volatile__("xgetbv" : "=a"(eax), "=d"(edx) : "c"(index));
 	return ((uint64_t)edx << 32) | eax;
 }
+
 #endif
 
 

@@ -27,7 +27,7 @@ iware::cpu::architecture_t iware::cpu::architecture() noexcept {
 		case PROCESSOR_ARCHITECTURE_AMD64:
 			return iware::cpu::architecture_t::x64;
 		case PROCESSOR_ARCHITECTURE_ARM:
-			return iware::cpu::architecture_t::ARM;
+			return iware::cpu::architecture_t::arm;
 		case PROCESSOR_ARCHITECTURE_IA64:
 			return iware::cpu::architecture_t::itanium;
 		case PROCESSOR_ARCHITECTURE_INTEL:

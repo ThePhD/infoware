@@ -28,7 +28,7 @@ static bool has_os_avx() {
 	bool cpusupportsavx = (cpuinfo[2] & (1 << 28)) != 0;
 
 	if (osusesxsave_restore && cpusupportsavx) {
-		uint64_t xcrFeatureMask = iware::detail::xgetbv(_XCR_XFEATURE_ENABLED_MASK);
+		uint64_t xcrFeatureMask = iware::detail::xgetbv(INFOWARE_XCR_XFEATURE_ENABLED_MASK);
 		avxsupport = (xcrFeatureMask & 0x6) == 0x6;
 	}
 

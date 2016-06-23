@@ -7,7 +7,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "infoware", "infoware.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "generator", "generator.vcxproj", "{D9342D62-9342-43E8-9F82-81C9978C2860}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "all-examples", "examples.vcxproj", "{D6CE92E4-67C9-45A5-BFF4-1DFD34C8F8E0}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "examples", "examples.vcxproj", "{D6CE92E4-67C9-45A5-BFF4-1DFD34C8F8E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

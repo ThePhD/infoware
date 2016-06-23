@@ -15,13 +15,13 @@
 
 
 std::string iware::cpu::vendor_id() {
-	int32_t CPUInfo[4];
+	int32_t info[4];
 	char name[13];
 
-	detail::cpuid_intrinsic(CPUInfo, 0);
-	memcpy(name + 0, &CPUInfo[1], 4);
-	memcpy(name + 4, &CPUInfo[3], 4);
-	memcpy(name + 8, &CPUInfo[2], 4);
+	detail::cpuid(info, 0);
+	memcpy(name + 0, &info[1], 4);
+	memcpy(name + 4, &info[3], 4);
+	memcpy(name + 8, &info[2], 4);
 	name[12] = '\0';
 
 	return name;

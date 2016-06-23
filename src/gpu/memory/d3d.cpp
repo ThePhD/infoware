@@ -25,9 +25,9 @@
 
 static iware::gpu::vendor_t vendor_from_name(const std::string& v) {
 	if(v.find("NVidia") != std::string::npos || v.find("NVIDIA") != std::string::npos)
-		return iware::gpu::vendor_t::NVidia;
+		return iware::gpu::vendor_t::nvidia;
 	else if(v.find("AMD") != std::string::npos || v.find("ATi") != std::string::npos || v.find("Advanced Micro Devices") != std::string::npos)
-		return iware::gpu::vendor_t::AMD;
+		return iware::gpu::vendor_t::amd;
 	else if(v.find("Intel") != std::string::npos)
 		return iware::gpu::vendor_t::intel;
 	else if(v.find("Microsoft") != std::string::npos)

@@ -32,7 +32,7 @@ static std::wstring ConvertStringToBSTR(const char* pSrc) {
 	std::wstring ret;
 	if(const auto cwch = MultiByteToWideChar(CP_ACP, 0, pSrc, -1, nullptr, 0)) {
 		ret.resize(cwch - 1);
-		if(!MultiByteToWideChar(CP_ACP, 0, pSrc, -1, &ret[0], ret.size()))
+		if(!MultiByteToWideChar(CP_ACP, 0, pSrc, -1, &ret[0], static_cast<int>(ret.size())))
 			if(ERROR_INSUFFICIENT_BUFFER == GetLastError())
 				return ret;
 	}

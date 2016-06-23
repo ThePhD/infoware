@@ -43,9 +43,9 @@ static const char* vendor_name(iware::gpu::vendor_t vendor) noexcept {
 	switch(vendor) {
 		case iware::gpu::vendor_t::intel:
 			return "Intel";
-		case iware::gpu::vendor_t::AMD:
+		case iware::gpu::vendor_t::amd:
 			return "AMD";
-		case iware::gpu::vendor_t::NVidia:
+		case iware::gpu::vendor_t::nvidia:
 			return "NVidia";
 		case iware::gpu::vendor_t::microsoft:
 			return "Microsoft";

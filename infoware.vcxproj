@@ -250,11 +250,9 @@
     <ClCompile Include="src\cpu\quantities_cache\windows.cpp" />
     <ClCompile Include="src\cpu\vendor_model_name\non-windows.cpp" />
     <ClCompile Include="src\cpu\vendor_model_name\windows.cpp" />
-    <ClCompile Include="src\detail\pci.generated.cpp" />
+    <ClCompile Include="src\detail\pci_generated.cpp" />
     <ClCompile Include="src\detail\scope.cpp" />
     <ClCompile Include="src\gpu\memory\d3d.cpp" />
-    <ClCompile Include="src\gpu\memory\non_windows.cpp" />
-    <ClCompile Include="src\gpu\memory\windows.cpp" />
     <ClCompile Include="src\gpu\memory\OpenCL.cpp" />
     <ClCompile Include="src\gpu\memory\OpenGL.cpp" />
     <ClCompile Include="src\system\amounts\non-windows.cpp" />
@@ -266,12 +264,15 @@
     <ClCompile Include="src\system\kernel_info\windows.cpp" />
     <ClCompile Include="src\system\memory\non-windows.cpp" />
     <ClCompile Include="src\system\memory\windows.cpp" />
+    <ClCompile Include="src\system\OS_info\non-windows.cpp" />
+    <ClCompile Include="src\system\OS_info\windows.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\infoware\cpu.hpp" />
     <ClInclude Include="include\infoware\detail\api.hpp" />
     <ClInclude Include="include\infoware\detail\compiler.hpp" />
     <ClInclude Include="include\infoware\detail\cpuid.hpp" />
+    <ClInclude Include="include\infoware\detail\memory.hpp" />
     <ClInclude Include="include\infoware\detail\os.hpp" />
     <ClInclude Include="include\infoware\detail\pci.hpp" />
     <ClInclude Include="include\infoware\detail\scope.hpp" />

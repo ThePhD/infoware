@@ -22,7 +22,7 @@ namespace iware {
 	namespace cpu {
 		enum class architecture_t {
 			x64,
-			ARM,
+			arm,
 			itanium,
 			x86,
 			unknown,
@@ -34,8 +34,10 @@ namespace iware {
 		};
 
 		enum class instruction_set_t {
-			ThreeD_now,
+			s3d_now,
+			s3d_now_extended,
 			mmx,
+			mmx_extended,
 			sse,
 			sse2,
 			sse3,
@@ -47,8 +49,8 @@ namespace iware {
 
 			avx,
 			avx2,
-			os_avx,
-
+			
+			avx_512,
 			avx_512_f,
 			avx_512_cd,
 			avx_512_pf,
@@ -56,10 +58,10 @@ namespace iware {
 			avx_512_vl,
 			avx_512_bw,
 			avx_512_bq,
+			avx_512_dq,
 			avx_512_ifma,
 			avx_512_vbmi,
-			os_avx_512,
-
+			
 			bmi1,
 			bmi2,
 			adx,
@@ -73,6 +75,9 @@ namespace iware {
 			xop,
 
 			rd_rand,
+
+			x64,
+			x87_fpu,
 		};
 
 		enum class cache_type_t {

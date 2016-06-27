@@ -11,16 +11,16 @@ matrix:
             - g++-5
             - libx11-dev
           sources: &sources
-#            - llvm-toolchain-precise-3.8
+            - llvm-toolchain-precise-3.8
             - ubuntu-toolchain-r-test
             - r-packages-precise
-#    - env: CXX=clang++-3.8 CC=clang-3.8
-#      addons:
-#        apt:
-#          packages:
-#            - clang-3.8
-#            - libx11-dev
-#          sources: *sources
+    - env: CXX=clang++-3.8 CC=clang-3.8
+      addons:
+        apt:
+          packages:
+            - clang-3.8
+            - libx11-dev
+          sources: *sources
 
 script:
   - make -j$(nproc) USE_X11=true

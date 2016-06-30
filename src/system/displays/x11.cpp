@@ -27,8 +27,8 @@ std::vector<iware::system::display_t> iware::system::displays() {
 			for(int i = 0; i < ScreenCount(display); ++i) {
 				const unsigned int width = DisplayWidth(display, i);
 				// 25.4 millimeters per inch
-				ret.emplace_back(iware::system::display_t{width, DisplayHeight(display, i), static_cast<unsigned int>(25.4 * DisplayWidthMM(display, i) / width),
-				                                          DefaultDepth(display, i)});
+				ret.emplace_back(iware::system::display_t{ width, static_cast<std::uint32_t>(DisplayHeight(display, i)), static_cast<std::uint32_t>(25.4 * DisplayWidthMM(display, i) / width),
+					static_cast<std::uint32_t>(DefaultDepth(display, i)) });
 			}
 
 	return ret;

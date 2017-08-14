@@ -1,6 +1,6 @@
 // infoware - C++ System information Library
 //
-// Written in 2016 by nabijaczleweli <nabijaczleweli@gmail.com> and ThePhD <phdofthehouse@gmail.com>
+// Written in 2017 by nabijaczleweli <nabijaczleweli@gmail.com> and ThePhD <phdofthehouse@gmail.com>
 //
 // To the extent possible under law, the author(s) have dedicated all copyright and related
 // and neighboring rights to this software to the public domain worldwide. This software is
@@ -17,7 +17,7 @@
 static const char* kernel_variant_name(iware::system::kernel_t variant) noexcept;
 
 
-int main() {
+int main(int, char*[]) {
 	{
 		std::cout << "\n"
 		             "  Connected HIDs:\n"
@@ -72,6 +72,8 @@ int main() {
 	}
 
 	std::cout << '\n';
+
+	return 0;
 }
 
 

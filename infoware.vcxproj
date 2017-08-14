@@ -250,7 +250,7 @@
     <ClCompile Include="src\cpu\quantities_cache\quantities_cache_windows.cpp" />
     <ClCompile Include="src\cpu\vendor_model_name\vendor_model_name_non_windows.cpp" />
     <ClCompile Include="src\cpu\vendor_model_name\vendor_model_name_windows.cpp" />
-    <ClCompile Include="src\detail\pci_generated.cpp" />
+    <ClCompile Include="src\detail\pci.generated.cpp" />
     <ClCompile Include="src\detail\scope.cpp" />
     <ClCompile Include="src\gpu\memory\d3d.cpp" />
     <ClCompile Include="src\gpu\memory\OpenCL.cpp" />

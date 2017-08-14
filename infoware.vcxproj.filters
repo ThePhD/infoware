@@ -42,9 +42,6 @@
     <ClCompile Include="src\cpu\vendor_model_name\vendor_id.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\detail\pci_generated.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\cpu\architecture\architecture_non_windows.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -103,6 +100,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\cpu\vendor_model_name\vendor_model_name_windows.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\detail\pci.generated.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

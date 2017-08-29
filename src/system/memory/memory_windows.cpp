@@ -24,7 +24,7 @@ iware::system::memory_t iware::system::memory() noexcept {
 	if(!GlobalMemoryStatusEx(&mem))
 		return {};
 
-	return {mem.ullTotalPhys, mem.ullAvailPhys, mem.ullTotalVirtual, mem.ullAvailVirtual};
+	return {mem.ullAvailPhys, mem.ullTotalPhys, mem.ullAvailVirtual, mem.ullTotalVirtual};
 }
 
 

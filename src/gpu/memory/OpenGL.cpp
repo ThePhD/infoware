@@ -12,6 +12,7 @@
 
 #ifndef INFOWARE_USE_D3D
 #ifndef INFOWARE_USE_OPENCL
+#ifndef INFOWARE_USE_WMI
 #ifdef INFOWARE_USE_OPENGL
 
 
@@ -56,6 +57,7 @@ std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 }
 
 
+#endif
 #endif
 #endif
 #endif

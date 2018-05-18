@@ -14,7 +14,8 @@ On Windows one needs to link to `gdi32`, `version`, `Ole32`, `OleAut32` and `wbe
 |      `USE_X11`      |  `INFOWARE_USE_X11`  |   Use X11 for display detection   |     `X11`    |        |
 |      `USE_D3D`      |  `INFOWARE_USE_D3D`  |      Use D3D for GPU detection    |    `dxgi`    | >OpenCL|
 |     `USE_OPENCL`    | `INFOWARE_USE_OPENCL`|    Use OpenCL for GPU detection   |   `OpenCL`   |  <D3D  |
-|     `USE_OPENGL`    | `INFOWARE_USE_OPENGL`|    Use OpenGL for GPU detection   |OS-dependent\*| <OpenGL|
+|      `USE_WMI`      |  `INFOWARE_USE_WMI`  |      Use WMI for GPU detection    |  `wbemuuid`  | <OpenCL|
+|     `USE_OPENGL`    | `INFOWARE_USE_OPENGL`|    Use OpenGL for GPU detection   |OS-dependent\*|  <WMI  |
 
 
 \*Consult the `OPENGL_LIB_LINK_NAME` variable in `configMakefile` for options

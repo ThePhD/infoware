@@ -10,7 +10,7 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#include "infoware/system.hpp"
+#include "infoware/infoware.hpp"
 #include <iostream>
 
 
@@ -18,6 +18,8 @@ static const char* kernel_variant_name(iware::system::kernel_t variant) noexcept
 
 
 int main() {
+	std::cout << "Infoware version " << iware::version() << '\n';
+
 	{
 		std::cout << "\n"
 		             "  Connected HIDs:\n"

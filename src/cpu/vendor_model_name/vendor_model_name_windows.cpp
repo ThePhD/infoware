@@ -34,11 +34,11 @@ static std::string central_processor_subkey(const char* key) {
 }
 
 std::string iware::cpu::vendor() {
-	return central_processor_subkey<13>("VendorIdentifier");
+	return central_processor_subkey<12 + 1>("VendorIdentifier");
 }
 
 std::string iware::cpu::model_name() {
-	return central_processor_subkey<65>("ProcessorNameString");
+	return central_processor_subkey<64 + 1>("ProcessorNameString");
 }
 
 

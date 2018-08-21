@@ -10,7 +10,7 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#include "infoware/gpu.hpp"
+#include "infoware/infoware.hpp"
 #include <iostream>
 
 
@@ -18,6 +18,8 @@ static const char* vendor_name(iware::gpu::vendor_t vendor) noexcept;
 
 
 int main() {
+	std::cout << "Infoware version " << iware::version() << '\n';
+
 	{
 		const auto device_properties = iware::gpu::device_properties();
 		std::cout << "\n"

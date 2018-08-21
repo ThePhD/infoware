@@ -54,7 +54,7 @@ if(INFOWARE_USE_X11 AND WIN32)
 endif()
 
 
-file(GLOB_RECURSE infoware_source_files LIST_DIRECTORIES false src/**/*.cpp)
+file(GLOB_RECURSE infoware_source_files LIST_DIRECTORIES false src/*.cpp)
 add_library(infoware ${infoware_source_files})
 add_library(iware::infoware ALIAS infoware)
 
@@ -68,6 +68,8 @@ set_target_properties(infoware PROPERTIES CXX_STANDARD 14
                                           RUNTIME_OUTPUT_DIRECTORY "bin"
                                           LIBRARY_OUTPUT_DIRECTORY "bin"
                                           ARCHIVE_OUTPUT_DIRECTORY "lib")
+
+target_compile_definitions(infoware PRIVATE INFOWARE_VERSION="${infoware_version}")
 
 
 # Thanks, @griwes

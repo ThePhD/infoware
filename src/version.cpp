@@ -10,14 +10,9 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#pragma once
+#include "infoware/infoware.hpp"
 
 
-#include "cpu.hpp"
-#include "gpu.hpp"
-#include "system.hpp"
-
-
-namespace iware {
-	const char* version() noexcept;
+const char* iware::version() noexcept {
+	return INFOWARE_VERSION;
 }

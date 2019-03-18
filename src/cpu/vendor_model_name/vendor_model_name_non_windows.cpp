@@ -22,7 +22,7 @@ static std::string cpuinfo_value(const char* key) {
 	std::ifstream cpuinfo("/proc/cpuinfo");
 
 	if(!cpuinfo.is_open() || !cpuinfo)
-		return 0;
+		return {};
 
 	for(std::string line; std::getline(cpuinfo, line);)
 		if(line.find(key) == 0) {

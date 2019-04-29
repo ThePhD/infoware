@@ -56,6 +56,8 @@ int main(int argc, const char** argv) {
 	for(std::string line; std::getline(in, line);) {
 		if(line.empty())
 			continue;
+		if(line[0] == 'C')  // Got to device classes. which we don't want
+			break;
 
 		const auto tabcount = line.find_first_not_of('\t');
 		if(!std::isxdigit(line[tabcount]) || tabcount >= 3)
@@ -65,11 +67,6 @@ int main(int argc, const char** argv) {
 		auto current_number = std::strtoull(line.c_str() + tabcount, &current_name, 16);
 		while(std::isspace(*current_name))
 			++current_name;
-		if(line[0] == 'C') {
-			current_number = 0xC0000 | std::strtoull(current_name, &current_name, 16);
-			while(std::isspace(*current_name))
-				++current_name;
-		}
 
 		if(tabcount == 0)  // Vendor
 			vendor_id_indices.push_back({current_number, vendor_device_names.size(), {}});

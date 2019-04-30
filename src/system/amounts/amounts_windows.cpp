@@ -15,6 +15,7 @@
 
 #include "infoware/system.hpp"
 #define WIN32_LEAN_AND_MEAN
+#include <algorithm>
 #include <windows.h>
 
 
@@ -26,10 +27,7 @@ static std::size_t device_amount(unsigned int device_type) noexcept {
 	unsigned int input_devices_n = sizeof(input_devices) / sizeof(RAWINPUTDEVICELIST);
 	const auto amt               = GetRawInputDeviceList(input_devices, &input_devices_n, sizeof(RAWINPUTDEVICELIST));
 
-	auto result = 0u;
-	for(auto i = 0u; i < amt; ++i)
-		result += input_devices[i].dwType == device_type;
-	return result;
+	return std::count_if(input_devices, input_devices + amt, [&](auto&& device) { return device.dwType == device_type; });
 }
 
 

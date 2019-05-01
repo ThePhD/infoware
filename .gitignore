@@ -11,10 +11,6 @@
 !.clang-format
 !.travis.yml
 !appveyor.yml
-!*Makefile
 !CMakeLists.txt
 !LICENSE
 !README.md
-!*.sln
-!*.vcxproj
-!*.vcxproj.filter

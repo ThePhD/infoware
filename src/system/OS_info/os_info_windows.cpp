@@ -62,25 +62,27 @@ static std::string version_name() {
 		return {};
 	iware::detail::quickscope_wrapper com_uninitialiser{CoUninitialize};
 
-	if(FAILED(CoInitializeSecurity(nullptr, -1, nullptr, nullptr, RPC_C_AUTHN_LEVEL_DEFAULT, RPC_C_IMP_LEVEL_IMPERSONATE, nullptr, EOAC_NONE, nullptr)))
+	const auto init_result =
+	    CoInitializeSecurity(nullptr, -1, nullptr, nullptr, RPC_C_AUTHN_LEVEL_DEFAULT, RPC_C_IMP_LEVEL_IMPERSONATE, nullptr, EOAC_NONE, nullptr);
+	if(FAILED(init_result) && init_result != RPC_E_TOO_LATE)
 		return {};
 
-	IWbemLocator* webm_loc_raw;
-	if(FAILED(CoCreateInstance(CLSID_WbemLocator, 0, CLSCTX_INPROC_SERVER, IID_IWbemLocator, reinterpret_cast<void**>(&webm_loc_raw))))
+	IWbemLocator* wbem_loc_raw;
+	if(FAILED(CoCreateInstance(CLSID_WbemLocator, 0, CLSCTX_INPROC_SERVER, IID_IWbemLocator, reinterpret_cast<void**>(&wbem_loc_raw))))
 		return {};
-	std::unique_ptr<IWbemLocator, iware::detail::release_deleter> webm_loc(webm_loc_raw);
+	std::unique_ptr<IWbemLocator, iware::detail::release_deleter> wbem_loc(wbem_loc_raw);
 
-	IWbemServices* webm_services_raw;
-	if(FAILED(webm_loc->ConnectServer(&ConvertStringToBSTR("ROOT\\CIMV2")[0], nullptr, nullptr, 0, 0, 0, 0, &webm_services_raw)))
+	IWbemServices* wbem_services_raw;
+	if(FAILED(wbem_loc->ConnectServer(&ConvertStringToBSTR("ROOT\\CIMV2")[0], nullptr, nullptr, 0, 0, 0, 0, &wbem_services_raw)))
 		return {};
-	std::unique_ptr<IWbemServices, iware::detail::release_deleter> webm_services(webm_services_raw);
+	std::unique_ptr<IWbemServices, iware::detail::release_deleter> wbem_services(wbem_services_raw);
 
-	if(FAILED(CoSetProxyBlanket(webm_services.get(), RPC_C_AUTHN_WINNT, RPC_C_AUTHZ_NONE, nullptr, RPC_C_AUTHN_LEVEL_CALL, RPC_C_IMP_LEVEL_IMPERSONATE, nullptr,
+	if(FAILED(CoSetProxyBlanket(wbem_services.get(), RPC_C_AUTHN_WINNT, RPC_C_AUTHZ_NONE, nullptr, RPC_C_AUTHN_LEVEL_CALL, RPC_C_IMP_LEVEL_IMPERSONATE, nullptr,
 	                            EOAC_NONE)))
 		return {};
 
 	IEnumWbemClassObject* query_iterator_raw;
-	if(FAILED(webm_services->ExecQuery(&ConvertStringToBSTR("WQL")[0], &ConvertStringToBSTR("SELECT Name FROM Win32_OperatingSystem")[0],
+	if(FAILED(wbem_services->ExecQuery(&ConvertStringToBSTR("WQL")[0], &ConvertStringToBSTR("SELECT Name FROM Win32_OperatingSystem")[0],
 	                                   WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &query_iterator_raw)))
 		return {};
 	std::unique_ptr<IEnumWbemClassObject, iware::detail::release_deleter> query_iterator(query_iterator_raw);

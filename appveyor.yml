@@ -13,6 +13,7 @@ clone_folder: C:\infoware
 build_script:
   - git submodule update --init --recursive
   - mkdir build && cd build
+  - set VERBOSE=1
   - cmake -DINFOWARE_EXAMPLES=ON -DINFOWARE_TESTS=ON -DINFOWARE_USE_D3D=ON ..
   - cmake --build . --config Debug
   - cmake --build . --config Release

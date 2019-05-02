@@ -4,7 +4,7 @@ cache: apt
 
 matrix:
   include:
-    - env: CXX=g++-5 CC=gcc-5 INFOWARE_USE_X11=1
+    - env: CXX=g++-5 CC=gcc-5 INFOWARE_USE_X11=ON
       addons:
         apt:
           packages:
@@ -17,14 +17,14 @@ matrix:
             - llvm-toolchain-trusty-3.9
             - llvm-toolchain-trusty-4.0
             - llvm-toolchain-trusty-5.0
-    - env: CXX=g++-6 CC=gcc-6 INFOWARE_USE_X11=1
+    - env: CXX=g++-6 CC=gcc-6 INFOWARE_USE_X11=ON
       addons:
         apt:
           packages:
             - g++-6
             - libx11-dev
           sources: *sources
-    - env: CXX="clang++-3.8 -stdlib=libc++" CC=clang-3.8 INFOWARE_USE_X11=1
+    - env: CXX="clang++-3.8 -stdlib=libc++" CC=clang-3.8 INFOWARE_USE_X11=ON
       addons:
         apt:
           packages:
@@ -32,7 +32,7 @@ matrix:
             - libc++-dev
             - libx11-dev
           sources: *sources
-    - env: CXX="clang++-3.9 -stdlib=libc++" CC=clang-3.9 INFOWARE_USE_X11=1
+    - env: CXX="clang++-3.9 -stdlib=libc++" CC=clang-3.9 INFOWARE_USE_X11=ON
       addons:
         apt:
           packages:
@@ -40,7 +40,7 @@ matrix:
             - libc++-dev
             - libx11-dev
           sources: *sources
-    - env: CXX="clang++-4.0 -stdlib=libc++" CC=clang-4.0 INFOWARE_USE_X11=1
+    - env: CXX="clang++-4.0 -stdlib=libc++" CC=clang-4.0 INFOWARE_USE_X11=ON
       addons:
         apt:
           packages:
@@ -48,7 +48,7 @@ matrix:
             - libc++-dev
             - libx11-dev
           sources: *sources
-    - env: CXX="clang++-5.0 -stdlib=libc++" CC=clang-5.0 INFOWARE_USE_X11=1
+    - env: CXX="clang++-5.0 -stdlib=libc++" CC=clang-5.0 INFOWARE_USE_X11=ON
       addons:
         apt:
           packages:
@@ -56,13 +56,15 @@ matrix:
             - libc++-dev
             - libx11-dev
           sources: *sources
-    - os: osx
+    - env: INFOWARE_USE_X11=OFF
+      os: osx
       osx_image: xcode8.3
-    - os: osx
+    - env: INFOWARE_USE_X11=OFF
+      os: osx
       osx_image: xcode9.2
 
 script:
   - mkdir build && cd build
-  - cmake -DINFOWARE_EXAMPLES=ON -DINFOWARE_TESTS=ON ..
-  - cmake --build .
+  - cmake -DINFOWARE_EXAMPLES=ON -DINFOWARE_TESTS=ON -DINFOWARE_USE_X11=$INFOWARE_USE_X11 ..
+  - cmake --build . -- VERBOSE=1
   - ctest -V

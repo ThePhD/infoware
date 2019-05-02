@@ -23,17 +23,14 @@ else()
 endif()
 
 project(infoware VERSION ${infoware_version} LANGUAGES CXX)
+
 set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "bin")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "lib")
-
-if(WIN32)
-	set(dev_null "NUL")
-else()
-	set(dev_null "/dev/null")
-endif()
 
 
 option(INFOWARE_USE_D3D    "Add public, transitive define to infoware to use Direct 3D for GPU detection."                       OFF)
@@ -74,9 +71,6 @@ include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
 
 # Thanks, @griwes
-# add_custom_target(infoware_pull_pciids
-# 	                COMMAND ${GIT_EXECUTABLE} clone https://github.com/pciutils/pciids 2>${dev_null} || ${GIT_EXECUTABLE} -C pciids pull
-# 	                BYPRODUCTS "pciids/pci.ids")
 if(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/pciids/pci.ids")
 	execute_process(COMMAND ${GIT_EXECUTABLE} pull
 	                WORKING_DIRECTORY pciids)
@@ -91,7 +85,6 @@ add_custom_target(infoware_generate_pcis
                   DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/pciids/pci.ids"
                   BYPRODUCTS "infoware_generated/pci_data.hpp")
 add_dependencies(infoware infoware_generate_pcis)
-# add_dependencies(infoware_generate_pcis infoware_pull_pciids)
 
 
 if(MSVC)

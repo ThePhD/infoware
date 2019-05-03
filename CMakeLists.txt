@@ -11,7 +11,6 @@
 
 
 cmake_minimum_required(VERSION 3.6.0)
-include(FetchContent)
 
 
 find_package(Git)
@@ -29,6 +28,12 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "bin")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "lib")
+
+if(WIN32)
+	set(dev_null "NUL")
+else()
+	set(dev_null "/dev/null")
+endif()
 
 
 option(INFOWARE_USE_D3D    "Add public, transitive define to infoware to use Direct 3D for GPU detection."                       OFF)
@@ -69,14 +74,24 @@ include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
 
 # Thanks, @griwes
-FetchContent_Populate(pciids GIT_REPOSITORY https://github.com/pciutils/pciids)
+# add_custom_target(infoware_pull_pciids
+# 	                COMMAND ${GIT_EXECUTABLE} clone https://github.com/pciutils/pciids 2>${dev_null} || ${GIT_EXECUTABLE} -C pciids pull
+# 	                BYPRODUCTS "pciids/pci.ids")
+if(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/pciids/pci.ids")
+	execute_process(COMMAND ${GIT_EXECUTABLE} pull
+	                WORKING_DIRECTORY pciids)
+else()
+	execute_process(COMMAND ${GIT_EXECUTABLE} clone https://github.com/pciutils/pciids)
+endif()
+
 add_executable(infoware_pci_generator tools/pci_generator.cpp)
-add_custom_target(infoware_generate_pcis ALL
+add_custom_target(infoware_generate_pcis
                   COMMAND ${CMAKE_COMMAND} -E make_directory infoware_generated/
-                  COMMAND $<TARGET_FILE:infoware_pci_generator> "${pciids_SOURCE_DIR}/pci.ids" > "infoware_generated/pci_data.hpp"
-                  DEPENDS "${pciids_SOURCE_DIR}/pci.ids"
+                  COMMAND $<TARGET_FILE:infoware_pci_generator> "${CMAKE_CURRENT_BINARY_DIR}/pciids/pci.ids" > "infoware_generated/pci_data.hpp"
+                  DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/pciids/pci.ids"
                   BYPRODUCTS "infoware_generated/pci_data.hpp")
 add_dependencies(infoware infoware_generate_pcis)
+# add_dependencies(infoware_generate_pcis infoware_pull_pciids)
 
 
 if(MSVC)
@@ -130,6 +145,7 @@ if(INFOWARE_EXAMPLES)
 
 	foreach(infoware_example_source IN LISTS infoware_example_sources)
 		string(REGEX REPLACE "([^/\\]+[/\\])*([^/\\]+)\\.cpp" "\\2" infoware_example_name "${infoware_example_source}")
+		string(REPLACE "/" "" infoware_example_name "${infoware_example_name}")
 
 		add_executable(infoware_${infoware_example_name}_example "${infoware_example_source}")
 		add_executable(iware::${infoware_example_name}_example ALIAS infoware_${infoware_example_name}_example)

@@ -65,5 +65,5 @@ iware::detail::pci_device_id iware::detail::identify_device(int64_t vendor_pci_i
 
 
 std::string iware::detail::identify_vendor(int64_t pci_id) noexcept {
-	return std::move(identify_device(pci_id, 0).vendor_name);
+	return identify_device(pci_id, 0).vendor_name;
 }

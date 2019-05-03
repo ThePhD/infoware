@@ -28,7 +28,6 @@ iware::system::memory_t iware::system::memory() noexcept {
 	iware::system::memory_t ret;
 
 	const auto host = mach_host_self();
-	natural_t pages;
 
 	const auto ctl_ram = iware::detail::sysctl(CTL_HW, HW_MEMSIZE);
 	if(!ctl_ram.empty()) {

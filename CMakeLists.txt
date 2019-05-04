@@ -11,6 +11,7 @@
 
 
 cmake_minimum_required(VERSION 3.6.0)
+include(FetchContent)
 
 
 find_package(Git)
@@ -64,6 +65,18 @@ add_library(infoware ${infoware_source_files})
 add_library(iware::infoware ALIAS infoware)
 
 target_include_directories(infoware PUBLIC include)
+include_directories("${CMAKE_CURRENT_BINARY_DIR}")
+
+
+# Thanks, @griwes
+FetchContent_Populate(pciids GIT_REPOSITORY https://github.com/pciutils/pciids)
+add_executable(infoware_pci_generator tools/pci_generator.cpp)
+add_custom_target(infoware_generate_pcis ALL
+                  COMMAND ${CMAKE_COMMAND} -E make_directory infoware_generated/
+                  COMMAND $<TARGET_FILE:infoware_pci_generator> "${pciids_SOURCE_DIR}/pci.ids" > "infoware_generated/pci_data.hpp"
+                  DEPENDS "${pciids_SOURCE_DIR}/pci.ids"
+                  BYPRODUCTS "infoware_generated/pci_data.hpp")
+add_dependencies(infoware infoware_generate_pcis)
 
 
 if(MSVC)

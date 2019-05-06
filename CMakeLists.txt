@@ -30,14 +30,33 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "bin")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "lib")
 
 
-option(INFOWARE_USE_D3D    "Add public, transitive define to infoware to use Direct 3D for GPU Detection." OFF)
-option(INFOWARE_USE_OPENGL "Add public, transitive define to infoware to use Open Compute Language (OpenCL) for GPU Detection." OFF)
-option(INFOWARE_USE_OPENCL "Add public, transitive define to infoware to use Open Graphics Language (OpenGL) for GPU Detection." OFF)
+option(INFOWARE_USE_D3D    "Add public, transitive define to infoware to use Direct 3D for GPU detection."                       OFF)
+option(INFOWARE_USE_OPENCL "Add public, transitive define to infoware to use Open Graphics Language (OpenGL) for GPU detection." OFF)
+option(INFOWARE_USE_OPENGL "Add public, transitive define to infoware to use Open Compute Language (OpenCL) for GPU detection."  OFF)
 
-option(INFOWARE_USE_X11 "Add public, transitive define to infoware to use X11 for Display Detection." OFF)
+option(INFOWARE_USE_X11 "Add public, transitive define to infoware to use X11 for display detection." OFF)
 
 option(INFOWARE_EXAMPLES "Add infoware examples to the build." OFF)
-option(INFOWARE_TESTS    "Input tests for infoware." OFF)
+option(INFOWARE_TESTS    "Input tests for infoware."           OFF)
+
+
+if(INFOWARE_USE_D3D)
+	if(INFOWARE_USE_OPENCL)
+		message(WARNING "INFOWARE_USE_OPENCL specified, but the higher-priority INFOWARE_USE_D3D was specified, too, and will be used instead.")
+	elseif(INFOWARE_USE_OPENGL)
+		message(WARNING "INFOWARE_USE_OPENGL specified, but the higher-priority INFOWARE_USE_D3D was specified, too, and will be used instead.")
+	endif()
+endif()
+
+if(INFOWARE_USE_OPENCL)
+	if(INFOWARE_USE_OPENGL)
+		message(WARNING "INFOWARE_USE_OPENGL specified, but the higher-priority INFOWARE_USE_OPENCL was specified, too, and will be used instead.")
+	endif()
+endif()
+
+if(INFOWARE_USE_X11 AND WIN32)
+	message(WARNING "INFOWARE_USE_X11 specified, but compiling for Win32, WinAPI will be used instead.")
+endif()
 
 
 file(GLOB_RECURSE infoware_source_files LIST_DIRECTORIES false src/**/*.cpp)

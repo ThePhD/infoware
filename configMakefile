@@ -18,9 +18,9 @@ ifeq "$(OS)" "Windows_NT"
 	CXXAR_OS := -march=native
 else
 	ifeq "$(OS)" "Darwin"
-		OPENGL_LIB_LINK_NAME := -lGL
-	else
 		OPENGL_LIB_LINK_NAME := -framework OpenGL
+	else
+		OPENGL_LIB_LINK_NAME := -lGL
 	endif
 	PIC := -fPIC
 	EXE :=

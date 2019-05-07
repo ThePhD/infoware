@@ -13,7 +13,6 @@
 #ifndef INFOWARE_USE_D3D
 #ifdef INFOWARE_USE_OPENCL
 
-
 #include "infoware/gpu.hpp"
 #include <cstdlib>
 #include <cstring>
@@ -25,11 +24,11 @@
 
 
 static iware::gpu::vendor_t parse_vendor(const char* name) {
-	if(!strcmp(name, "Intel(R) Corporation"))
+	if(!std::strcmp(name, "Intel(R) Corporation"))
 		return iware::gpu::vendor_t::intel;
-	else if(!strcmp(name, "Advanced Micro Devices, Inc."))
+	else if(!std::strcmp(name, "Advanced Micro Devices, Inc."))
 		return iware::gpu::vendor_t::amd;
-	else if(!strcmp(name, "NVIDIA Corporation"))
+	else if(!std::strcmp(name, "NVIDIA Corporation"))
 		return iware::gpu::vendor_t::nvidia;
 	else
 		return iware::gpu::vendor_t::unknown;
@@ -39,13 +38,13 @@ static iware::gpu::vendor_t parse_vendor(const char* name) {
 std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 	cl_platform_id platforms[64];
 	cl_uint platforms_used;
-	clGetPlatformIDs(sizeof platforms / sizeof(*platforms), platforms, &platforms_used);
+	clGetPlatformIDs(sizeof(platforms) / sizeof(*platforms), platforms, &platforms_used);
 
 	std::vector<iware::gpu::device_properties_t> ret;
 	for(auto i = 0u; i < platforms_used; ++i) {
 		cl_device_id devices[64];
 		cl_uint devices_used;
-		clGetDeviceIDs(platforms[i], CL_DEVICE_TYPE_GPU, sizeof devices / sizeof(*devices), devices, &devices_used);
+		clGetDeviceIDs(platforms[i], CL_DEVICE_TYPE_GPU, sizeof(devices) / sizeof(*devices), devices, &devices_used);
 
 		for(auto j = 0u; j < devices_used; ++j) {
 			char name[256];
@@ -55,10 +54,10 @@ std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 
 			clGetDeviceInfo(devices[j], CL_DEVICE_GLOBAL_MEM_CACHE_SIZE, sizeof(cache), &cache, nullptr);
 			clGetDeviceInfo(devices[j], CL_DEVICE_GLOBAL_MEM_SIZE, sizeof(memory), &memory, nullptr);
-			clGetDeviceInfo(devices[j], CL_DEVICE_VENDOR, sizeof vendorname, &vendorname, nullptr);
-			clGetDeviceInfo(devices[j], CL_DEVICE_NAME, sizeof name, &name, nullptr);
+			clGetDeviceInfo(devices[j], CL_DEVICE_VENDOR, sizeof(vendorname) / sizeof(*vendorname), &vendorname, nullptr);
+			clGetDeviceInfo(devices[j], CL_DEVICE_NAME, sizeof(name) / sizeof(*name), &name, nullptr);
 
-			ret.push_back(iware::gpu::device_properties_t{parse_vendor(vendorname), name, memory, cache});
+			ret.push_back({parse_vendor(vendorname), name, memory, cache});
 		}
 	}
 

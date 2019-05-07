@@ -13,7 +13,16 @@
 cmake_minimum_required(VERSION 3.6.0)
 
 
-project(infoware VERSION 0.1.0 LANGUAGES CXX)
+find_package(Git)
+execute_process(COMMAND ${GIT_EXECUTABLE} describe --tags --abbrev=0 OUTPUT_VARIABLE infoware_version ERROR_QUIET)
+string(STRIP "${infoware_version}" infoware_version)
+if(infoware_version STREQUAL "")
+	set(infoware_version "0.1.0")
+else()
+	string(REPLACE "v" "" infoware_version "${infoware_version}")
+endif()
+
+project(infoware VERSION ${infoware_version} LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 14)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "bin")

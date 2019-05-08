@@ -16,18 +16,19 @@ cmake_minimum_required(VERSION 3.6.0)
 project(infoware VERSION 0.1.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 14)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "bin")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "lib")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "lib")
 
 
-option(INFOWARE_USE_D3D "Add public, transitive define to infoware to use Direct 3D for GPU Detection." OFF)
+option(INFOWARE_USE_D3D    "Add public, transitive define to infoware to use Direct 3D for GPU Detection." OFF)
 option(INFOWARE_USE_OPENGL "Add public, transitive define to infoware to use Open Compute Language (OpenCL) for GPU Detection." OFF)
 option(INFOWARE_USE_OPENCL "Add public, transitive define to infoware to use Open Graphics Language (OpenGL) for GPU Detection." OFF)
 
 option(INFOWARE_USE_X11 "Add public, transitive define to infoware to use X11 for Display Detection." OFF)
 
 option(INFOWARE_EXAMPLES "Add infoware examples to the build." OFF)
-option(INFOWARE_TESTS "Input tests for infoware." OFF)
+option(INFOWARE_TESTS    "Input tests for infoware." OFF)
 
 
 file(GLOB_RECURSE infoware_source_files LIST_DIRECTORIES false src/**/*.cpp)
@@ -47,7 +48,7 @@ else()
 	target_compile_options(infoware PRIVATE -pedantic -Wall -Wextra -pipe)
 endif()
 
-if(NOT MSVC AND WIN32)
+if(WIN32 AND NOT MSVC)
 	target_compile_options(infoware PRIVATE -march=native)
 endif()
 
@@ -79,11 +80,24 @@ if(INFOWARE_USE_X11)
 	target_compile_definitions(infoware PUBLIC INFOWARE_USE_X11)
 endif()
 
-if(INFOWARE_TESTS)
-	enable_testing()
-endif()
-
 
 if(INFOWARE_EXAMPLES)
-	add_subdirectory(examples)
+	file(GLOB infoware_example_sources LIST_DIRECTORIES false examples/*.cpp)
+
+	foreach(infoware_example_source IN LISTS infoware_example_sources)
+		string(REGEX REPLACE "([^/\\]+[/\\])*([^/\\]+)\\.cpp" "\\2" infoware_example_name "${infoware_example_source}")
+
+		add_executable(infoware_${infoware_example_name}_example "${infoware_example_source}")
+		add_executable(iware::${infoware_example_name}_example ALIAS infoware_${infoware_example_name}_example)
+
+		target_link_libraries(infoware_${infoware_example_name}_example PUBLIC infoware)
+
+		if(INFOWARE_TESTS)
+			add_test(NAME example_${infoware_example_name} COMMAND infoware_${infoware_example_name}_example)
+		endif()
+	endforeach()
+endif()
+
+if(INFOWARE_TESTS)
+	enable_testing()
 endif()

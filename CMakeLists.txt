@@ -98,6 +98,7 @@ if(INFOWARE_EXAMPLES)
 	endforeach()
 endif()
 
+
 if(INFOWARE_TESTS)
 	enable_testing()
 endif()

@@ -19,8 +19,8 @@ build_script:
   - cmake --build . --config Release
 
 test_script:
-  - ctest --output-on-failure --build-config Debug
-  - ctest --output-on-failure --build-config Release
+  - ctest -V --build-config Debug
+  - ctest -V --build-config Release
 
 notifications:
   - provider: Email

@@ -11,6 +11,7 @@
 
 
 #ifndef _WIN32
+#ifndef __APPLE__
 
 
 #include "infoware/system.hpp"
@@ -43,4 +44,5 @@ iware::system::memory_t iware::system::memory() noexcept {
 }
 
 
+#endif
 #endif

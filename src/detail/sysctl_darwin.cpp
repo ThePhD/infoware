@@ -29,17 +29,27 @@ static std::pair<bool, T> deconstruct_specific_int(const std::vector<char>& data
 }
 
 
+#define SYSCTL_IMPL(fname, ...)                        \
+	std::size_t len{};                                   \
+	if(fname(__VA_ARGS__, nullptr, &len, nullptr, 0))    \
+		return {};                                         \
+                                                       \
+	std::vector<char> ret(len);                          \
+	if(fname(__VA_ARGS__, ret.data(), &len, nullptr, 0)) \
+		return {};                                         \
+                                                       \
+	return ret
+
 std::vector<char> iware::detail::sysctl(const char* name) {
-	std::size_t len{};
-	if(sysctlbyname(name, nullptr, &len, nullptr, 0))
-		return {};
-
-	std::vector<char> ret(len);
-	if(sysctlbyname(name, ret.data(), &len, nullptr, 0))
-		return {};
-
-	return ret;
+	SYSCTL_IMPL(::sysctlbyname, name);
 }
+
+std::vector<char> iware::detail::sysctl(int mib_0, int mib_1) {
+	int name[2]{mib_0, mib_1};
+
+	SYSCTL_IMPL(::sysctl, name, sizeof(name) / sizeof(*name));
+}
+
 
 std::pair<bool, std::uint64_t> iware::detail::deconstruct_sysctl_int(const std::vector<char>& data) {
 	switch(data.size()) {

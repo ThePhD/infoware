@@ -62,6 +62,5 @@ matrix:
       osx_image: xcode9.2
 
 script:
-  - ls /etc
   - make -j$(nproc)
   - "for e in $(ls out/examples); do echo -n \"$e: \"; out/examples/$e; done"

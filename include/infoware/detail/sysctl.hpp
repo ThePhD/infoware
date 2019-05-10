@@ -22,6 +22,7 @@ namespace iware {
 	namespace detail {
 		/// https://github.com/ThePhD/infoware/issues/13
 		std::vector<char> sysctl(const char* name);
+		std::vector<char> sysctl(int mib_0, int mib_1);
 
 		std::pair<bool, std::uint64_t> deconstruct_sysctl_int(const std::vector<char>& data);
 	}  // namespace detail

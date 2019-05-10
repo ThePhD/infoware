@@ -20,6 +20,10 @@ std::vector<char> iware::detail::sysctl(const char*) {
 	return {};
 }
 
+std::vector<char> iware::detail::sysctl(int, int) {
+	return {};
+}
+
 std::pair<bool, std::uint64_t> iware::detail::deconstruct_sysctl_int(const std::vector<char>&) {
 	return {};
 }

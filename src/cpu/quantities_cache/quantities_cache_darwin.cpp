@@ -18,8 +18,6 @@
 
 
 // https://github.com/ThePhD/infoware/issues/12#issuecomment-495291650
-//
-// Assuming there's only ever gonna be 1 package because the sysctl outputs I've seen so far haven't provided any way to read if there were more?
 iware::cpu::quantities_t iware::cpu::quantities() {
 	iware::cpu::quantities_t ret{};
 
@@ -37,7 +35,13 @@ iware::cpu::quantities_t iware::cpu::quantities() {
 			ret.physical = core_data.second;
 	}
 
-	ret.packages = 1;
+	const auto ctl_packages_data = iware::detail::sysctl("hw.packages");
+	if(!ctl_packages_data.empty()) {
+		const auto packages_data = iware::detail::deconstruct_sysctl_int(ctl_packages_data);
+		if(packages_data.first)
+			ret.packages = packages_data.second;
+	}
+
 	return ret;
 }
 

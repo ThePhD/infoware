@@ -14,37 +14,27 @@
 
 
 #include "infoware/cpu.hpp"
-#include "infoware/detail/scope.hpp"
-#include <cstdlib>
-#include <cstring>
-#include <sstream>
-#include <stdio.h>
-#include <string>
+#include "infoware/detail/sysctl.hpp"
 
 
 // https://github.com/ThePhD/infoware/issues/12#issuecomment-495291650
 //
 // Assuming there's only ever gonna be 1 package because the sysctl outputs I've seen so far haven't provided any way to read if there were more?
-//
-// Parses `machdep.cpu.core_count` and `machdep.cpu.thread_count`.
 iware::cpu::quantities_t iware::cpu::quantities() {
-	const auto sysctl_output = popen("sysctl machdep.cpu", "r");
-	if(!sysctl_output)
-		return {};
-	iware::detail::quickscope_wrapper sysctl_closer{[&]() { pclose(sysctl_output); }};
-
 	iware::cpu::quantities_t ret{};
 
-	char buf[48]{};
-	while(fgets(buf, sizeof(buf), sysctl_output)) {
-		const auto len = std::strlen(buf);
-		if(len < 24 + 2 || buf[len - 1] != '\n')
-			continue;  // Skipping all lines that don't fit in the buffer because the ones we're after do and the ones shorter than the ones we're after
+	const auto ctl_thread_data = iware::detail::sysctl("machdep.cpu.thread_count");
+	if(!ctl_thread_data.empty()) {
+		const auto thread_data = iware::detail::deconstruct_sysctl_int(ctl_thread_data);
+		if(thread_data.first)
+			ret.logical = thread_data.second;
+	}
 
-		if(std::strncmp(buf + 12, "core_count: ", 22 - 12) == 0)
-			ret.physical = std::strtoul(buf + 22 + 2, nullptr, 10);
-		else if(std::strncmp(buf + 12, "thread_count: ", 24 - 12) == 0)
-			ret.logical = std::strtoul(buf + 24 + 2, nullptr, 10);
+	const auto ctl_core_data = iware::detail::sysctl("machdep.cpu.core_count");
+	if(!ctl_core_data.empty()) {
+		const auto core_data = iware::detail::deconstruct_sysctl_int(ctl_core_data);
+		if(core_data.first)
+			ret.physical = core_data.second;
 	}
 
 	ret.packages = 1;
@@ -57,41 +47,31 @@ iware::cpu::quantities_t iware::cpu::quantities() {
 //
 // TODO: couldn't find a good way to get the associativity (default 0) or the type (default unified)
 iware::cpu::cache_t iware::cpu::cache(unsigned int level) {
-	const auto sysctl_output = popen("sysctl hw", "r");
-	if(!sysctl_output)
-		return {};
-	iware::detail::quickscope_wrapper sysctl_closer{[&]() { pclose(sysctl_output); }};
+	// Unspecified keys default to nullptr
+	static const char* size_keys[][3]{{}, {"hw.l1icachesize", "hw.l1dcachesize", "hw.l1cachesize"}, {"hw.l2cachesize"}, {"hw.l3cachesize"}};
+
 
 	iware::cpu::cache_t ret{};
 
-	bool full_line = false;
-	std::string line;
-	char buf[32]{};
-	while(fgets(buf, sizeof(buf), sysctl_output)) {
-		if(full_line)
-			line = buf;
-		else
-			line += buf;
+	const auto ctl_cachelinesize_data = iware::detail::sysctl("hw.cachelinesize");
+	if(!ctl_cachelinesize_data.empty()) {
+		const auto cachelinesize_data = iware::detail::deconstruct_sysctl_int(ctl_cachelinesize_data);
+		if(cachelinesize_data.first)
+			ret.line_size = cachelinesize_data.second;
+	}
 
-		full_line = line.back() == '\n';
-		if(full_line) {
-			std::size_t* data = nullptr;
-			if(line.find("hw.cachelinesize") == 0)
-				data = &ret.line_size;
-			else if(line.find("hw.l") == 0 && line.find(std::to_string(level)) == 4 && [&]() {
-				        const auto idx = line.find("cachesize");
-				        return idx == 5 ||  // e.g. hw.l2cachesize
-				               idx == 6;    // e.g. hw.l1icachesize
-			        }())
-				data = &ret.size;
+	if(level < sizeof(size_keys) / sizeof(*size_keys))
+		for(auto key : size_keys[level]) {
+			if(!key)
+				break;
 
-			if(data) {
-				std::size_t tmp;
-				std::istringstream(line.c_str() + line.find(':') + 1) >> tmp;
-				*data += tmp;
+			const auto ctl_cachesize_data = iware::detail::sysctl(key);
+			if(!ctl_cachesize_data.empty()) {
+				const auto cachesize_data = iware::detail::deconstruct_sysctl_int(ctl_cachesize_data);
+				if(cachesize_data.first)
+					ret.size += cachesize_data.second;
 			}
 		}
-	}
 
 	return ret;
 }

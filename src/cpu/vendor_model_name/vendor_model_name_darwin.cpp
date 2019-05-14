@@ -14,9 +14,7 @@
 
 
 #include "infoware/cpu.hpp"
-#include "infoware/detail/scope.hpp"
-#include <cstring>
-#include <stdio.h>
+#include "infoware/detail/sysctl.hpp"
 #include <string>
 
 
@@ -24,19 +22,11 @@ using namespace std::literals;
 
 
 static std::string sysctl_value(const char* subkey) {
-	const auto sysctl_output = popen(("sysctl machdep.cpu."s + subkey).c_str(), "r");
-	if(!sysctl_output)
-		return 0;
-	iware::detail::quickscope_wrapper sysctl_closer{[&]() { pclose(sysctl_output); }};
-
-	std::string line;
-	for(char buf[32]{}; (line.empty() || line.back() != '\n') && fgets(buf, sizeof(buf), sysctl_output);)
-		line += buf;
-	line.back() = '\0';
-
-	const auto colon_id    = line.find_first_of(':');
-	const auto nonspace_id = line.find_first_not_of(" \t", colon_id + 1);
-	return line.c_str() + nonspace_id;
+	auto ctl_data = iware::detail::sysctl(("machdep.cpu."s + subkey).c_str());
+	if(ctl_data.empty())
+		return {};
+	else
+		return ctl_data.data();
 }
 
 

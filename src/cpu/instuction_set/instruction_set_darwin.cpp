@@ -14,11 +14,9 @@
 
 
 #include "infoware/cpu.hpp"
-#include "infoware/detail/scope.hpp"
+#include "infoware/detail/sysctl.hpp"
 #include <algorithm>
-#include <sstream>
-#include <stdio.h>
-#include <string>
+#include <cstring>
 #include <utility>
 
 
@@ -60,19 +58,12 @@ bool iware::cpu::instruction_set_supported(iware::cpu::instruction_set_t set) {
 	if(!set_names.first)
 		return false;
 
-	const auto sysctl_output = popen("sysctl machdep.cpu.features", "r");
-	if(!sysctl_output)
-		return false;
-	iware::detail::quickscope_wrapper sysctl_closer{[&]() { pclose(sysctl_output); }};
+	auto ctl_data = iware::detail::sysctl("machdep.cpu.features");
+	if(ctl_data.empty())
+		return 0;
 
-	std::string line;
-	for(char buf[32]{}; (line.empty() || line.back() != '\n') && fgets(buf, sizeof(buf), sysctl_output);)
-		line += buf;
-
-	const auto colon_id = line.find_first_of(':');
-	std::istringstream is(line.c_str() + colon_id + 1);
-	for(std::string tmp; is >> tmp;)
-		if(std::any_of(set_names.first, set_names.second, [&](auto name) { return tmp == name; }))
+	for(auto cur_name = std::strtok(ctl_data.data(), " \t\n"); cur_name; cur_name = std::strtok(nullptr, " \t\n"))
+		if(std::any_of(set_names.first, set_names.second, [&](auto name) { return name == cur_name; }))
 			return true;
 
 	return false;

@@ -14,27 +14,19 @@
 
 
 #include "infoware/cpu.hpp"
-#include "infoware/detail/scope.hpp"
-#include <cstdlib>
-#include <cstring>
-#include <stdio.h>
+#include "infoware/detail/sysctl.hpp"
 
 
 std::int64_t iware::cpu::frequency() noexcept {
-	const auto sysctl_output = popen("sysctl hw.cpufrequency", "r");
-	if(!sysctl_output)
-		return 0;
-	iware::detail::quickscope_wrapper sysctl_closer{[&]() { pclose(sysctl_output); }};
-
-	char buf[64]{};  // We're expecting somewhere on the order of strlen("hw.cpufrequency: 3100000000") == 27
-	if(!fgets(buf, sizeof(buf), sysctl_output))
+	const auto ctl_data = iware::detail::sysctl("hw.cpufrequency");
+	if(ctl_data.empty())
 		return 0;
 
-	const char* colon = std::strchr(buf, ':');
-	if(!colon)
+	const auto data = iware::detail::deconstruct_sysctl_int(ctl_data);
+	if(!data.first)
 		return 0;
 
-	return static_cast<std::int64_t>(std::strtoull(colon + 1, nullptr, 10));
+	return data.second;
 }
 
 

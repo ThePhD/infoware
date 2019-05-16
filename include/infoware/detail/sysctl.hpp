@@ -13,6 +13,8 @@
 #pragma once
 
 
+#include <cstdint>
+#include <utility>
 #include <vector>
 
 
@@ -20,5 +22,7 @@ namespace iware {
 	namespace detail {
 		/// https://github.com/ThePhD/infoware/issues/13
 		std::vector<char> sysctl(const char* name);
+
+		std::pair<bool, std::uint64_t> deconstruct_sysctl_int(const std::vector<char>& data);
 	}  // namespace detail
 }  // namespace iware

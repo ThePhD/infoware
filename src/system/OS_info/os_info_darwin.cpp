@@ -14,6 +14,7 @@
 
 
 #include "infoware/system.hpp"
+#include "infoware/detail/sysctl.hpp"
 #include <cstdint>
 #include <cstring>
 #include <iostream>
@@ -195,6 +196,24 @@ iware::system::OS_info_t iware::system::OS_info() {
 #ifdef KERN_CLOCKRATE
 	get_ctl_clockinfo("KERN_CLOCKRATE", CTL_KERN, KERN_CLOCKRATE);
 #endif
+
+	std::cerr << "\n\n";
+
+	const auto data = iware::detail::sysctl("hw.cpufrequency");
+
+	const auto out_16 = ctl_int<std::uint16_t>(data);
+	if(out_16.first)
+		std::cerr << out_16.second << '\n';
+
+	const auto out_32 = ctl_int<std::uint32_t>(data);
+	if(out_32.first)
+		std::cerr << out_32.second << '\n';
+
+	const auto out_64 = ctl_int<std::uint64_t>(data);
+	if(out_64.first)
+		std::cerr << out_64.second << '\n';
+
+	std::cerr << iware::detail::sysctl("machdep.cpu.features").data() << '\n';
 
 	return {};
 }

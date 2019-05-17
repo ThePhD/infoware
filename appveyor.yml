@@ -1,18 +1,16 @@
 version: "{build}"
-
 skip_tags: false
 
 platform: x64
 configuration: Release
 
-clone_folder: C:\cpp-localiser
+clone_folder: C:\infoware
 
 install:
   - set PATH=C:\msys64\mingw64\bin;C:\msys64\usr\bin;%PATH%
-  -
   - bash -lc "pacman --needed --noconfirm -Sy pacman-mirrors"
-  - bash -lc "pacman --noconfirm -Syyu"
-  - bash -lc "pacman --noconfirm -Su"
+  - bash -lc "pacman --noconfirm -Sy"
+  - bash -lc "pacman --noconfirm -S mingw-w64-x86_64-toolchain"
 
 build: off
 build_script:

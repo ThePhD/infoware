@@ -11,6 +11,7 @@
 
 
 #ifndef _WIN32
+#ifndef __APPLE__
 
 
 #include "infoware/system.hpp"
@@ -46,4 +47,5 @@ iware::system::OS_info_t iware::system::OS_info() {
 }
 
 
+#endif
 #endif

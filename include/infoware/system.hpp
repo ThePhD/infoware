@@ -79,7 +79,7 @@ namespace iware {
 		/// Get kernel information.
 		kernel_info_t kernel_info();
 
-		/// Get kernel information.
+		/// Get system information.
 		OS_info_t OS_info();
 
 		/// Get information about displays.

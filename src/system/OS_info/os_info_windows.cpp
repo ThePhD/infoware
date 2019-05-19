@@ -90,7 +90,7 @@ static std::string version_name() {
 		IWbemClassObject* value_raw;
 		unsigned long iter_result;
 
-		query_iterator->Next(WBEM_INFINITE, 1, &value_raw, &iter_result);
+		query_iterator->Next(static_cast<LONG>(WBEM_INFINITE), 1, &value_raw, &iter_result);
 		if(!iter_result)
 			break;
 		std::unique_ptr<IWbemClassObject, iware::detail::release_deleter> value(value_raw);

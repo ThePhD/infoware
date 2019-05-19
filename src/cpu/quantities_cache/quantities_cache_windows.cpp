@@ -60,7 +60,7 @@ iware::cpu::cache_t iware::cpu::cache(unsigned int level) {
 		if(info.Relationship == RelationCache)
 			// Cache data is in ptr->Cache, one CACHE_DESCRIPTOR structure for each cache.
 			if(info.Cache.Level == level) {
-				iware::cpu::cache_type_t type;
+				iware::cpu::cache_type_t type{};
 				switch(info.Cache.Type) {
 					case CacheUnified:
 						type = iware::cpu::cache_type_t::unified;

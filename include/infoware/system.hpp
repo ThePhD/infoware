@@ -84,5 +84,5 @@ namespace iware {
 
 		/// Get information about displays.
 		std::vector<display_t> displays();
-	}
-}
+	}  // namespace system
+}  // namespace iware

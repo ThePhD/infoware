@@ -15,6 +15,7 @@
 
 #include <cstring>
 
+
 std::string iware::cpu::vendor_id() {
 	int32_t info[4];
 	char name[13];

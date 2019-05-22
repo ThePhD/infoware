@@ -20,7 +20,7 @@ static const char* architecture_name(iware::cpu::architecture_t architecture) no
 static const char* endianness_name(iware::cpu::endianness_t endianness) noexcept;
 
 
-int main(int, char*[]) {
+int main() {
 	{
 		const auto quantities = iware::cpu::quantities();
 		std::cout << "\n"
@@ -49,24 +49,23 @@ int main(int, char*[]) {
 		          << "  Frequency: " << iware::cpu::frequency() << " Hz\n"
 		          << "  Endianness: " << endianness_name(iware::cpu::endianness()) << '\n'
 		          << "  Model name: " << iware::cpu::model_name() << '\n'
-				  << "  Vendor ID: " << iware::cpu::vendor_id() << '\n';
+		          << "  Vendor ID: " << iware::cpu::vendor_id() << '\n';
 	}
 
 	{
-		std::cout << std::boolalpha << "\n"
-		                               "  Instruction set support:\n";
+		std::cout << std::boolalpha
+		          << "\n"
+		             "  Instruction set support:\n";
 		for(auto&& set : {std::make_pair("3D-now!", iware::cpu::instruction_set_t::s3d_now),  //
-		                  std::make_pair("MMX    ", iware::cpu::instruction_set_t::mmx),         //
-		                  std::make_pair("SSE    ", iware::cpu::instruction_set_t::sse),         //
-		                  std::make_pair("SSE2   ", iware::cpu::instruction_set_t::sse2),        //
-		                  std::make_pair("SSE3   ", iware::cpu::instruction_set_t::sse3),        //
+		                  std::make_pair("MMX    ", iware::cpu::instruction_set_t::mmx),      //
+		                  std::make_pair("SSE    ", iware::cpu::instruction_set_t::sse),      //
+		                  std::make_pair("SSE2   ", iware::cpu::instruction_set_t::sse2),     //
+		                  std::make_pair("SSE3   ", iware::cpu::instruction_set_t::sse3),     //
 		                  std::make_pair("AVX    ", iware::cpu::instruction_set_t::avx)})
 			std::cout << "    " << set.first << ": " << iware::cpu::instruction_set_supported(set.second) << '\n';
 	}
 
 	std::cout << '\n';
-
-	return 0;
 }
 
 

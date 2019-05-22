@@ -24,5 +24,5 @@ namespace iware {
 				p->Release();
 			}
 		};
-	}
-}
+	}  // namespace detail
+}  // namespace iware

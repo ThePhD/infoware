@@ -49,7 +49,7 @@ namespace iware {
 
 			avx,
 			avx2,
-			
+
 			avx_512,
 			avx_512_f,
 			avx_512_cd,
@@ -61,7 +61,7 @@ namespace iware {
 			avx_512_dq,
 			avx_512_ifma,
 			avx_512_vbmi,
-			
+
 			hle,
 
 			bmi1,
@@ -139,5 +139,5 @@ namespace iware {
 
 		/// Retrieve all of the instruction sets this hardware supports
 		std::vector<instruction_set_t> supported_instruction_sets();
-	}
-}
+	}  // namespace cpu
+}  // namespace iware

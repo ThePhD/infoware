@@ -24,5 +24,5 @@ namespace iware {
 			quickscope_wrapper(const quickscope_wrapper&) = delete;
 			~quickscope_wrapper();
 		};
-	}
-}
+	}  // namespace detail
+}  // namespace iware

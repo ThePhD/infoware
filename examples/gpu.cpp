@@ -17,7 +17,7 @@
 static const char* vendor_name(iware::gpu::vendor_t vendor) noexcept;
 
 
-int main(int, char*[]) {
+int main() {
 	{
 		const auto device_properties = iware::gpu::device_properties();
 		std::cout << "\n"
@@ -36,8 +36,6 @@ int main(int, char*[]) {
 	}
 
 	std::cout << '\n';
-
-	return 0;
 }
 
 

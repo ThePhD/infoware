@@ -17,7 +17,7 @@
 static const char* kernel_variant_name(iware::system::kernel_t variant) noexcept;
 
 
-int main(int, char*[]) {
+int main() {
 	{
 		std::cout << "\n"
 		             "  Connected HIDs:\n"
@@ -72,8 +72,6 @@ int main(int, char*[]) {
 	}
 
 	std::cout << '\n';
-
-	return 0;
 }
 
 

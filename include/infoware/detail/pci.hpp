@@ -26,5 +26,5 @@ namespace iware {
 
 		pci_device_id identify_device(std::int64_t vendor_pci_id, std::int64_t device_pci_id) noexcept;
 		std::string identify_vendor(std::int64_t vendor_pci_id) noexcept;
-	}
-}
+	}  // namespace detail
+}  // namespace iware

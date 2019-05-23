@@ -68,4 +68,4 @@ CXXAR_LIB := $(CXXAR_OPENCL) $(CXXAR_X11) $(CXXAR_D3D) $(CXXAR_OPENGL)
 OBJ := .o
 ARCH := .a
 AR := ar
-CXXAR := -pedantic -O3 -fomit-frame-pointer -std=c++14 -Wall -Wextra -pipe
+CXXAR := -pedantic -O3 -std=c++14 -Wall -Wextra -pipe

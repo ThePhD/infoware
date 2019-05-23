@@ -10,27 +10,30 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#ifndef _WIN32
+#ifdef __APPLE__
 
 
 #include "infoware/cpu.hpp"
-#include <fstream>
-#include <string>
+#include "infoware/detail/scope.hpp"
+#include <stdio.h>
+#include <cstring>
 
 
 std::int64_t iware::cpu::frequency() noexcept {
-	std::ifstream cpuinfo("/proc/cpuinfo");
+	const auto sysctl_output = popen("sysctl hw.cpufrequency", "r");
+	if(!sysctl_output)
+		return 0;
+	iware::detail::quickscope_wrapper sysctl_closer{[&]() { pclose(sysctl_output); }};
 
-	if(!cpuinfo.is_open() || !cpuinfo)
+	char buf[64]{};  // We're expecting somewhere on the order of strlen("hw.cpufrequency: 3100000000") == 27
+	if(!fgets(buf, sizeof(buf), sysctl_output))
 		return 0;
 
-	for(std::string line; std::getline(cpuinfo, line);)
-		if(line.find("cpu MHz") == 0) {
-			const auto colon_id = line.find_first_of(':');
-			return static_cast<int64_t>(std::strtod(line.c_str() + colon_id + 1, nullptr) * 1'000'000);
-		}
+	const char * colon = std::strchr(buf, ':');
+	if(!colon)
+		return 0;
 
-	return 0;
+	return static_cast<std::int64_t>(std::strtoull(colon + 1, nullptr, 10));
 }
 
 

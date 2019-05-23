@@ -11,6 +11,7 @@
 
 
 #ifndef _WIN32
+#ifndef __APPLE__
 
 
 #include "infoware/cpu.hpp"
@@ -44,4 +45,5 @@ std::string iware::cpu::model_name() {
 }
 
 
+#endif
 #endif

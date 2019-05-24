@@ -11,6 +11,7 @@
 
 
 #ifndef _WIN32
+#ifndef __APPLE__
 
 
 #include "infoware/cpu.hpp"
@@ -103,4 +104,5 @@ iware::cpu::cache_t iware::cpu::cache(unsigned int level) {
 }
 
 
+#endif
 #endif

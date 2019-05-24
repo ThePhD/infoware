@@ -11,6 +11,7 @@
 
 
 #ifndef _WIN32
+#ifndef __APPLE__
 
 
 #include "infoware/cpu.hpp"
@@ -29,30 +30,31 @@ static std::pair<const char* const*, const char* const*> instruction_set_to_name
 	static const char* sse3[]      = {"ssse3", "sse3"};
 	static const char* avx[]       = {"avx"};
 
+
+#define HANDLED_CASE(iset, variable)        \
+	case iware::cpu::instruction_set_t::iset: \
+		return {variable, variable + (sizeof(variable) / sizeof(*variable))};
+
 	switch(set) {
-		case iware::cpu::instruction_set_t::s3d_now:
-			return {threednow, threednow + sizeof threednow / sizeof(*threednow)};
-		case iware::cpu::instruction_set_t::mmx:
-			return {mmx, mmx + sizeof mmx / sizeof(*mmx)};
-		case iware::cpu::instruction_set_t::sse:
-			return {sse, sse + sizeof sse / sizeof(*sse)};
-		case iware::cpu::instruction_set_t::sse2:
-			return {sse2, sse2 + sizeof sse2 / sizeof(*sse2)};
-		case iware::cpu::instruction_set_t::sse3:
-			return {sse3, sse3 + sizeof sse3 / sizeof(*sse3)};
-		case iware::cpu::instruction_set_t::avx:
-			return {avx, avx + sizeof avx / sizeof(*avx)};
+		HANDLED_CASE(s3d_now, threednow)
+		HANDLED_CASE(mmx, mmx)
+		HANDLED_CASE(sse, sse)
+		HANDLED_CASE(sse2, sse2)
+		HANDLED_CASE(sse3, sse3)
+		HANDLED_CASE(avx, avx)
+
 		default:
 			return {nullptr, nullptr};
 	}
+
+#undef HANDLED_CASE
 }
 
 
 bool iware::cpu::instruction_set_supported(iware::cpu::instruction_set_t set) {
-	std::vector<iware::cpu::instruction_set_t> ises = supported_instruction_sets();
-	if (std::find(ises.cbegin(), ises.cend(), set) != ises.cend()) {
+	const auto ises = supported_instruction_sets();
+	if(std::find(ises.begin(), ises.end(), set) != ises.cend())
 		return true;
-	}
 
 	const auto set_names = instruction_set_to_names(set);
 	if(!set_names.first)
@@ -76,4 +78,5 @@ bool iware::cpu::instruction_set_supported(iware::cpu::instruction_set_t set) {
 }
 
 
+#endif
 #endif

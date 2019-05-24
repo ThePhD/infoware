@@ -26,7 +26,7 @@ bool iware::cpu::instruction_set_supported(iware::cpu::instruction_set_t set) {
 	}
 
 	// TODO: is this necessary if we detect things with xgetbv and cpuid ?
-	// That is, AVX usually needs to have both OS support alongside 
+	// That is, AVX usually needs to have both OS support alongside
 	DWORD feature;
 	switch (set) {
 	case iware::cpu::instruction_set_t::s3d_now:

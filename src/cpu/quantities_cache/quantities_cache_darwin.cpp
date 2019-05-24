@@ -15,19 +15,39 @@
 
 #include "infoware/cpu.hpp"
 #include "infoware/detail/scope.hpp"
+#include <cstdlib>
 #include <cstring>
 #include <sstream>
 #include <stdio.h>
 #include <string>
-#include <unistd.h>
 
 
+// https://github.com/ThePhD/infoware/issues/12#issuecomment-495291650
+//
+// Assuming there's only ever gonna be 1 package because the sysctl outputs I've seen so far haven't provided any way to read if there were more?
+//
+// Parses `machdep.cpu.cores_per_package` and `machdep.cpu.logical_per_package`.
 iware::cpu::quantities_t iware::cpu::quantities() {
+	const auto sysctl_output = popen("sysctl machdep.cpu", "r");
+	if(!sysctl_output)
+		return {};
+	iware::detail::quickscope_wrapper sysctl_closer{[&]() { pclose(sysctl_output); }};
+
 	iware::cpu::quantities_t ret{};
-	ret.logical = sysconf(_SC_NPROCESSORS_ONLN);
 
-	// TODO rest of fields
+	char buf[48]{};
+	while(fgets(buf, sizeof(buf), sysctl_output)) {
+		const auto len = std::strlen(buf);
+		if(len < 31 + 2 || buf[len - 1] != '\n')
+			continue;  // Skipping all lines that don't fit in the buffer because the ones we're after do and the ones shorter than the ones we're after
 
+		if(std::strncmp(buf + 12, "cores_per_package: ", 29 - 12) == 0)
+			ret.physical = std::strtoul(buf + 29 + 2, nullptr, 10);
+		else if(std::strncmp(buf + 12, "logical_per_package: ", 31 - 12) == 0)
+			ret.logical = std::strtoul(buf + 31 + 2, nullptr, 10);
+	}
+
+	ret.packages = 1;
 	return ret;
 }
 
@@ -42,14 +62,12 @@ iware::cpu::cache_t iware::cpu::cache(unsigned int level) {
 		return {};
 	iware::detail::quickscope_wrapper sysctl_closer{[&]() { pclose(sysctl_output); }};
 
-	cache_t ret{};
+	iware::cpu::cache_t ret{};
 
 	bool full_line = false;
 	std::string line;
 	char buf[32]{};
-	for(bool have_data = true; have_data;) {
-		have_data = fgets(buf, sizeof(buf), sysctl_output);
-
+	while(fgets(buf, sizeof(buf), sysctl_output)) {
 		if(full_line)
 			line = buf;
 		else

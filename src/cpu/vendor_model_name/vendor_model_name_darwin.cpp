@@ -35,7 +35,7 @@ static std::string sysctl_value(const char* subkey) {
 	line.back() = '\0';
 
 	const auto colon_id    = line.find_first_of(':');
-	const auto nonspace_id = line.find_first_not_of(" \t", colon_id) + 1;
+	const auto nonspace_id = line.find_first_not_of(" \t", colon_id + 1);
 	return line.c_str() + nonspace_id;
 }
 

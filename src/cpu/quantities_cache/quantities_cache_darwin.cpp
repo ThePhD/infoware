@@ -26,7 +26,7 @@
 //
 // Assuming there's only ever gonna be 1 package because the sysctl outputs I've seen so far haven't provided any way to read if there were more?
 //
-// Parses `machdep.cpu.cores_per_package` and `machdep.cpu.logical_per_package`.
+// Parses `machdep.cpu.core_count` and `machdep.cpu.thread_count`.
 iware::cpu::quantities_t iware::cpu::quantities() {
 	const auto sysctl_output = popen("sysctl machdep.cpu", "r");
 	if(!sysctl_output)
@@ -38,13 +38,13 @@ iware::cpu::quantities_t iware::cpu::quantities() {
 	char buf[48]{};
 	while(fgets(buf, sizeof(buf), sysctl_output)) {
 		const auto len = std::strlen(buf);
-		if(len < 31 + 2 || buf[len - 1] != '\n')
+		if(len < 24 + 2 || buf[len - 1] != '\n')
 			continue;  // Skipping all lines that don't fit in the buffer because the ones we're after do and the ones shorter than the ones we're after
 
-		if(std::strncmp(buf + 12, "cores_per_package: ", 29 - 12) == 0)
-			ret.physical = std::strtoul(buf + 29 + 2, nullptr, 10);
-		else if(std::strncmp(buf + 12, "logical_per_package: ", 31 - 12) == 0)
-			ret.logical = std::strtoul(buf + 31 + 2, nullptr, 10);
+		if(std::strncmp(buf + 12, "core_count: ", 22 - 12) == 0)
+			ret.physical = std::strtoul(buf + 22 + 2, nullptr, 10);
+		else if(std::strncmp(buf + 12, "thread_count: ", 24 - 12) == 0)
+			ret.logical = std::strtoul(buf + 24 + 2, nullptr, 10);
 	}
 
 	ret.packages = 1;

@@ -15,8 +15,9 @@
 
 #include "infoware/cpu.hpp"
 #include "infoware/detail/scope.hpp"
-#include <stdio.h>
+#include <cstdlib>
 #include <cstring>
+#include <stdio.h>
 
 
 std::int64_t iware::cpu::frequency() noexcept {
@@ -29,7 +30,7 @@ std::int64_t iware::cpu::frequency() noexcept {
 	if(!fgets(buf, sizeof(buf), sysctl_output))
 		return 0;
 
-	const char * colon = std::strchr(buf, ':');
+	const char* colon = std::strchr(buf, ':');
 	if(!colon)
 		return 0;
 

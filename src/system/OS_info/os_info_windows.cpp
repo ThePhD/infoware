@@ -73,7 +73,7 @@ static std::string version_name() {
 	std::unique_ptr<IWbemLocator, iware::detail::release_deleter> wbem_loc(wbem_loc_raw);
 
 	IWbemServices* wbem_services_raw;
-	if(FAILED(wbem_loc->ConnectServer(&ConvertStringToBSTR("ROOT\\CIMV2")[0], nullptr, nullptr, 0, 0, 0, 0, &wbem_services_raw)))
+	if(FAILED(wbem_loc->ConnectServer(&ConvertStringToBSTR(R"(ROOT\CIMV2)")[0], nullptr, nullptr, 0, 0, 0, 0, &wbem_services_raw)))
 		return {};
 	std::unique_ptr<IWbemServices, iware::detail::release_deleter> wbem_services(wbem_services_raw);
 

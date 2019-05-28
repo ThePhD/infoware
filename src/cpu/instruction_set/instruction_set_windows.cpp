@@ -21,9 +21,8 @@
 
 bool iware::cpu::instruction_set_supported(iware::cpu::instruction_set_t set) {
 	std::vector<iware::cpu::instruction_set_t> ises = supported_instruction_sets();
-	if(std::find(ises.cbegin(), ises.cend(), set) != ises.cend()) {
+	if(std::find(ises.cbegin(), ises.cend(), set) != ises.cend())
 		return true;
-	}
 
 	// TODO: is this necessary if we detect things with xgetbv and cpuid?
 	// That is, AVX usually needs to have both OS support alongside

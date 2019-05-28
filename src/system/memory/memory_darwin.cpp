@@ -25,7 +25,7 @@
 
 /// Adapted from https://stackoverflow.com/q/14789672/2851815
 iware::system::memory_t iware::system::memory() noexcept {
-	iware::system::memory_t ret;
+	iware::system::memory_t ret{};
 
 	const auto host = mach_host_self();
 

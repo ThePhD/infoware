@@ -25,15 +25,15 @@
 static bool has_os_avx() {
 	bool avxsupport = false;
 
-	int32_t cpuinfo[4];
+	std::int32_t cpuinfo[4];
 	iware::detail::cpuid(cpuinfo, 1);
 
 	bool osusesxsave_restore = (cpuinfo[2] & (1 << 27)) != 0;
 	bool cpusupportsavx      = (cpuinfo[2] & (1 << 28)) != 0;
 
 	if(osusesxsave_restore && cpusupportsavx) {
-		uint64_t xcrFeatureMask = iware::detail::xgetbv(INFOWARE_XCR_XFEATURE_ENABLED_MASK);
-		avxsupport              = (xcrFeatureMask & 0x6) == 0x6;
+		const auto xcrFeatureMask = iware::detail::xgetbv(INFOWARE_XCR_XFEATURE_ENABLED_MASK);
+		avxsupport                = (xcrFeatureMask & 0x06) == 0x06;
 	}
 
 	return avxsupport;
@@ -43,18 +43,19 @@ static bool has_os_avx_512() {
 	if(!has_os_avx())
 		return false;
 
-	uint64_t xcrFeatureMask = iware::detail::xgetbv(INFOWARE_XCR_XFEATURE_ENABLED_MASK);
-	return (xcrFeatureMask & 0xe6) == 0xe6;
+	const auto xcrFeatureMask = iware::detail::xgetbv(INFOWARE_XCR_XFEATURE_ENABLED_MASK);
+	return (xcrFeatureMask & 0xE6) == 0xE6;
 }
 
 
 std::vector<iware::cpu::instruction_set_t> iware::cpu::supported_instruction_sets() {
-	int info[4];
+	std::int32_t info[4];
 	iware::detail::cpuid(info, 0);
-	int idinfo = info[0];
+	const auto idinfo = info[0];
 
 	iware::detail::cpuid(info, 0x80000000);
-	uint32_t extendedidinfo = info[0];
+	const std::uint32_t extendedidinfo = info[0];
+
 	std::vector<iware::cpu::instruction_set_t> supported;
 	supported.reserve(64);
 

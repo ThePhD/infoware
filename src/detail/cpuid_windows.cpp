@@ -18,7 +18,7 @@
 #include <intrin.h>
 
 
-void iware::detail::cpuid(int32_t (&out)[4], int32_t x) {
+void iware::detail::cpuid(std::int32_t (&out)[4], std::int32_t x) {
 	__cpuidex(out, x, 0);
 }
 

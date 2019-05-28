@@ -10,17 +10,16 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
+#include <cstring>
 #include <infoware/cpu.hpp>
 #include <infoware/detail/cpuid.hpp>
 
-#include <cstring>
-
 
 std::string iware::cpu::vendor_id() {
-	int32_t info[4];
+	std::int32_t info[4];
 	char name[13];
 
-	detail::cpuid(info, 0);
+	iware::detail::cpuid(info, 0);
 	std::memcpy(name + 0, &info[1], 4);
 	std::memcpy(name + 4, &info[3], 4);
 	std::memcpy(name + 8, &info[2], 4);

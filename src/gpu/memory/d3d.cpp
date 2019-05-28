@@ -44,10 +44,10 @@ static std::string std_wide_to_string(const wchar_t* begin, const wchar_t* end) 
 
 
 std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
-	void* factory_raw;
-	if(CreateDXGIFactory(__uuidof(IDXGIFactory), &factory_raw) != S_OK)
+	IDXGIFactory* factory_raw;
+	if(CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&factory_raw)) != S_OK)
 		return {};
-	std::unique_ptr<IDXGIFactory, iware::detail::release_deleter> factory(static_cast<IDXGIFactory*>(factory_raw));
+	std::unique_ptr<IDXGIFactory, iware::detail::release_deleter> factory(factory_raw);
 
 	std::vector<iware::gpu::device_properties_t> devices{};
 	for(auto aid = 0u;; ++aid) {
@@ -55,7 +55,7 @@ std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 		const auto adapter_result = factory->EnumAdapters(aid, &adapter_raw);
 		if(adapter_result != S_OK || adapter_result == DXGI_ERROR_NOT_FOUND)
 			break;
-		std::unique_ptr<IDXGIAdapter, iware::detail::release_deleter> adapter(static_cast<IDXGIAdapter*>(adapter_raw));
+		std::unique_ptr<IDXGIAdapter, iware::detail::release_deleter> adapter(adapter_raw);
 
 		DXGI_ADAPTER_DESC adapterdesc;
 		adapter->GetDesc(&adapterdesc);

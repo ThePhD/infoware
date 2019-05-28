@@ -16,6 +16,8 @@
 #include "infoware/detail/memory.hpp"
 #include "infoware/detail/scope.hpp"
 #include "infoware/system.hpp"
+#include <codecvt>
+#include <locale>
 #include <memory>
 #include <string>
 #define WIN32_LEAN_AND_MEAN
@@ -23,35 +25,13 @@
 #include <windows.h>
 
 
-// Adapted from
-// https://gitlab.isb-sib.ch/itopolsk/captain-bol/blob/master/xenobol/src/comutil.h
-static std::wstring ConvertStringToBSTR(const char* pSrc) {
-	if(!pSrc)
-		return {};
-
-	std::wstring ret;
-	if(const auto cwch = MultiByteToWideChar(CP_ACP, 0, pSrc, -1, nullptr, 0)) {
-		ret.resize(cwch - 1);
-		if(!MultiByteToWideChar(CP_ACP, 0, pSrc, -1, &ret[0], static_cast<int>(ret.size())))
-			if(ERROR_INSUFFICIENT_BUFFER == GetLastError())
-				return ret;
-	}
-	return ret;
-}
-
 static std::string ConvertBSTRToString(BSTR pSrc) {
 	if(!pSrc)
 		return {};
 
 	// convert even embeded NUL
 	const auto src_len = SysStringLen(pSrc);
-	std::string ret;
-	if(const auto len = WideCharToMultiByte(CP_ACP, 0, pSrc, src_len + 1, NULL, 0, 0, 0)) {
-		ret.resize(len + 1, '\0');
-		if(!WideCharToMultiByte(CP_ACP, 0, pSrc, src_len + 1, &ret[0], len, 0, 0))
-			ret.clear();
-	}
-	return ret;
+	return std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>{}.to_bytes(pSrc, pSrc + src_len);
 }
 
 
@@ -73,7 +53,8 @@ static std::string version_name() {
 	std::unique_ptr<IWbemLocator, iware::detail::release_deleter> wbem_loc(wbem_loc_raw);
 
 	IWbemServices* wbem_services_raw;
-	if(FAILED(wbem_loc->ConnectServer(&ConvertStringToBSTR(R"(ROOT\CIMV2)")[0], nullptr, nullptr, 0, 0, 0, 0, &wbem_services_raw)))
+	wchar_t network_resource[] = LR"(ROOT\CIMV2)";
+	if(FAILED(wbem_loc->ConnectServer(network_resource, nullptr, nullptr, 0, 0, 0, 0, &wbem_services_raw)))
 		return {};
 	std::unique_ptr<IWbemServices, iware::detail::release_deleter> wbem_services(wbem_services_raw);
 
@@ -82,8 +63,9 @@ static std::string version_name() {
 		return {};
 
 	IEnumWbemClassObject* query_iterator_raw;
-	if(FAILED(wbem_services->ExecQuery(&ConvertStringToBSTR("WQL")[0], &ConvertStringToBSTR("SELECT Name FROM Win32_OperatingSystem")[0],
-	                                   WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &query_iterator_raw)))
+	wchar_t query_lang[] = L"WQL";
+	wchar_t query[]      = L"SELECT Name FROM Win32_OperatingSystem";
+	if(FAILED(wbem_services->ExecQuery(query_lang, query, WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &query_iterator_raw)))
 		return {};
 	std::unique_ptr<IEnumWbemClassObject, iware::detail::release_deleter> query_iterator(query_iterator_raw);
 
@@ -100,6 +82,7 @@ static std::string version_name() {
 		VARIANT val;
 		value->Get(L"Name", 0, &val, 0, 0);
 		iware::detail::quickscope_wrapper val_destructor{[&] { VariantClear(&val); }};
+
 		ret = ConvertBSTRToString(val.bstrVal);
 	}
 	return ret.substr(0, ret.find('|'));

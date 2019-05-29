@@ -15,10 +15,9 @@
 
 #include "infoware/detail/memory.hpp"
 #include "infoware/detail/pci.hpp"
+#include "infoware/detail/winstring.hpp"
 #include "infoware/gpu.hpp"
-#include <codecvt>
 #include <d3d11.h>
-#include <locale>
 #include <memory>
 #include <tuple>
 
@@ -36,10 +35,6 @@ static iware::gpu::vendor_t vendor_from_name(const std::string& v) {
 		return iware::gpu::vendor_t::qualcomm;
 	else
 		return iware::gpu::vendor_t::unknown;
-}
-
-static std::string std_wide_to_string(const wchar_t* begin, const wchar_t* end) {
-	return std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>{}.to_bytes(begin, end);
 }
 
 
@@ -62,7 +57,7 @@ std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 
 		auto device = iware::detail::identify_device(adapterdesc.VendorId, adapterdesc.DeviceId);
 		if(device.device_name == "unknown")
-			device.device_name = std_wide_to_string(adapterdesc.Description, adapterdesc.Description + std::char_traits<wchar_t>::length(adapterdesc.Description));
+			device.device_name = iware::detail::narrowen_winstring(adapterdesc.Description);
 		devices.push_back({vendor_from_name(device.vendor_name), device.device_name, adapterdesc.DedicatedVideoMemory, adapterdesc.SharedSystemMemory});
 	}
 	return devices;

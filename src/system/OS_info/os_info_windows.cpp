@@ -15,29 +15,13 @@
 
 #include "infoware/detail/memory.hpp"
 #include "infoware/detail/scope.hpp"
+#include "infoware/detail/winstring.hpp"
 #include "infoware/system.hpp"
 #include <memory>
 #include <string>
 #define WIN32_LEAN_AND_MEAN
 #include <wbemidl.h>
 #include <windows.h>
-
-
-static std::string ConvertBSTRToString(BSTR pSrc) {
-	if(!pSrc)
-		return {};
-
-	const UINT src_len = SysStringLen(pSrc);
-	std::string ret;
-	if(const int len = WideCharToMultiByte(CP_ACP, 0, pSrc, static_cast<int>(src_len), NULL, 0, 0, 0)) {
-		ret.resize(static_cast<size_t>(len), '\0');
-		const int err = WideCharToMultiByte(CP_ACP, 0, pSrc, static_cast<int>(src_len), &ret[0], len, 0, 0);
-		if(err == 0) {
-			ret.clear();
-		}
-	}
-	return ret;
-}
 
 
 // Use WIM to acquire Win32_OperatingSystem.Name
@@ -88,7 +72,7 @@ static std::string version_name() {
 		value->Get(L"Name", 0, &val, 0, 0);
 		iware::detail::quickscope_wrapper val_destructor{[&] { VariantClear(&val); }};
 
-		ret = ConvertBSTRToString(val.bstrVal);
+		ret = iware::detail::narrowen_winstring(val.bstrVal);
 	}
 	return ret.substr(0, ret.find('|'));
 }

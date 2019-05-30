@@ -20,11 +20,11 @@
 namespace iware {
 	namespace detail {
 		struct pci_device_id {
-			std::string vendor_name;
-			std::string device_name;
+			const char* vendor_name;
+			const char* device_name;
 		};
 
 		pci_device_id identify_device(std::int64_t vendor_pci_id, std::int64_t device_pci_id) noexcept;
-		std::string identify_vendor(std::int64_t vendor_pci_id) noexcept;
+		const char* identify_vendor(std::int64_t vendor_pci_id) noexcept;
 	}  // namespace detail
 }  // namespace iware

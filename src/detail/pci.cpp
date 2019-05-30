@@ -71,9 +71,9 @@ iware::detail::pci_device_id iware::detail::identify_device(std::int64_t vendor_
 }
 
 
-std::string iware::detail::identify_vendor(std::int64_t pci_id) noexcept {
+const char* iware::detail::identify_vendor(std::int64_t pci_id) noexcept {
 	if(const auto vendor = find_vendor(pci_id))
-		return {std::begin(vendor->name), std::end(vendor->name)};
+		return vendor->name.arr;
 	else
 		return "unknown";
 }

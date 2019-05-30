@@ -19,7 +19,6 @@
 #include "infoware/gpu.hpp"
 #include <d3d11.h>
 #include <memory>
-#include <tuple>
 
 
 static iware::gpu::vendor_t vendor_from_name(const std::string& v) {
@@ -56,9 +55,10 @@ std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 		adapter->GetDesc(&adapterdesc);
 
 		auto device = iware::detail::identify_device(adapterdesc.VendorId, adapterdesc.DeviceId);
-		if(device.device_name == "unknown")
-			device.device_name = iware::detail::narrowen_winstring(adapterdesc.Description);
-		devices.push_back({vendor_from_name(device.vendor_name), device.device_name, adapterdesc.DedicatedVideoMemory, adapterdesc.SharedSystemMemory});
+		std::string device_name = device.device_name;
+		if(device_name == "unknown")
+			device_name = iware::detail::narrowen_winstring(adapterdesc.Description);
+		devices.push_back({vendor_from_name(device.vendor_name), device_name, adapterdesc.DedicatedVideoMemory, adapterdesc.SharedSystemMemory});
 	}
 	return devices;
 }

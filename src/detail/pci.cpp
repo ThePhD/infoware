@@ -22,24 +22,15 @@ namespace {
 		std::size_t index;
 	};
 
-	template <typename T>
-	struct cheap_view {
-		T* arr;
-		std::size_t arr_size;
-
-		T* begin() const { return arr; }
-		T* end() const { return arr + arr_size; }
-	};
-
 	struct pci_vendor_info_t {
 		std::int64_t pci_id;
-		cheap_view<const char> name;
+		const char * name;
 		std::initializer_list<const std::int64_t> device_indices;
 	};
 
 	struct pci_device_info_t {
 		std::int64_t pci_id;
-		cheap_view<const char> name;
+		const char * name;
 	};
 }  // namespace
 
@@ -64,16 +55,16 @@ iware::detail::pci_device_id iware::detail::identify_device(std::int64_t vendor_
 	const auto device_itr = std::lower_bound(std::begin(vendor->device_indices), std::end(vendor->device_indices), device_pci_id,
 	                                         [](auto left, auto right) { return devices[left].pci_id < right; });
 	if(device_itr == std::end(vendor->device_indices) || devices[*device_itr].pci_id != device_pci_id)
-		return {vendor->name.arr, "unknown"};
+		return {vendor->name, "unknown"};
 
 	const auto& device = devices[*device_itr];
-	return {vendor->name.arr, device.name.arr};
+	return {vendor->name, device.name};
 }
 
 
 const char* iware::detail::identify_vendor(std::int64_t pci_id) noexcept {
 	if(const auto vendor = find_vendor(pci_id))
-		return vendor->name.arr;
+		return vendor->name;
 	else
 		return "unknown";
 }

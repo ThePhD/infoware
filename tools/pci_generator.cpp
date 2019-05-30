@@ -31,10 +31,6 @@ struct device_t {
 };
 
 
-static void write(std::ostream& out, const std::vector<vendor_t>& vendor_indices, const std::vector<device_t>& device_id_indices,
-                  const std::vector<std::string>& names) {}
-
-
 int main(int argc, const char** argv) {
 	if(argc < 2) {
 		std::cerr << "In file missing\n";
@@ -95,8 +91,7 @@ int main(int argc, const char** argv) {
 	out << "\n\n\n"
 	       "#define INFOWARE_GENERATED_PCI_VENDORS";
 	for(auto&& vendor : vendor_id_indices) {
-		out << " \\\n\t{" << vendor.pci_id << ", {R\"(" << vendor_device_names[vendor.name_index] << ")\", " << vendor_device_names[vendor.name_index].size()
-		    << "}, {";
+		out << " \\\n\t{" << vendor.pci_id << ", R\"(" << vendor_device_names[vendor.name_index] << ")\", {";
 		for(auto i : vendor.devices)
 			out << i << ", ";
 		out << "}},";
@@ -105,8 +100,7 @@ int main(int argc, const char** argv) {
 	out << "\n\n\n"
 	       "#define INFOWARE_GENERATED_PCI_DEVICES";
 	for(auto&& device : device_id_indices)
-		out << " \\\n\t{" << device.pci_id << ", {R\"(" << vendor_device_names[device.name_index] << ")\", " << vendor_device_names[device.name_index].size()
-		    << "}},";
+		out << " \\\n\t{" << device.pci_id << ", R\"(" << vendor_device_names[device.name_index] << ")\"},";
 
 	out << "\n\n\n"
 	       "namespace {}\n";  // Suppress bogus "warning: backslash-newline at end of file" on GCC

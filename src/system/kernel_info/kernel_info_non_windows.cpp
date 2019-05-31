@@ -23,11 +23,11 @@ iware::system::kernel_info_t iware::system::kernel_info() {
 	utsname uts;
 	uname(&uts);
 
-	char* marker            = uts.release;
-	const auto major        = std::strtoul(marker, &marker, 10);
-	const auto minor        = std::strtoul(marker + 1, &marker, 10);
-	const auto patch        = std::strtoul(marker + 1, &marker, 10);
-	const auto build_number = std::strtoul(marker + 1, nullptr, 10);
+	char* marker                     = uts.release;
+	const std::uint32_t major        = std::strtoul(marker, &marker, 10);
+	const std::uint32_t minor        = std::strtoul(marker + 1, &marker, 10);
+	const std::uint32_t patch        = std::strtoul(marker + 1, &marker, 10);
+	const std::uint32_t build_number = std::strtoul(marker + 1, nullptr, 10);
 
 	auto kernel = iware::system::kernel_t::unknown;
 	if(!std::strcmp(uts.sysname, "Linux"))

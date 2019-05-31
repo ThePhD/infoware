@@ -24,14 +24,6 @@ endif()
 
 project(infoware VERSION ${infoware_version} LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "bin")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "bin")
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "lib")
-
 
 option(INFOWARE_USE_D3D    "Add public, transitive define to infoware to use Direct 3D for GPU detection."                       OFF)
 option(INFOWARE_USE_OPENCL "Add public, transitive define to infoware to use Open Graphics Language (OpenGL) for GPU detection." OFF)
@@ -68,6 +60,14 @@ add_library(iware::infoware ALIAS infoware)
 
 target_include_directories(infoware PUBLIC include)
 target_include_directories(infoware PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
+
+set_target_properties(infoware PROPERTIES CXX_STANDARD 14
+                                          CXX_STANDARD_REQUIRED ON
+                                          CXX_EXTENSIONS OFF
+
+                                          RUNTIME_OUTPUT_DIRECTORY "bin"
+                                          LIBRARY_OUTPUT_DIRECTORY "bin"
+                                          ARCHIVE_OUTPUT_DIRECTORY "lib")
 
 
 # Thanks, @griwes
@@ -144,6 +144,10 @@ if(INFOWARE_EXAMPLES)
 		add_executable(iware::${infoware_example_name}_example ALIAS infoware_${infoware_example_name}_example)
 
 		target_link_libraries(infoware_${infoware_example_name}_example PUBLIC infoware)
+
+		set_target_properties(infoware_${infoware_example_name}_example PROPERTIES CXX_STANDARD 14
+		                                                                           CXX_STANDARD_REQUIRED ON
+		                                                                           CXX_EXTENSIONS OFF)
 
 		if(INFOWARE_TESTS)
 			add_test(NAME example_${infoware_example_name} COMMAND infoware_${infoware_example_name}_example)

@@ -14,12 +14,12 @@
 
 
 #include "infoware/detail/winstring.hpp"
+#include <cwchar>
+#include <string>
 #define WIN32_LEAN_AND_MEAN
 #include <wbemidl.h>
 #include <windows.h>
 
-#include <cwchar>
-#include <string>
 
 static std::string transcode_from_wide(const wchar_t* wstr, std::size_t wstr_size) {
 	std::string ret;
@@ -35,16 +35,15 @@ static std::string transcode_from_wide(const wchar_t* wstr, std::size_t wstr_siz
 std::string iware::detail::narrowen_winstring(const wchar_t* wstr) {
 	if(!wstr)
 		return {};
-	std::size_t len = std::wcslen(wstr);
-	return transcode_from_wide(wstr, len);
+
+	return transcode_from_wide(wstr, std::wcslen(wstr));
 }
 
 std::string iware::detail::narrowen_bstring(const wchar_t* bstr) {
 	if(!bstr)
 		return {};
 
-	const auto src_len = SysStringLen(const_cast<BSTR>(bstr));
-	return transcode_from_wide(bstr, src_len);
+	return transcode_from_wide(bstr, SysStringLen(const_cast<BSTR>(bstr)));
 }
 
 

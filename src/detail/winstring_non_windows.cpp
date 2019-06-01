@@ -24,4 +24,5 @@ std::string iware::detail::narrowen_bstring(const wchar_t*) {
 	return {};
 }
 
+
 #endif

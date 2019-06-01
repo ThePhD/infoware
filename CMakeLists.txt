@@ -148,13 +148,13 @@ if(INFOWARE_EXAMPLES)
 
 		target_link_libraries(infoware_${infoware_example_name}_example PUBLIC infoware)
 
-		set_target_properties(infoware_${infoware_example_name}_example PROPERTIES 
-																	RUNTIME_OUTPUT_DIRECTORY "bin"
-																	LIBRARY_OUTPUT_DIRECTORY "bin"
-																	ARCHIVE_OUTPUT_DIRECTORY "lib"
-																	CXX_STANDARD 14
+		set_target_properties(infoware_${infoware_example_name}_example PROPERTIES CXX_STANDARD 14
 		                                                                           CXX_STANDARD_REQUIRED ON
-		                                                                           CXX_EXTENSIONS OFF)
+		                                                                           CXX_EXTENSIONS OFF
+
+																	                                             RUNTIME_OUTPUT_DIRECTORY "bin"
+																	                                             LIBRARY_OUTPUT_DIRECTORY "bin"
+																	                                             ARCHIVE_OUTPUT_DIRECTORY "lib")
 
 		if(INFOWARE_TESTS)
 			add_test(NAME example_${infoware_example_name} COMMAND infoware_${infoware_example_name}_example)

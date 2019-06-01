@@ -55,7 +55,7 @@ iware::detail::pci_device_id iware::detail::identify_device(std::int64_t vendor_
 	const auto device_itr = std::lower_bound(std::begin(vendor->device_indices), std::end(vendor->device_indices), device_pci_id,
 	                                         [](auto left, auto right) { return devices[left].pci_id < right; });
 	if(device_itr == std::end(vendor->device_indices) || devices[*device_itr].pci_id != device_pci_id)
-		return {vendor->name, "unknown"};
+		return {vendor->name, nullptr};
 
 	const auto& device = devices[*device_itr];
 	return {vendor->name, device.name};
@@ -66,5 +66,5 @@ const char* iware::detail::identify_vendor(std::int64_t pci_id) noexcept {
 	if(const auto vendor = find_vendor(pci_id))
 		return vendor->name;
 	else
-		return "unknown";
+		return nullptr;
 }

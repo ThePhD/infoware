@@ -10,7 +10,9 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#include "infoware/version.hpp"
+#pragma once
 
 
-const char* const iware::version = INFOWARE_VERSION;
+namespace iware {
+	extern const char * const version;
+}

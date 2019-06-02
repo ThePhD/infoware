@@ -10,7 +10,8 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#include "infoware/infoware.hpp"
+#include "infoware/cpu.hpp"
+#include "infoware/version.hpp"
 #include <iostream>
 #include <utility>
 
@@ -21,7 +22,7 @@ static const char* endianness_name(iware::cpu::endianness_t endianness) noexcept
 
 
 int main() {
-	std::cout << "Infoware version " << iware::version() << '\n';
+	std::cout << "Infoware version " << iware::version << '\n';
 
 	{
 		const auto quantities = iware::cpu::quantities();

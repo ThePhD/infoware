@@ -16,8 +16,4 @@
 #include "cpu.hpp"
 #include "gpu.hpp"
 #include "system.hpp"
-
-
-namespace iware {
-	const char* version() noexcept;
-}
+#include "version.hpp"

@@ -25,7 +25,7 @@ static std::string central_processor_subkey(const char* key) {
 		return {};
 
 	char identifier[IdentLen];
-	DWORD identifier_len = sizeof identifier;
+	DWORD identifier_len = sizeof(identifier);
 	LPBYTE lpdata        = static_cast<LPBYTE>(static_cast<void*>(&identifier[0]));
 	if(RegQueryValueExA(hkey, key, nullptr, nullptr, lpdata, &identifier_len))
 		return {};

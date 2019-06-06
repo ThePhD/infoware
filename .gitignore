@@ -5,6 +5,8 @@
 !examples/**
 !include
 !include/**
+!tools
+!tools/**
 !.git*
 !.clang-format
 !.travis.yml

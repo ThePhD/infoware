@@ -297,6 +297,9 @@
     <ClCompile Include="src\system\OS_info\os_info_non_windows_non_darwin.cpp" />
     <ClCompile Include="src\system\OS_info\os_info_windows.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

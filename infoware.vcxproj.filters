@@ -116,9 +116,6 @@
     <ClCompile Include="src\detail\cpuid_windows.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\detail\pci.generated.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\detail\scope.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -179,5 +176,11 @@
     <ClCompile Include="src\system\OS_info\os_info_windows.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\detail\pci.generated.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
   </ItemGroup>
 </Project>

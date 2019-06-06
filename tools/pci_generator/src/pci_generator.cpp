@@ -238,11 +238,11 @@ int main(int argc, char* argv[]) {
 
 )";
 
-	write("identify_device", out, vendor_id_indices, device_id_indices, vendor_device_names);
+	write("identify_device_pci", out, vendor_id_indices, device_id_indices, vendor_device_names);
 
 	out <<
 	    R"(		std::string identify_vendor(int64_t pci_id) noexcept {
-			return std::move(identify_device(pci_id, 0).first);
+			return std::move(identify_device_pci(pci_id, 0).first);
 		}
 )";
 

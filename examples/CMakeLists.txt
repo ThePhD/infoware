@@ -13,7 +13,7 @@ cmake_minimum_required(VERSION 3.6.0)
 
 project(infoware_examples VERSION 1.0.0 LANGUAGES CXX C)
 
-add_executable(infoware_cpu_example gpu.cpp)
+add_executable(infoware_cpu_example cpu.cpp)
 add_executable(iware::cpu_example ALIAS infoware_cpu_example)
 target_link_libraries(infoware_cpu_example PUBLIC iware::infoware)
 if (MSVC)

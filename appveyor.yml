@@ -1,8 +1,13 @@
 version: "{build}"
 skip_tags: false
 
-platform: x64
-configuration: Release
+image:
+  - Visual Studio 2015
+  - Visual Studio 2017
+  - Visual Studio 2019 Preview
+platform:
+  - x86
+  - x64
 
 clone_folder: C:\infoware
 
@@ -10,10 +15,12 @@ build_script:
   - git submodule update --init --recursive
   - md build
   - cd build
-  - cmake -DCMAKE_BUILD_TYPE=Release -DINFOWARE_EXAMPLES=ON -DINFOWARE_TESTS=ON -DINFOWARE_USE_D3D=ON ..
+  - cmake -DINFOWARE_EXAMPLES=ON -DINFOWARE_TESTS=ON -DINFOWARE_USE_D3D=ON ..
+  - cmake --build . --config Debug
   - cmake --build . --config Release
 
 test_script:
+  - ctest --output-on-failure --build-config Debug
   - ctest --output-on-failure --build-config Release
 
 notifications:

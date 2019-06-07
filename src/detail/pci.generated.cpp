@@ -28,7 +28,7 @@ namespace iware {
 		struct pci_vendor_info_t { int64_t pci_id; cheap_view<const char> name; std::initializer_list<const int64_t> device_indices; };
 		struct pci_device_info_t { int64_t pci_id; cheap_view<const char> name; };
 
-		std::pair<std::string, std::string> identify_device_pci(int64_t vendor_pci_id, int64_t device_pci_id) noexcept {
+		pci_device_id identify_device(int64_t vendor_pci_id, int64_t device_pci_id) noexcept {
 			static const id_pair_t indices[] {
 				{ 0x1, 0x0 },
 				{ 0x10, 0x1 },
@@ -20018,8 +20018,10 @@ namespace iware {
 			return { vendor.name.arr, device.name.arr };
 		}
 
+
 		std::string identify_vendor(int64_t pci_id) noexcept {
-			return std::move(identify_device_pci(pci_id, 0).first);
+			return std::move(identify_device(pci_id, 0).vendor_name);
 		}
+
 	}
 }

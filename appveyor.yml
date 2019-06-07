@@ -6,20 +6,15 @@ configuration: Release
 
 clone_folder: C:\infoware
 
-install:
-  - set PATH=C:\msys64\mingw64\bin;C:\msys64\usr\bin;%PATH%
-  - bash -lc "pacman --needed --noconfirm -Sy pacman-mirrors"
-  - bash -lc "pacman --noconfirm -Sy"
-  - bash -lc "pacman --noconfirm -S mingw-w64-x86_64-toolchain"
-
-build: off
 build_script:
   - git submodule update --init --recursive
-  - make USE_D3D=true
+  - md build
+  - cd build
+  - cmake -DCMAKE_BUILD_TYPE=Release -DINFOWARE_EXAMPLES=ON -DINFOWARE_TESTS=ON -DINFOWARE_USE_D3D=ON ..
+  - cmake --build . --config Release
 
-test: off
 test_script:
-  - "bash -c \"for e in $(ls out/examples); do echo -n \\\"$e: \\\"; out/examples/$e; done\""
+  - ctest --output-on-failure --build-config Release
 
 notifications:
   - provider: Email

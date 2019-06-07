@@ -29,7 +29,7 @@ struct device_t {
 
 void write(std::string name, std::ofstream& out, const std::vector<vendor_t>& vendor_indices, const std::vector<device_t>& device_indices,
            const std::vector<std::string>& names) {
-	out << "\t\tstd::pair<std::string, std::string> " << name << "(int64_t vendor_pci_id, int64_t device_pci_id) noexcept {\n";
+	out << "\t\tpci_device_id " << name << "(int64_t vendor_pci_id, int64_t device_pci_id) noexcept {\n";
 	out << "\t\t\tstatic const id_pair_t indices[] {\n";
 	// indices
 	std::size_t idx = 0;
@@ -141,9 +141,9 @@ int main(int argc, char* argv[]) {
 	std::vector<vendor_t> vendor_id_indices{};
 	std::vector<device_t> device_id_indices{};
 	std::vector<std::string> vendor_device_names{};
-	device_id_indices.reserve(15000);
-	vendor_id_indices.reserve(2500);
-	vendor_device_names.reserve(15000 + 2500);
+	device_id_indices.reserve(2000);
+	vendor_id_indices.reserve(3500);
+	vendor_device_names.reserve(20000 + 3500);
 
 	std::ifstream input(file);
 
@@ -151,11 +151,12 @@ int main(int argc, char* argv[]) {
 	std::string poststreamname;
 	int64_t streamid;
 	for(bool freeze = false; input;) {
-		char c = '#';
-		c      = input.peek();
+		int ic = '#';
+		ic     = input.peek();
 		if(!input) {
 			break;
 		}
+		char c        = static_cast<char>(ic);
 		bool readable = std::isalnum(c) || c == '\t';
 		if(!readable) {
 			input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -200,7 +201,10 @@ int main(int argc, char* argv[]) {
 
 	std::sort(vendor_id_indices.begin(), vendor_id_indices.end(), [](auto& a, auto& b) { return a.pci_id < b.pci_id; });
 
-	std::ofstream out(outfile);
+	std::ofstream out(outfile, std::ios::binary | std::ios::trunc | std::ios::out);
+	if(!out) {
+		return 1;
+	}
 
 	out << R"(// infoware - C++ System information Library
 //
@@ -238,17 +242,17 @@ int main(int argc, char* argv[]) {
 
 )";
 
-	write("identify_device_pci", out, vendor_id_indices, device_id_indices, vendor_device_names);
+	write("identify_device", out, vendor_id_indices, device_id_indices, vendor_device_names);
 
-	out <<
-	    R"(		std::string identify_vendor(int64_t pci_id) noexcept {
-			return std::move(identify_device_pci(pci_id, 0).first);
+	out << R"(
+		std::string identify_vendor(int64_t pci_id) noexcept {
+			return std::move(identify_device(pci_id, 0).vendor_name);
 		}
 )";
 
 
-	out <<
-	    R"(	}
+	out << R"(
+	}
 }
 )";
 

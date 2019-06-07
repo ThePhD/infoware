@@ -51,6 +51,10 @@
 // [5:53 PM] Elim | iscicadabannedyet.com: but yeah, it's p retarded
 
 
+#include "infoware/gpu.hpp"
+#include <vector>
+
+
 std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 	return {};
 }

@@ -68,7 +68,9 @@ endif()
 
 if(INFOWARE_USE_D3D)
 	target_compile_definitions(infoware PUBLIC INFOWARE_USE_D3D)
-	target_link_libraries(infoware PUBLIC dxgi)
+	if (WIN32)
+		target_link_libraries(infoware PUBLIC dxgi)
+	endif()
 elseif(INFOWARE_USE_OPENGL)
 	target_compile_definitions(infoware PUBLIC INFOWARE_USE_OPENGL)
 
@@ -87,6 +89,7 @@ endif()
 
 if(INFOWARE_USE_X11)
 	target_compile_definitions(infoware PUBLIC INFOWARE_USE_X11)
+	target_link_libraries(infoware PUBLIC X11)
 endif()
 
 

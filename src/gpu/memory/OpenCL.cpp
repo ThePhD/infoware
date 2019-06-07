@@ -16,6 +16,7 @@
 
 #include "infoware/gpu.hpp"
 #include <cstdlib>
+#include <cstring>
 #ifdef __APPLE__
 #include <OpenCL/opencl.h>
 #else
@@ -57,7 +58,7 @@ std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 			clGetDeviceInfo(devices[j], CL_DEVICE_VENDOR, sizeof vendorname, &vendorname, nullptr);
 			clGetDeviceInfo(devices[j], CL_DEVICE_NAME, sizeof name, &name, nullptr);
 
-			ret.push_back({parse_vendor(vendorname), vendorname, name, memory, cache});
+			ret.push_back(iware::gpu::device_properties_t{parse_vendor(vendorname), name, memory, cache});
 		}
 	}
 

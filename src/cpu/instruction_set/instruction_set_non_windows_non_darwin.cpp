@@ -70,7 +70,7 @@ bool iware::cpu::instruction_set_supported(iware::cpu::instruction_set_t set) {
 			const auto colon_id = tmp.find_first_of(':');
 			std::istringstream is(tmp.c_str() + colon_id + 1);
 			while(is >> tmp)
-				if(std::any_of(set_names.first, set_names.second, [&](auto name) { return tmp == name; }))
+				if(std::any_of(set_names.first, set_names.second, [&](const auto& name) { return tmp == name; }))
 					return true;
 		}
 

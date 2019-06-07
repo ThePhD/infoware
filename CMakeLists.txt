@@ -37,7 +37,8 @@ add_library(iware::infoware ALIAS infoware)
 
 target_include_directories(infoware PUBLIC include)
 
-
+target_compile_definitions(infoware PRIVATE INFOWARE_INTERNAL_COMPILING)
+	
 if(MSVC)
 	# Only CMake 3.15.0 makes this stuff not necessary, but we have a shitty
 	# minimum required version :/
@@ -45,7 +46,13 @@ if(MSVC)
 	target_compile_options(infoware PRIVATE /EHsc /W4)
 	target_compile_definitions(infoware PRIVATE UNICODE _UNICODE)
 else()
-	target_compile_options(infoware PRIVATE -pedantic -Wall -Wextra -pipe)
+	target_compile_options(infoware PRIVATE -pedantic -pedantic-errors 
+		-Wpedantic -pedantic -Wall -Wextra -Werror 
+		-Wno-unknown-warning -Wno-unknown-warning-option
+		-pipe -std=c++14)
+	if (WIN32)
+		target_link_libraries(infoware PRIVATE gdi32 version wbemuuid)
+	endif()
 endif()
 
 if(WIN32 AND NOT MSVC)
@@ -59,7 +66,13 @@ endif()
 
 if(INFOWARE_USE_D3D)
 	target_compile_definitions(infoware PUBLIC INFOWARE_USE_D3D)
+<<<<<<< HEAD
 	target_link_libraries(infoware PUBLIC dxgi)
+=======
+	if (WIN32)
+		target_link_libraries(infoware PUBLIC dxgi.lib)
+	endif()
+>>>>>>> fix up all derps from unused code
 elseif(INFOWARE_USE_OPENGL)
 	target_compile_definitions(infoware PUBLIC INFOWARE_USE_OPENGL)
 
@@ -78,6 +91,7 @@ endif()
 
 if(INFOWARE_USE_X11)
 	target_compile_definitions(infoware PUBLIC INFOWARE_USE_X11)
+	target_link_libraries(infoware PUBLIC X11)
 endif()
 
 

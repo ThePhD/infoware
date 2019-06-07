@@ -11,7 +11,7 @@
 
 cmake_minimum_required(VERSION 3.6.0)
 
-project(infoware VERSION 1.0.0 LANGUAGES CXX C)
+project(infoware VERSION 1.0.0 LANGUAGES CXX)
 
 option(INFOWARE_USE_D3D "Add public, transitive define to infoware to use Direct 3D for GPU Detection." OFF)
 option(INFOWARE_USE_OPENGL "Add public, transitive define to infoware to use Open Compute Language (OpenCL) for GPU Detection." OFF)
@@ -42,6 +42,11 @@ if (INFOWARE_EXAMPLES OR INFOWARE_TESTS)
 	endif()
 endif()
 
+if (MSVC)
+	# Only CMake 3.15.0 makes this stuff not necessary, but we have a shitty
+	# minimum required version :/
+	string(REGEX REPLACE "/W[0-4]" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+endif()
 
 set(infoware_source_files
 	"src/cpu/architecture/architecture_non_windows.cpp"
@@ -94,6 +99,8 @@ target_compile_definitions(infoware PRIVATE INFOWARE_INTERNAL_COMPILING)
 if (MSVC)
 	target_compile_options(infoware PRIVATE /EHsc /W4)
 	target_link_libraries(infoware PRIVATE gdi32 version wbemuuid)
+	target_compile_definitions(infoware
+		PRIVATE UNICODE _UNICODE)
 else()
 	target_compile_options(infoware PRIVATE -Wno-unknown-warning -Wno-unknown-warning-option
 		-Wall -Wpedantic -Werror -pedantic -pedantic-errors -Wno-noexcept-type)
@@ -101,6 +108,7 @@ endif()
 get_target_property(infoware_library_type infoware TYPE)
 if (infoware_library_type STREQUAL "SHARED_LIBRARY")
 	target_compile_definitions(infoware PUBLIC INFOWARE_DLL)
+else()
 endif()
 
 if (INFOWARE_USE_D3D)

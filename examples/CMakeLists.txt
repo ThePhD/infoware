@@ -9,7 +9,7 @@
 # You should have received a copy of the CC0 Public Domain Dedication along with this software.
 # If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
-cmake_minimum_required(VERSION 3.15.0)
+cmake_minimum_required(VERSION 3.6.0)
 
 project(infoware_examples VERSION 1.0.0 LANGUAGES CXX C)
 

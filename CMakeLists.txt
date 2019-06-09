@@ -67,7 +67,7 @@ add_library(infoware ${infoware_source_files})
 add_library(iware::infoware ALIAS infoware)
 
 target_include_directories(infoware PUBLIC include)
-include_directories("${CMAKE_CURRENT_BINARY_DIR}")
+target_include_directories(infoware PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
 
 
 # Thanks, @griwes

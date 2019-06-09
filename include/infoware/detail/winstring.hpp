@@ -18,6 +18,7 @@
 
 namespace iware {
 	namespace detail {
+		std::string narrowen_bstring(const wchar_t* wstr);
 		std::string narrowen_winstring(const wchar_t* wstr);
 	}  // namespace detail
 }  // namespace iware

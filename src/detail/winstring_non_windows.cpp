@@ -20,5 +20,8 @@ std::string iware::detail::narrowen_winstring(const wchar_t*) {
 	return {};
 }
 
+std::string iware::detail::narrowen_bstring(const wchar_t*) {
+	return {};
+}
 
 #endif

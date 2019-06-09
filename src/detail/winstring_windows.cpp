@@ -18,22 +18,33 @@
 #include <wbemidl.h>
 #include <windows.h>
 
+#include <cwchar>
+#include <string>
 
-// Adapted from
-// https://gitlab.isb-sib.ch/itopolsk/captain-bol/blob/master/xenobol/src/comutil.h
-std::string iware::detail::narrowen_winstring(const wchar_t* str) {
-	if(!str)
-		return {};
-
+static std::string transcode_from_wide(const wchar_t* wstr, std::size_t wstr_size) {
 	std::string ret;
 	// convert even embeded NUL
-	const auto src_len = SysStringLen(const_cast<BSTR>(str));
-	if(const auto len = WideCharToMultiByte(CP_ACP, 0, str, src_len, NULL, 0, 0, 0)) {
+	if(const auto len = WideCharToMultiByte(CP_UTF8, 0, wstr, static_cast<int>(wstr_size), NULL, 0, 0, 0)) {
 		ret.resize(len, '\0');
-		if(!WideCharToMultiByte(CP_ACP, 0, str, src_len, &ret[0], len, 0, 0))
+		if(!WideCharToMultiByte(CP_UTF8, 0, wstr, static_cast<int>(wstr_size), &ret[0], len, 0, 0))
 			ret.clear();
 	}
 	return ret;
+}
+
+std::string iware::detail::narrowen_winstring(const wchar_t* wstr) {
+	if(!wstr)
+		return {};
+	std::size_t len = std::wcslen(wstr);
+	return transcode_from_wide(wstr, len);
+}
+
+std::string iware::detail::narrowen_bstring(const wchar_t* bstr) {
+	if(!bstr)
+		return {};
+
+	const auto src_len = SysStringLen(const_cast<BSTR>(bstr));
+	return transcode_from_wide(bstr, src_len);
 }
 
 

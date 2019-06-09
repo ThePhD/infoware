@@ -72,7 +72,7 @@ static std::string version_name() {
 		value->Get(L"Name", 0, &val, 0, 0);
 		iware::detail::quickscope_wrapper val_destructor{[&] { VariantClear(&val); }};
 
-		ret = iware::detail::narrowen_winstring(val.bstrVal);
+		ret = iware::detail::narrowen_bstring(val.bstrVal);
 	}
 	return ret.substr(0, ret.find('|'));
 }

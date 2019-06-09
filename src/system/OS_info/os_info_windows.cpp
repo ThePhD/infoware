@@ -16,8 +16,6 @@
 #include "infoware/detail/memory.hpp"
 #include "infoware/detail/scope.hpp"
 #include "infoware/system.hpp"
-#include <codecvt>
-#include <locale>
 #include <memory>
 #include <string>
 #define WIN32_LEAN_AND_MEAN
@@ -29,9 +27,16 @@ static std::string ConvertBSTRToString(BSTR pSrc) {
 	if(!pSrc)
 		return {};
 
-	// convert even embeded NUL
-	const auto src_len = SysStringLen(pSrc);
-	return std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>{}.to_bytes(pSrc, pSrc + src_len);
+	const UINT src_len = SysStringLen(pSrc);
+	std::string ret;
+	if(const int len = WideCharToMultiByte(CP_ACP, 0, pSrc, static_cast<int>(src_len), NULL, 0, 0, 0)) {
+		ret.resize(static_cast<size_t>(len), '\0');
+		const int err = WideCharToMultiByte(CP_ACP, 0, pSrc, static_cast<int>(src_len), &ret[0], len, 0, 0);
+		if(err == 0) {
+			ret.clear();
+		}
+	}
+	return ret;
 }
 
 

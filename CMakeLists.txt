@@ -79,14 +79,14 @@ else()
 endif()
 
 add_executable(infoware_pci_generator tools/pci_generator.cpp)
+set_target_properties(infoware_pci_generator PROPERTIES CXX_STANDARD 14
+                                                        CXX_STANDARD_REQUIRED ON
+                                                        CXX_EXTENSIONS OFF)
 add_custom_target(infoware_generate_pcis
                   COMMAND ${CMAKE_COMMAND} -E make_directory infoware_generated/
                   COMMAND $<TARGET_FILE:infoware_pci_generator> "${CMAKE_CURRENT_BINARY_DIR}/pciids/pci.ids" > "infoware_generated/pci_data.hpp"
                   DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/pciids/pci.ids"
                   BYPRODUCTS "infoware_generated/pci_data.hpp")
-set_target_properties(infoware_generate_pcis PROPERTIES CXX_STANDARD 14
-                                                        CXX_STANDARD_REQUIRED ON
-                                                        CXX_EXTENSIONS OFF)
 add_dependencies(infoware infoware_generate_pcis)
 
 

@@ -10,7 +10,7 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#ifndef WIN32
+#ifdef WIN32
 
 
 #include "infoware/detail/winstring.hpp"
@@ -28,9 +28,9 @@ std::string iware::detail::narrowen_winstring(const wchar_t* str) {
 	std::string ret;
 	// convert even embeded NUL
 	const auto src_len = SysStringLen(const_cast<BSTR>(str));
-	if(const auto len = WideCharToMultiByte(CP_ACP, 0, str, src_len + 1, NULL, 0, 0, 0)) {
-		ret.resize(len + 1, '\0');
-		if(!WideCharToMultiByte(CP_ACP, 0, str, src_len + 1, &ret[0], len, 0, 0))
+	if(const auto len = WideCharToMultiByte(CP_ACP, 0, str, src_len, NULL, 0, 0, 0)) {
+		ret.resize(len, '\0');
+		if(!WideCharToMultiByte(CP_ACP, 0, str, src_len, &ret[0], len, 0, 0))
 			ret.clear();
 	}
 	return ret;

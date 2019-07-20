@@ -26,8 +26,8 @@ project(infoware VERSION ${infoware_version} LANGUAGES CXX)
 
 
 option(INFOWARE_USE_D3D    "Add public, transitive define to infoware to use Direct 3D for GPU detection."                       OFF)
-option(INFOWARE_USE_OPENCL "Add public, transitive define to infoware to use Open Graphics Language (OpenGL) for GPU detection." OFF)
-option(INFOWARE_USE_OPENGL "Add public, transitive define to infoware to use Open Compute Language (OpenCL) for GPU detection."  OFF)
+option(INFOWARE_USE_OPENGL "Add public, transitive define to infoware to use Open Graphics Language (OpenGL) for GPU detection." OFF)
+option(INFOWARE_USE_OPENCL "Add public, transitive define to infoware to use Open Compute Language (OpenCL) for GPU detection."  OFF)
 
 option(INFOWARE_USE_X11 "Add public, transitive define to infoware to use X11 for display detection." OFF)
 

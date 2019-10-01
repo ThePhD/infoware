@@ -133,8 +133,10 @@ endif()
 
 
 if(INFOWARE_USE_X11)
+	include(FindX11)
 	target_compile_definitions(infoware PUBLIC INFOWARE_USE_X11)
-	target_link_libraries(infoware PUBLIC X11)
+	target_include_directories(infoware PUBLIC ${X11_INCLUDE_DIR})
+	target_link_libraries(infoware PUBLIC ${X11_LIBRARIES})
 endif()
 
 

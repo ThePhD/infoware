@@ -13,9 +13,6 @@
 #pragma once
 
 
-#include <functional>
-
-
 namespace iware {
 	namespace detail {
 		struct release_deleter {

@@ -60,7 +60,7 @@ namespace iware {
 			double refresh_rate;
 		};
 
-		struct config_display_t {
+		struct display_config_t {
 			std::uint32_t width;
 			std::uint32_t height;
 			std::vector<double> refresh_rates;
@@ -90,7 +90,8 @@ namespace iware {
 
 		/// Get information about displays.
 		std::vector<display_t> displays();
-		/// Get information about available display configurations.
-		std::vector<std::vector<config_display_t>> available_configurations();
+
+		/// Get information about available configurations for each display.
+		std::vector<std::vector<display_config_t>> available_display_configurations();
 	}  // namespace system
 }  // namespace iware

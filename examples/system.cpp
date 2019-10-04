@@ -70,7 +70,8 @@ int main() {
 				std::cout << "    #" << (i + 1) << ":\n"
 				          << "      Resolution  : " << display.width << 'x' << display.height << '\n'
 				          << "      DPI         : " << display.dpi << '\n'
-				          << "      Colour depth: " << display.bpp << "b\n";
+				          << "      Colour depth: " << display.bpp << "b\n"
+				          << "      Refresh rate: " << display.refresh_rate << "Hz\n";
 			}
 	}
 

@@ -27,7 +27,8 @@ std::vector<iware::system::display_t> iware::system::displays() {
 		    static const auto desktop_dc          = GetDC(nullptr);
 		    static const unsigned int desktop_dpi = GetDeviceCaps(desktop_dc, LOGPIXELSX);
 		    // https://blogs.msdn.microsoft.com/oldnewthing/20101013-00/?p=12543
-		    static const unsigned int desktop_bpp = GetDeviceCaps(desktop_dc, BITSPIXEL) * GetDeviceCaps(desktop_dc, PLANES);
+		    static const unsigned int desktop_bpp    = GetDeviceCaps(desktop_dc, BITSPIXEL) * GetDeviceCaps(desktop_dc, PLANES);
+		    static const double desktop_refresh_rate = GetDeviceCaps(desktop_dc, VREFRESH);
 
 
 		    // https://msdn.microsoft.com/en-us/library/windows/desktop/dn280510(v=vs.85).aspx
@@ -39,13 +40,14 @@ std::vector<iware::system::display_t> iware::system::displays() {
 
 		    // Sometimes returns 0 for some reason?
 		    // Fall back to the desktop's globals if so.
-		    const unsigned int monitor_dpi = GetDeviceCaps(hdc, LOGPIXELSX);
-		    const unsigned int monitor_bpp = GetDeviceCaps(hdc, BITSPIXEL) * GetDeviceCaps(hdc, PLANES);
+		    const unsigned int monitor_dpi    = GetDeviceCaps(hdc, LOGPIXELSX);
+		    const unsigned int monitor_bpp    = GetDeviceCaps(hdc, BITSPIXEL) * GetDeviceCaps(hdc, PLANES);
+		    const double monitor_refresh_rate = GetDeviceCaps(hdc, VREFRESH);
 
 		    auto& ret = *reinterpret_cast<std::vector<iware::system::display_t>*>(userdata);
 		    // See http://stackoverflow.com/a/12654433/2851815 and up for DPI. In short: can't be done too too well, go with best solution.
 		    ret.push_back({static_cast<unsigned int>(rect->right), static_cast<unsigned int>(rect->bottom), monitor_dpi ? monitor_dpi : desktop_dpi,
-		                   monitor_bpp ? monitor_bpp : desktop_bpp, -1});
+		                   monitor_bpp ? monitor_bpp : desktop_bpp, monitor_refresh_rate ? monitor_refresh_rate : desktop_refresh_rate});
 
 		    return 1;
 	    },

@@ -55,19 +55,43 @@ endif()
 
 
 file(GLOB_RECURSE infoware_source_files LIST_DIRECTORIES false src/*.cpp)
-add_library(infoware ${infoware_source_files})
+
+set(PRIVATE_HEADERS
+	include/infoware/detail/cpuid.hpp
+	include/infoware/detail/memory.hpp
+	include/infoware/detail/pci.hpp
+	include/infoware/detail/scope.hpp
+	include/infoware/detail/sysctl.hpp
+	include/infoware/detail/winstring.hpp)
+
+set(PUBLIC_HEADERS
+	include/infoware/infoware.hpp
+	include/infoware/cpu.hpp
+	include/infoware/gpu.hpp
+	include/infoware/system.hpp
+	include/infoware/version.hpp)
+
+add_library(${PROJECT_NAME}
+	${infoware_source_files}
+	${PUBLIC_HEADERS}
+	${PRIVATE_HEADERS}
+)
+
 add_library(iware::infoware ALIAS infoware)
 
-target_include_directories(infoware PUBLIC include)
+
 target_include_directories(infoware PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
 
 set_target_properties(infoware PROPERTIES CXX_STANDARD 14
                                           CXX_STANDARD_REQUIRED ON
                                           CXX_EXTENSIONS OFF
-
+										  PUBLIC_HEADER "${PUBLIC_HEADERS}"
                                           RUNTIME_OUTPUT_DIRECTORY "bin"
                                           LIBRARY_OUTPUT_DIRECTORY "bin"
-                                          ARCHIVE_OUTPUT_DIRECTORY "lib")
+										  ARCHIVE_OUTPUT_DIRECTORY "lib"
+										  DEBUG_POSTFIX "d"
+                                		  MINSIZEREL_POSTFIX "msr"
+                                		  RELWITHDEBINFO_POSTFIX "rwdi")
 
 target_compile_definitions(infoware PRIVATE INFOWARE_VERSION="${infoware_version}")
 
@@ -170,3 +194,46 @@ endif()
 if(INFOWARE_TESTS)
 	enable_testing()
 endif()
+
+# If CMAKE_INSTALL_PREFIX is not specified, GNU install directories will be used
+include(GNUInstallDirs)
+
+# Specify where library and headers will be installed
+install(TARGETS ${PROJECT_NAME}
+    EXPORT ${PROJECT_NAME}Targets
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+
+target_include_directories(infoware PUBLIC
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+	$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+)
+
+# Create infowareConfigVersion package used to specify package version
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+  "${CMAKE_CURRENT_BINARY_DIR}/cmake/${PROJECT_NAME}ConfigVersion.cmake"
+  VERSION ${VERSION}
+  COMPATIBILITY AnyNewerVersion
+)
+
+# Install infowareConfigVersion file
+install(
+  FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/cmake/${PROJECT_NAME}ConfigVersion.cmake
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}
+  COMPONENT devel
+)
+
+# Specifying config file that will be used to find a library using find_package().
+export(TARGETS ${PROJECT_NAME}
+	FILE ${PROJECT_NAME}Config.cmake
+)
+
+# Install config file
+install (EXPORT ${PROJECT_NAME}Targets
+	FILE ${PROJECT_NAME}Config.cmake
+	DESTINATION ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}
+)
+

@@ -85,13 +85,13 @@ target_include_directories(infoware PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
 set_target_properties(infoware PROPERTIES CXX_STANDARD 14
                                           CXX_STANDARD_REQUIRED ON
                                           CXX_EXTENSIONS OFF
-										  PUBLIC_HEADER "${PUBLIC_HEADERS}"
+                                          PUBLIC_HEADER "${PUBLIC_HEADERS}"
                                           RUNTIME_OUTPUT_DIRECTORY "bin"
                                           LIBRARY_OUTPUT_DIRECTORY "bin"
-										  ARCHIVE_OUTPUT_DIRECTORY "lib"
-										  DEBUG_POSTFIX "d"
-                                		  MINSIZEREL_POSTFIX "msr"
-                                		  RELWITHDEBINFO_POSTFIX "rwdi")
+                                          ARCHIVE_OUTPUT_DIRECTORY "lib"
+                                          DEBUG_POSTFIX "d"
+                                          MINSIZEREL_POSTFIX "msr"
+                                          RELWITHDEBINFO_POSTFIX "rwdi")
 
 target_compile_definitions(infoware PRIVATE INFOWARE_VERSION="${infoware_version}")
 
@@ -179,10 +179,9 @@ if(INFOWARE_EXAMPLES)
 		set_target_properties(infoware_${infoware_example_name}_example PROPERTIES CXX_STANDARD 14
 		                                                                           CXX_STANDARD_REQUIRED ON
 		                                                                           CXX_EXTENSIONS OFF
-
-																	                                             RUNTIME_OUTPUT_DIRECTORY "bin"
-																	                                             LIBRARY_OUTPUT_DIRECTORY "bin"
-																	                                             ARCHIVE_OUTPUT_DIRECTORY "lib")
+		                                                                           RUNTIME_OUTPUT_DIRECTORY "bin"
+		                                                                           LIBRARY_OUTPUT_DIRECTORY "bin"
+		                                                                           ARCHIVE_OUTPUT_DIRECTORY "lib")
 
 		if(INFOWARE_TESTS)
 			add_test(NAME example_${infoware_example_name} COMMAND infoware_${infoware_example_name}_example)

@@ -11,6 +11,7 @@
 
 
 #ifndef _WIN32
+#ifndef __APPLE__
 #ifdef INFOWARE_USE_X11
 
 
@@ -85,5 +86,6 @@ std::vector<std::vector<iware::system::display_config_t>> iware::system::availab
 }
 
 
+#endif
 #endif
 #endif

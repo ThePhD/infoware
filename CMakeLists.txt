@@ -118,7 +118,8 @@ if(WIN32)
 	target_link_libraries(infoware PRIVATE gdi32 version Ole32 OleAut32 wbemuuid)
 endif()
 
-if(APPLE AND NOT INFOWARE_USE_X11)
+
+if(APPLE)
 	target_link_libraries(infoware PRIVATE "-framework CoreFoundation" "-framework CoreGraphics")
 endif()
 
@@ -136,7 +137,7 @@ elseif(INFOWARE_USE_OPENGL)
 
 	if(WIN32)
 		target_link_libraries(infoware PUBLIC opengl32)
-	elseif(DARWIN)
+	elseif(NOT DARWIN)
 		target_link_libraries(infoware PUBLIC GL)
 	else()
 		target_link_libraries(infoware PUBLIC "-framework OpenGL")
@@ -144,7 +145,7 @@ elseif(INFOWARE_USE_OPENGL)
 endif()
 
 
-if(INFOWARE_USE_X11)
+if(NOT APPLE AND INFOWARE_USE_X11)
 	include(FindX11)
 	target_compile_definitions(infoware PUBLIC INFOWARE_USE_X11)
 	target_include_directories(infoware PUBLIC ${X11_INCLUDE_DIR})

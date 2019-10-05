@@ -11,6 +11,7 @@
 
 
 #ifndef _WIN32
+#ifndef __APPLE__
 #ifndef INFOWARE_USE_X11
 
 
@@ -22,5 +23,6 @@ std::vector<iware::system::display_t> iware::system::displays() {
 }
 
 
+#endif
 #endif
 #endif

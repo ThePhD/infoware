@@ -85,7 +85,7 @@ target_include_directories(infoware PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
 set_target_properties(infoware PROPERTIES CXX_STANDARD 14
                                           CXX_STANDARD_REQUIRED ON
                                           CXX_EXTENSIONS OFF
-                                          PUBLIC_HEADER "${PUBLIC_HEADERS}"
+                                          PUBLIC_HEADER "${infoware_public_headers}"
                                           RUNTIME_OUTPUT_DIRECTORY "bin"
                                           LIBRARY_OUTPUT_DIRECTORY "bin"
                                           ARCHIVE_OUTPUT_DIRECTORY "lib"

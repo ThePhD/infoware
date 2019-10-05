@@ -56,7 +56,7 @@ endif()
 
 file(GLOB_RECURSE infoware_source_files LIST_DIRECTORIES false src/*.cpp)
 
-set(PRIVATE_HEADERS
+set(infoware_private_headers
 	include/infoware/detail/cpuid.hpp
 	include/infoware/detail/memory.hpp
 	include/infoware/detail/pci.hpp
@@ -64,7 +64,7 @@ set(PRIVATE_HEADERS
 	include/infoware/detail/sysctl.hpp
 	include/infoware/detail/winstring.hpp)
 
-set(PUBLIC_HEADERS
+set(infoware_public_headers
 	include/infoware/infoware.hpp
 	include/infoware/cpu.hpp
 	include/infoware/gpu.hpp
@@ -73,8 +73,8 @@ set(PUBLIC_HEADERS
 
 add_library(${PROJECT_NAME}
 	${infoware_source_files}
-	${PUBLIC_HEADERS}
-	${PRIVATE_HEADERS}
+	${infoware_public_headers}
+	${infoware_private_headers}
 )
 
 add_library(iware::infoware ALIAS infoware)

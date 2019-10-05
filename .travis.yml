@@ -10,6 +10,7 @@ matrix:
           packages:
             - g++-5
             - libx11-dev
+            - libxrandr-dev
           sources: &sources
             - r-packages-trusty
             - llvm-toolchain-trusty
@@ -23,6 +24,7 @@ matrix:
           packages:
             - g++-6
             - libx11-dev
+            - libxrandr-dev
           sources: *sources
     - env: CXX="clang++-3.8 -stdlib=libc++" CC=clang-3.8 INFOWARE_USE_X11=ON
       addons:
@@ -31,6 +33,7 @@ matrix:
             - clang-3.8
             - libc++-dev
             - libx11-dev
+            - libxrandr-dev
           sources: *sources
     - env: CXX="clang++-3.9 -stdlib=libc++" CC=clang-3.9 INFOWARE_USE_X11=ON
       addons:
@@ -39,6 +42,7 @@ matrix:
             - clang-3.9
             - libc++-dev
             - libx11-dev
+            - libxrandr-dev
           sources: *sources
     - env: CXX="clang++-4.0 -stdlib=libc++" CC=clang-4.0 INFOWARE_USE_X11=ON
       addons:
@@ -47,6 +51,7 @@ matrix:
             - clang-4.0
             - libc++-dev
             - libx11-dev
+            - libxrandr-dev
           sources: *sources
     - env: CXX="clang++-5.0 -stdlib=libc++" CC=clang-5.0 INFOWARE_USE_X11=ON
       addons:
@@ -55,6 +60,7 @@ matrix:
             - clang-5.0
             - libc++-dev
             - libx11-dev
+            - libxrandr-dev
           sources: *sources
     - env: INFOWARE_USE_X11=OFF
       os: osx

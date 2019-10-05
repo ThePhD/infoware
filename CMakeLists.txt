@@ -145,13 +145,15 @@ elseif(INFOWARE_USE_OPENGL)
 endif()
 
 
-if(NOT APPLE AND INFOWARE_USE_X11)
+if(NOT DARWIN AND INFOWARE_USE_X11)
 	include(FindX11)
 	target_compile_definitions(infoware PUBLIC INFOWARE_USE_X11)
 	target_include_directories(infoware PUBLIC ${X11_INCLUDE_DIR})
 	target_link_libraries(infoware PUBLIC ${X11_LIBRARIES})
 	if(X11_Xrandr_FOUND)
 		target_link_libraries(infoware PUBLIC ${X11_Xrandr_LIB})
+	else()
+  	message(FATAL_ERROR "Xrandr is required for infoware")
 	endif()
 endif()
 

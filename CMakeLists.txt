@@ -54,28 +54,11 @@ if(INFOWARE_USE_X11 AND WIN32)
 endif()
 
 
-file(GLOB_RECURSE infoware_source_files LIST_DIRECTORIES false src/*.cpp)
+file(GLOB_RECURSE infoware_source_files    LIST_DIRECTORIES false CONFIGURE_DEPENDS src/*.cpp)
+file(GLOB_RECURSE infoware_private_headers LIST_DIRECTORIES false CONFIGURE_DEPENDS include/infoware/detail/*.hpp)
+file(GLOB         infoware_public_headers  LIST_DIRECTORIES false CONFIGURE_DEPENDS include/infoware/*.hpp)
 
-set(infoware_private_headers
-	include/infoware/detail/cpuid.hpp
-	include/infoware/detail/memory.hpp
-	include/infoware/detail/pci.hpp
-	include/infoware/detail/scope.hpp
-	include/infoware/detail/sysctl.hpp
-	include/infoware/detail/winstring.hpp)
-
-set(infoware_public_headers
-	include/infoware/infoware.hpp
-	include/infoware/cpu.hpp
-	include/infoware/gpu.hpp
-	include/infoware/system.hpp
-	include/infoware/version.hpp)
-
-add_library(${PROJECT_NAME}
-	${infoware_source_files}
-	${infoware_public_headers}
-	${infoware_private_headers}
-)
+add_library(infoware ${infoware_source_files} ${infoware_public_headers} ${infoware_private_headers})
 
 add_library(iware::infoware ALIAS infoware)
 

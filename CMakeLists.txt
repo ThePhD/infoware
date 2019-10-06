@@ -118,6 +118,10 @@ if(WIN32)
 	target_link_libraries(infoware PRIVATE gdi32 version Ole32 OleAut32 wbemuuid)
 endif()
 
+if(APPLE AND NOT INFOWARE_USE_X11)
+	target_link_libraries(infoware PRIVATE "-framework CoreFoundation" "-framework CoreGraphics")
+endif()
+
 
 if(INFOWARE_USE_D3D)
 	target_compile_definitions(infoware PUBLIC INFOWARE_USE_D3D)

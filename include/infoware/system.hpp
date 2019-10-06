@@ -60,6 +60,11 @@ namespace iware {
 			double refresh_rate;
 		};
 
+		struct config_display_t {
+			std::uint32_t width;
+			std::uint32_t height;
+			std::vector<double> refresh_rates;
+		};
 
 		/// Get amount of connected mice.
 		std::size_t mouse_amount() noexcept;
@@ -85,5 +90,7 @@ namespace iware {
 
 		/// Get information about displays.
 		std::vector<display_t> displays();
+		/// Get information about available display configurations.
+		std::vector<std::vector<config_display_t>> available_configurations();
 	}  // namespace system
 }  // namespace iware

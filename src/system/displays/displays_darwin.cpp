@@ -45,9 +45,12 @@ std::vector<iware::system::display_t> iware::system::displays() {
 		CGDisplayModeRef display_mode = CGDisplayCopyDisplayMode(displays_id[i]);
 		iware::detail::quickscope_wrapper display_mode_deleter{[&]() { CGDisplayModeRelease(display_mode); }};
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 		// A string in the form --------RRRRRRRRGGGGGGGGBBBBBBBB
 		CFStringRef pixel_encoding_raw = CGDisplayModeCopyPixelEncoding(display_mode);
 		iware::detail::quickscope_wrapper pixel_encoding_raw_deleter{[&]() { CFRelease(pixel_encoding_raw); }};
+#pragma GCC diagnostic pop
 
 		// Count the number of occurences of R/G/B pixels
 		std::uint32_t bpp{};

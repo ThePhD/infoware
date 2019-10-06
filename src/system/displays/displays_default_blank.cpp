@@ -22,6 +22,10 @@ std::vector<iware::system::display_t> iware::system::displays() {
 	return {};
 }
 
+std::vector<std::vector<iware::system::display_config_t>> iware::system::available_display_configurations() {
+	return {};
+}
+
 
 #endif
 #endif

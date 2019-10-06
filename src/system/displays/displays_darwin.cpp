@@ -67,8 +67,11 @@ std::vector<iware::system::display_t> iware::system::displays() {
 		                                          CGDisplayModeGetRefreshRate(display_mode)});
 	}
 
-
 	return ret;
+}
+
+std::vector<std::vector<iware::system::display_config_t>> iware::system::available_display_configurations() {
+	return {};
 }
 
 

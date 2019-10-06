@@ -75,6 +75,38 @@ int main() {
 			}
 	}
 
+	{
+		const auto configs = iware::system::available_display_configurations();
+		std::cout << "\n"
+		             "  Display configurations:\n";
+		if(configs.empty())
+			std::cout << "    No displays connected, no detection method enabled, or not supported\n";
+		else
+			for(auto i = 0u; i < configs.size(); ++i) {
+				const auto& display_configs = configs[i];
+				std::cout << "    Display #" << (i + 1) << ":\n";
+
+				for(auto j = 0u; j < display_configs.size(); ++j) {
+					const auto& config = display_configs[j];
+					std::cout << "      #" << (j + 1) << ":\n"
+					          << "        Resolution   : " << config.width << 'x' << config.height << '\n'
+					          << "        Refresh rates: ";
+
+					bool first = true;
+					for(auto rate : config.refresh_rates) {
+						if(first)
+							first = false;
+						else
+							std::cout << ", ";
+
+						std::cout << rate << "Hz";
+					}
+
+					std::cout << '\n';
+				}
+			}
+	}
+
 	std::cout << '\n';
 
 	return 0;

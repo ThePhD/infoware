@@ -45,7 +45,7 @@ std::vector<iware::system::display_t> iware::system::displays() {
 		    auto& ret = *reinterpret_cast<std::vector<iware::system::display_t>*>(userdata);
 		    // See http://stackoverflow.com/a/12654433/2851815 and up for DPI. In short: can't be done too too well, go with best solution.
 		    ret.push_back({static_cast<unsigned int>(rect->right), static_cast<unsigned int>(rect->bottom), monitor_dpi ? monitor_dpi : desktop_dpi,
-		                   monitor_bpp ? monitor_bpp : desktop_bpp});
+		                   monitor_bpp ? monitor_bpp : desktop_bpp, -1});
 
 		    return 1;
 	    },

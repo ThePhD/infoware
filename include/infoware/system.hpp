@@ -57,6 +57,7 @@ namespace iware {
 			std::uint32_t dpi;
 			/// Bits Per Pixel a.k.a. depth
 			std::uint32_t bpp;
+			double refresh_rate;
 		};
 
 

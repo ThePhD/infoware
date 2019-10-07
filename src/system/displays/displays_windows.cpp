@@ -14,6 +14,7 @@
 
 
 #include "infoware/system.hpp"
+#include <algorithm>
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
@@ -57,7 +58,35 @@ std::vector<iware::system::display_t> iware::system::displays() {
 }
 
 std::vector<std::vector<iware::system::display_config_t>> iware::system::available_display_configurations() {
-	return {};
+	std::vector<std::vector<iware::system::display_config_t>> ret;
+
+	DISPLAY_DEVICE dev;
+	dev.cb = sizeof(dev);
+
+	for(DWORD dev_i = 0; EnumDisplayDevices(nullptr, dev_i, &dev, EDD_GET_DEVICE_INTERFACE_NAME); ++dev_i) {
+		std::vector<iware::system::display_config_t> configs;
+		const auto add_config = [&](auto&& mode) {
+			configs.emplace_back(iware::system::display_config_t{mode.dmPelsWidth, mode.dmPelsHeight, {static_cast<double>(mode.dmDisplayFrequency)}});
+		};
+
+		DEVMODE mode{};
+		for(DWORD mode_i = 0; EnumDisplaySettings(dev.DeviceName, mode_i, &mode); ++mode_i)
+			if(configs.empty())
+				add_config(mode);
+			else {
+				auto&& last = configs.back();
+				if(last.width == mode.dmPelsWidth && last.height == mode.dmPelsHeight) {
+					if(std::find(last.refresh_rates.begin(), last.refresh_rates.end(), mode.dmDisplayFrequency) == last.refresh_rates.end())
+						last.refresh_rates.emplace_back(mode.dmDisplayFrequency);
+				} else
+					add_config(mode);
+			}
+
+		if(!configs.empty())
+			ret.emplace_back(std::move(configs));
+	}
+
+	return ret;
 }
 
 

@@ -68,6 +68,8 @@ matrix:
     - env: INFOWARE_USE_X11=OFF
       os: osx
       osx_image: xcode9.2
+  allow_failures:
+    - env: CXX="clang++-5.0 -stdlib=libc++" CC=clang-5.0 INFOWARE_USE_X11=ON
 
 script:
   - mkdir build && cd build

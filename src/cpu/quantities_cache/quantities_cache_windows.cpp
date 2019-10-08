@@ -34,16 +34,13 @@ static std::vector<SYSTEM_LOGICAL_PROCESSOR_INFORMATION> cpuinfo_buffer() {
 
 // C++ified http://stackoverflow.com/a/28894219/2851815
 iware::cpu::quantities_t iware::cpu::quantities() {
-	static_assert(sizeof(ULONG_PTR) == sizeof(std::size_t), "size_t must be as wide as a pointer");
-
-
 	iware::cpu::quantities_t ret{};
 	for(auto&& info : cpuinfo_buffer())
 		switch(info.Relationship) {
 			case RelationProcessorCore:
 				++ret.physical;
 				// A hyperthreaded core supplies more than one logical processor.
-				ret.logical += static_cast<std::uint32_t>(std::bitset<sizeof(ULONG_PTR) * 8>(reinterpret_cast<std::size_t>(info.ProcessorMask)).count());
+				ret.logical += static_cast<std::uint32_t>(std::bitset<sizeof(ULONG_PTR) * 8>(static_cast<std::uintptr_t>(info.ProcessorMask)).count());
 				break;
 
 			case RelationProcessorPackage:

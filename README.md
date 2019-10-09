@@ -9,12 +9,12 @@ Some libraries are required for extended functionality. See the [Configurability
 On Windows one needs to link to `gdi32`, `version`, `Ole32`, `OleAut32` and `wbemuuid`.
 
 ## Configurability
-|CMake definition and C++ preprocessor macro|              Meaning              |Linker library|Priority|
-|-------------------------------------------|-----------------------------------|--------------|--------|
-|             `INFOWARE_USE_X11`            |   Use X11 for display detection   |     `X11`    | <Win32 |
-|             `INFOWARE_USE_D3D`            |      Use D3D for GPU detection    |    `dxgi`    | >OpenCL|
-|            `INFOWARE_USE_OPENCL`          |    Use OpenCL for GPU detection   |   `OpenCL`   |  <D3D  |
-|            `INFOWARE_USE_OPENGL`          |    Use OpenGL for GPU detection   |OS-dependent\*| <OpenGL|
+|CMake definition and C++ preprocessor macro|              Meaning              |Linker library|    Priority   |
+|-------------------------------------------|-----------------------------------|--------------|---------------|
+|             `INFOWARE_USE_X11`            |   Use X11 for display detection   |     `X11`    | <Win32/Darwin |
+|             `INFOWARE_USE_D3D`            |      Use D3D for GPU detection    |    `dxgi`    |     >OpenCL   |
+|            `INFOWARE_USE_OPENCL`          |    Use OpenCL for GPU detection   |   `OpenCL`   |      <D3D     |
+|            `INFOWARE_USE_OPENGL`          |    Use OpenGL for GPU detection   |OS-dependent\*|     <OpenGL   |
 
 
 \*Consult the section under the `if(INFOWARE_USE_OPENGL)` condition in `CMakeLists.txt` for variants.

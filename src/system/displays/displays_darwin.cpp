@@ -27,22 +27,31 @@
 #define MAX_DISPLAYS 32
 
 
-std::vector<iware::system::display_t> iware::system::displays() {
+template <class T, class F>
+static std::vector<T> enumerate_displays(F&& cbk) {
 	CGDirectDisplayID displays_id[MAX_DISPLAYS];
 	std::uint32_t num_displays;
 	if(CGGetActiveDisplayList(MAX_DISPLAYS, displays_id, &num_displays) != kCGErrorSuccess)
 		return {};
 
 
-	std::vector<iware::system::display_t> ret;
+	std::vector<T> ret;
 	ret.reserve(num_displays);
 
-	for(std::size_t i = 0; i < num_displays; ++i) {
-		const std::uint32_t width = CGDisplayPixelsWide(displays_id[i]);
-		// 25.4 millimeters per inch
-		const std::uint32_t dpi = 25.4 * CGDisplayScreenSize(displays_id[i]).width / width;
+	for(std::size_t i = 0; i < num_displays; ++i)
+		ret.emplace_back(std::move(cbk(displays_id[i])));
 
-		CGDisplayModeRef display_mode = CGDisplayCopyDisplayMode(displays_id[i]);
+	return ret;
+}
+
+
+std::vector<iware::system::display_t> iware::system::displays() {
+	return enumerate_displays<iware::system::display_t>([](auto display_id) {
+		const std::uint32_t width = CGDisplayPixelsWide(display_id);
+		// 25.4 millimeters per inch
+		const std::uint32_t dpi = 25.4 * CGDisplayScreenSize(display_id).width / width;
+
+		CGDisplayModeRef display_mode = CGDisplayCopyDisplayMode(display_id);
 		iware::detail::quickscope_wrapper display_mode_deleter{[&]() { CGDisplayModeRelease(display_mode); }};
 
 #pragma GCC diagnostic push
@@ -58,16 +67,14 @@ std::vector<iware::system::display_t> iware::system::displays() {
 			bpp = std::count_if(pixel_encoding, pixel_encoding + std::strlen(pixel_encoding), [](auto c) { return c == 'R' || c == 'G' || c == 'B'; });
 
 
-		ret.emplace_back(iware::system::display_t{width, static_cast<std::uint32_t>(CGDisplayPixelsHigh(displays_id[i])), dpi, bpp,
-		                                          // The refresh rate, in hertz, of the specified display mode for a CRT display.
-		                                          // Some displays may not use conventional video vertical and horizontal sweep in painting the screen;
-		                                          // for these displays, the return value is 0.
-		                                          //
-		                                          // Tested to return 0 for Retina displays
-		                                          CGDisplayModeGetRefreshRate(display_mode)});
-	}
-
-	return ret;
+		return iware::system::display_t{width, static_cast<std::uint32_t>(CGDisplayPixelsHigh(display_id)), dpi, bpp,
+		                                // The refresh rate, in hertz, of the specified display mode for a CRT display.
+		                                // Some displays may not use conventional video vertical and horizontal sweep in painting the screen;
+		                                // for these displays, the return value is 0.
+		                                //
+		                                // Tested to return 0 for Retina displays
+		                                CGDisplayModeGetRefreshRate(display_mode)};
+	});
 }
 
 std::vector<std::vector<iware::system::display_config_t>> iware::system::available_display_configurations() {

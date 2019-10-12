@@ -23,15 +23,14 @@
 #include <cstring>
 
 
-// Maximum number of displays to handle
-#define MAX_DISPLAYS 32
-
-
 template <class T, class F>
 static std::vector<T> enumerate_displays(F&& cbk) {
-	CGDirectDisplayID displays_id[MAX_DISPLAYS];
 	std::uint32_t num_displays;
-	if(CGGetActiveDisplayList(MAX_DISPLAYS, displays_id, &num_displays) != kCGErrorSuccess)
+	if(CGGetActiveDisplayList(0, nullptr, &num_displays) != kCGErrorSuccess)
+		return {};
+
+	std::vector<CGDirectDisplayID> display_ids(num_displays);
+	if(CGGetActiveDisplayList(num_displays, display_ids.data(), &num_displays) != kCGErrorSuccess)
 		return {};
 
 
@@ -39,7 +38,7 @@ static std::vector<T> enumerate_displays(F&& cbk) {
 	ret.reserve(num_displays);
 
 	for(std::size_t i = 0; i < num_displays; ++i)
-		ret.emplace_back(std::move(cbk(displays_id[i])));
+		ret.emplace_back(std::move(cbk(display_ids[i])));
 
 	return ret;
 }

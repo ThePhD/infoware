@@ -18,7 +18,7 @@
 #include <windows.h>
 
 
-std::int64_t iware::cpu::frequency() noexcept {
+std::uint64_t iware::cpu::frequency() noexcept {
 	HKEY hkey;
 	if(RegOpenKeyExA(HKEY_LOCAL_MACHINE, R"(HARDWARE\DESCRIPTION\System\CentralProcessor\0)", 0, KEY_READ, &hkey)) {
 		// Fallback

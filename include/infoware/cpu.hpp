@@ -118,7 +118,7 @@ namespace iware {
 		architecture_t architecture() noexcept;
 
 		/// Returns the current frequency of the current CPU in Hz.
-		std::int64_t frequency() noexcept;
+		std::uint64_t frequency() noexcept;
 
 		/// Returns the current endianness of the current CPU.
 		endianness_t endianness() noexcept;

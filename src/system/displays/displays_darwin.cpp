@@ -88,7 +88,7 @@ std::vector<std::vector<iware::system::display_config_t>> iware::system::availab
 		ret.reserve(modes_len);
 
 		for(auto i = 0l; i < modes_len; ++i) {
-			auto mode = const_cast<CGDisplayModeRef>(static_cast<const CGDisplayMode*>(CFArrayGetValueAtIndex(modes, i)));
+			auto mode = static_cast<CGDisplayModeRef>(const_cast<void*>(CFArrayGetValueAtIndex(modes, i)));
 
 			ret.emplace_back(iware::system::display_config_t{static_cast<std::uint32_t>(CGDisplayModeGetWidth(mode)),
 			                                                 static_cast<std::uint32_t>(CGDisplayModeGetHeight(mode)),

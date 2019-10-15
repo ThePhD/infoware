@@ -19,7 +19,7 @@
 #include <string>
 
 
-std::int64_t iware::cpu::frequency() noexcept {
+std::uint64_t iware::cpu::frequency() noexcept {
 	std::ifstream cpuinfo("/proc/cpuinfo");
 
 	if(!cpuinfo.is_open() || !cpuinfo)
@@ -28,7 +28,7 @@ std::int64_t iware::cpu::frequency() noexcept {
 	for(std::string line; std::getline(cpuinfo, line);)
 		if(line.find("cpu MHz") == 0) {
 			const auto colon_id = line.find_first_of(':');
-			return static_cast<int64_t>(std::strtod(line.c_str() + colon_id + 1, nullptr) * 1'000'000);
+			return static_cast<std::uint64_t>(std::strtod(line.c_str() + colon_id + 1, nullptr) * 1'000'000);
 		}
 
 	return 0;

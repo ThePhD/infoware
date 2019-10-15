@@ -17,7 +17,7 @@
 #include "infoware/detail/sysctl.hpp"
 
 
-std::int64_t iware::cpu::frequency() noexcept {
+std::uint64_t iware::cpu::frequency() noexcept {
 	const auto ctl_data = iware::detail::sysctl("hw.cpufrequency");
 	if(ctl_data.empty())
 		return 0;

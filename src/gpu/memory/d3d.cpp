@@ -57,7 +57,10 @@ std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 		auto device             = iware::detail::identify_device(adapterdesc.VendorId, adapterdesc.DeviceId);
 		std::string device_name = device.device_name ? device.device_name : iware::detail::narrowen_winstring(adapterdesc.Description);
 
-		devices.push_back({vendor_from_name(device.vendor_name), device_name, adapterdesc.DedicatedVideoMemory, adapterdesc.SharedSystemMemory});
+		devices.push_back({vendor_from_name(device.vendor_name), device_name, adapterdesc.DedicatedVideoMemory, adapterdesc.SharedSystemMemory,
+		                   // TODO: there's purportedly (https://en.wikipedia.org/wiki/Windows_Display_Driver_Model#WDDM_2.3)
+		                   //       a Windows API for getting the max clock, but I haven't been able to find it or use it
+		                   0});
 	}
 	return devices;
 }

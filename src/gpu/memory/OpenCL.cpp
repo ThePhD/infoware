@@ -35,6 +35,7 @@ static iware::gpu::vendor_t parse_vendor(const char* name) {
 }
 
 
+/// See https://github.com/Oblomov/clinfo/blob/bfc628e74d4cdbf5c5adca169e8bae540fca92ef/src/clinfo.c#L2104 for other available props
 std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 	cl_platform_id platforms[64];
 	cl_uint platforms_used;
@@ -51,13 +52,15 @@ std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 			char vendorname[256];
 			cl_ulong cache;
 			cl_ulong memory;
+			cl_uint max_frequency;
 
 			clGetDeviceInfo(devices[j], CL_DEVICE_GLOBAL_MEM_CACHE_SIZE, sizeof(cache), &cache, nullptr);
+			clGetDeviceInfo(devices[j], CL_DEVICE_MAX_CLOCK_FREQUENCY, sizeof(max_frequency), &max_frequency, nullptr);
 			clGetDeviceInfo(devices[j], CL_DEVICE_GLOBAL_MEM_SIZE, sizeof(memory), &memory, nullptr);
 			clGetDeviceInfo(devices[j], CL_DEVICE_VENDOR, sizeof(vendorname) / sizeof(*vendorname), &vendorname, nullptr);
 			clGetDeviceInfo(devices[j], CL_DEVICE_NAME, sizeof(name) / sizeof(*name), &name, nullptr);
 
-			ret.push_back({parse_vendor(vendorname), name, memory, cache});
+			ret.push_back({parse_vendor(vendorname), name, memory, cache, max_frequency * 1'000'000});
 		}
 	}
 

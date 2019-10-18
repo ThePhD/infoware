@@ -31,10 +31,11 @@ int main() {
 			for(auto i = 0u; i < device_properties.size(); ++i) {
 				const auto& properties_of_device = device_properties[i];
 				std::cout << "    Device #" << (i + 1) << ":\n"
-				          << "      Vendor    : " << vendor_name(properties_of_device.vendor) << '\n'
-				          << "      Name      : " << properties_of_device.name << '\n'
-				          << "      RAM size  : " << properties_of_device.memory_size << "B\n"
-				          << "      Cache size: " << properties_of_device.cache_size << "B\n";
+				          << "      Vendor       : " << vendor_name(properties_of_device.vendor) << '\n'
+				          << "      Name         : " << properties_of_device.name << '\n'
+				          << "      RAM size     : " << properties_of_device.memory_size << "B\n"
+				          << "      Cache size   : " << properties_of_device.cache_size << "B\n"
+				          << "      Max frequency: " << properties_of_device.max_frequency << "Hz\n";
 			}
 	}
 

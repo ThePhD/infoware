@@ -34,6 +34,7 @@ namespace iware {
 			std::string name;
 			std::size_t memory_size;
 			std::size_t cache_size;
+			std::uint64_t max_frequency;
 		};
 
 

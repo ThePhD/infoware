@@ -24,7 +24,7 @@
 
 
 // http://stackoverflow.com/a/150971/2851815
-// http://thedaneshproject.com/posts/how-to-find-the-number-of-physical-cpus-in-linux/
+// https://github.com/karelzak/util-linux/blob/25b7045e5db032df5354c0749cb454a20b89c522/sys-utils/lscpu.c#L1119
 iware::cpu::quantities_t iware::cpu::quantities() {
 	iware::cpu::quantities_t ret{};
 	ret.logical = sysconf(_SC_NPROCESSORS_ONLN);
@@ -36,14 +36,14 @@ iware::cpu::quantities_t iware::cpu::quantities() {
 
 	std::vector<unsigned int> package_ids;
 	for(std::string line; std::getline(cpuinfo, line);)
-		if(line.find("physical id") == 0)
-			package_ids.emplace_back(std::strtoul(line.c_str() + line.find_first_of("1234567890"), nullptr, 10));
-		else if(line.find("processor") == 0)
-			++ret.physical;
+		if(line.find("physical id") == 0) {
+			const auto physical_id = std::strtoul(line.c_str() + line.find_first_of("1234567890"), nullptr, 10);
+			if(std::find(package_ids.begin(), package_ids.end(), physical_id) == package_ids.end())
+				package_ids.emplace_back(physical_id);
+		}
 
-	std::sort(package_ids.begin(), package_ids.end());
-	package_ids.erase(std::unique(package_ids.begin(), package_ids.end()), package_ids.end());
 	ret.packages = package_ids.size();
+	ret.physical = ret.logical / ret.packages;
 
 	return ret;
 }
@@ -61,8 +61,10 @@ iware::cpu::cache_t iware::cpu::cache(unsigned int level) {
 			switch(suffix) {
 				case 'G':
 					ret.size *= 1024;
+					[[fallthrough]];
 				case 'M':
 					ret.size *= 1024;
+					[[fallthrough]];
 				case 'K':
 					ret.size *= 1024;
 			}

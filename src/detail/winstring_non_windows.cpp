@@ -10,7 +10,7 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#ifndef WIN32
+#ifndef _WIN32
 
 
 #include "infoware/detail/winstring.hpp"

@@ -18,21 +18,21 @@
 
 namespace {
 	struct id_pair_t {
-		std::int64_t id;
+		std::uint64_t id;
 		std::size_t index;
 	};
 
 	struct pci_vendor_info_t {
-		std::int64_t pci_id;
+		std::uint64_t pci_id;
 		const char* name;
-		std::initializer_list<const std::int64_t> device_indices;
+		std::initializer_list<const std::uint64_t> device_indices;
 	};
 
 	struct pci_device_info_t {
-		std::int64_t pci_id;
+		std::uint64_t pci_id;
 		const char* name;
 	};
-}  // namespace
+}  // anonymous namespace
 
 
 static const id_pair_t indices[]{INFOWARE_GENERATED_PCI_INDICES};
@@ -40,7 +40,7 @@ static const pci_vendor_info_t vendors[]{INFOWARE_GENERATED_PCI_VENDORS};
 static const pci_device_info_t devices[]{INFOWARE_GENERATED_PCI_DEVICES};
 
 
-static const pci_vendor_info_t* find_vendor(std::int64_t vendor_id) noexcept {
+static const pci_vendor_info_t* find_vendor(std::uint64_t vendor_id) noexcept {
 	const auto idx_itr = std::lower_bound(std::begin(indices), std::end(indices), vendor_id, [](auto&& left, auto right) { return left.id < right; });
 	if(idx_itr != std::end(indices) && idx_itr->id == vendor_id)
 		return &vendors[idx_itr->index];
@@ -49,7 +49,7 @@ static const pci_vendor_info_t* find_vendor(std::int64_t vendor_id) noexcept {
 }
 
 
-iware::pci::device iware::pci::identify_device(std::int64_t vendor_id, std::int64_t device_id) noexcept {
+iware::pci::device iware::pci::identify_device(std::uint64_t vendor_id, std::uint64_t device_id) noexcept {
 	const auto vendor = find_vendor(vendor_id);
 	if(!vendor)
 		return {nullptr, nullptr};
@@ -64,7 +64,7 @@ iware::pci::device iware::pci::identify_device(std::int64_t vendor_id, std::int6
 }
 
 
-const char* iware::pci::identify_vendor(std::int64_t pci_id) noexcept {
+const char* iware::pci::identify_vendor(std::uint64_t pci_id) noexcept {
 	if(const auto vendor = find_vendor(pci_id))
 		return vendor->name;
 	else

@@ -29,9 +29,9 @@ namespace iware {
 		///
 		/// If the vendor was not found, both names are nullptr.
 		/// If the vendor was found, but the device wasn't, the device name is nullptr;
-		device identify_device(std::int64_t vendor_id, std::int64_t device_id) noexcept;
+		device identify_device(std::uint64_t vendor_id, std::uint64_t device_id) noexcept;
 
 		/// Get the name the vendor with the specified PCI ID, or nullptr if not found.
-		const char* identify_vendor(std::int64_t vendor_id) noexcept;
+		const char* identify_vendor(std::uint64_t vendor_id) noexcept;
 	}  // namespace pci
 }  // namespace iware

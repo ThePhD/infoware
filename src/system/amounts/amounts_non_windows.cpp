@@ -15,6 +15,7 @@
 
 #include "infoware/detail/scope.hpp"
 #include "infoware/system.hpp"
+#include <cstring>
 #include <wordexp.h>
 
 
@@ -26,7 +27,11 @@ static std::size_t count_expansions(const char* of) noexcept {
 	if(wordexp(of, &exp, 0))
 		return 0;
 
-	return exp.we_wordc;
+	// If nothing is expanded wordexp() returns the original string
+	if(exp.we_wordc == 1 && std::strcmp(exp.we_wordv[0], of) == 0)
+		return 0;
+	else
+		return exp.we_wordc;
 }
 
 

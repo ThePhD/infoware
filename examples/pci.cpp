@@ -18,6 +18,17 @@
 #include <iostream>
 
 
+namespace {
+	struct format_pci_id {
+		std::uint64_t pci_id;
+	};
+
+	std::ostream& operator<<(std::ostream& out, const format_pci_id& id) {
+		out << "0x" << std::setw(sizeof(std::uint64_t) * 2) << std::setfill('0') << std::internal << std::hex << std::uppercase << id.pci_id;
+		return out;
+	}
+}  // anonymous namespace
+
 static void print_named_id(const char* subsystem, std::uint64_t pci_id);
 static bool print_vendor(std::uint64_t vendor_id, const char* vendor_name);
 
@@ -39,9 +50,9 @@ int main(int, const char** argv) {
 			const auto device    = iware::pci::identify_device(vendor_id, device_id);
 			const auto vendor_ok = print_vendor(vendor_id, device.vendor_name);
 
-			if(device.device_name)
-				std::cout << "Device           " << device.device_name << '\n';
-			else
+			if(device.device_name) {
+				std::cout << "Device " << format_pci_id{device_id} << ' ' << device.device_name << '\n';
+			} else
 				print_named_id("device", device_id);
 
 			if(!vendor_ok || !device.device_name)
@@ -50,14 +61,14 @@ int main(int, const char** argv) {
 	}
 }
 
+
 static void print_named_id(const char* subsystem, std::uint64_t pci_id) {
-	std::cout << "Unrecognised " << subsystem << " with ID 0x" << std::setw(sizeof(std::uint64_t) * 2) << std::setfill('0') << std::internal << std::hex
-	          << std::uppercase << pci_id << '\n';
+	std::cout << "Unrecognised " << subsystem << " with ID " << format_pci_id{pci_id} << '\n';
 }
 
 static bool print_vendor(std::uint64_t vendor_id, const char* vendor_name) {
 	if(vendor_name)
-		std::cout << "Vendor           " << vendor_name << '\n';
+		std::cout << "Vendor " << format_pci_id{vendor_id} << ' ' << vendor_name << '\n';
 	else
 		print_named_id("vendor", vendor_id);
 

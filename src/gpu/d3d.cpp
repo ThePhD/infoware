@@ -14,9 +14,9 @@
 
 
 #include "infoware/detail/memory.hpp"
-#include "infoware/detail/pci.hpp"
 #include "infoware/detail/winstring.hpp"
 #include "infoware/gpu.hpp"
+#include "infoware/pci.hpp"
 #include <d3d11.h>
 #include <memory>
 
@@ -54,7 +54,7 @@ std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 		DXGI_ADAPTER_DESC adapterdesc;
 		adapter->GetDesc(&adapterdesc);
 
-		auto device             = iware::detail::identify_device(adapterdesc.VendorId, adapterdesc.DeviceId);
+		const auto device       = iware::pci::identify_device(adapterdesc.VendorId, adapterdesc.DeviceId);
 		std::string device_name = device.device_name ? device.device_name : iware::detail::narrowen_winstring(adapterdesc.Description);
 
 		devices.push_back({vendor_from_name(device.vendor_name), device_name, adapterdesc.DedicatedVideoMemory, adapterdesc.SharedSystemMemory,

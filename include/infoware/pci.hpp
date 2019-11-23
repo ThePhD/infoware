@@ -18,13 +18,20 @@
 
 
 namespace iware {
-	namespace detail {
-		struct pci_device_id {
+	namespace pci {
+		struct device {
 			const char* vendor_name;
 			const char* device_name;
 		};
 
-		pci_device_id identify_device(std::int64_t vendor_pci_id, std::int64_t device_pci_id) noexcept;
-		const char* identify_vendor(std::int64_t vendor_pci_id) noexcept;
-	}  // namespace detail
+
+		/// Get the names for the device with the specified PCI ID from the vendor with the specified PCI ID.
+		///
+		/// If the vendor was not found, both names are nullptr.
+		/// If the vendor was found, but the device wasn't, the device name is nullptr;
+		device identify_device(std::int64_t vendor_id, std::int64_t device_id) noexcept;
+
+		/// Get the name the vendor with the specified PCI ID, or nullptr if not found.
+		const char* identify_vendor(std::int64_t vendor_id) noexcept;
+	}  // namespace pci
 }  // namespace iware

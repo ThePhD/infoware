@@ -83,9 +83,9 @@ target_compile_definitions(infoware PRIVATE INFOWARE_VERSION="${infoware_version
 # Thanks, @griwes
 if(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/pciids/pci.ids")
 	execute_process(COMMAND ${GIT_EXECUTABLE} pull
-	                WORKING_DIRECTORY pciids)
+	                WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/pciids)
 else()
-	execute_process(COMMAND ${GIT_EXECUTABLE} clone https://github.com/pciutils/pciids)
+	execute_process(COMMAND ${GIT_EXECUTABLE} clone https://github.com/pciutils/pciids -- ${CMAKE_CURRENT_BINARY_DIR}/pciids)
 endif()
 
 add_executable(infoware_pci_generator tools/pci_generator.cpp)

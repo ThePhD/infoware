@@ -14,7 +14,7 @@ cmake_minimum_required(VERSION 3.6.0)
 
 
 find_package(Git)
-execute_process(COMMAND ${GIT_EXECUTABLE} describe --tags --abbrev=0 OUTPUT_VARIABLE infoware_version WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+execute_process(COMMAND ${GIT_EXECUTABLE} describe --tags --abbrev=0 OUTPUT_VARIABLE infoware_version WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET)
 string(STRIP "${infoware_version}" infoware_version)
 if(infoware_version STREQUAL "")
 	set(infoware_version "0.1.0")

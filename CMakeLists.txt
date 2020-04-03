@@ -92,11 +92,19 @@ add_executable(infoware_pci_generator tools/pci_generator.cpp)
 set_target_properties(infoware_pci_generator PROPERTIES CXX_STANDARD 14
                                                         CXX_STANDARD_REQUIRED ON
                                                         CXX_EXTENSIONS OFF)
-add_custom_target(infoware_generate_pcis
+
+set(INFOWARE_PCI_DATA_HPP pci_data.hpp)
+set(INFOWARE_PCI_DATA_GEN "infoware_generated/${INFOWARE_PCI_DATA_HPP}")
+
+add_custom_command(
+                  OUTPUT ${INFOWARE_PCI_DATA_GEN}
                   COMMAND ${CMAKE_COMMAND} -E make_directory infoware_generated/
                   COMMAND $<TARGET_FILE:infoware_pci_generator> "${CMAKE_CURRENT_BINARY_DIR}/pciids/pci.ids" > "infoware_generated/pci_data.hpp"
                   DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/pciids/pci.ids"
-                  BYPRODUCTS "infoware_generated/pci_data.hpp")
+                  COMMENT "Generating ${INFOWARE_PCI_DATA_HPP}"
+                  )
+
+add_custom_target(infoware_generate_pcis DEPENDS "${INFOWARE_PCI_DATA_GEN}")
 add_dependencies(infoware infoware_generate_pcis)
 
 

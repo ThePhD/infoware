@@ -27,7 +27,8 @@
 // Use WIM to acquire Win32_OperatingSystem.Name
 // https://msdn.microsoft.com/en-us/library/aa390423(v=vs.85).aspx
 static std::string version_name() {
-	if(FAILED(CoInitializeEx(nullptr, COINIT_MULTITHREADED)))
+	auto err = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+	if(FAILED(err) && err != RPC_E_CHANGED_MODE)
 		return {};
 	iware::detail::quickscope_wrapper com_uninitialiser{CoUninitialize};
 

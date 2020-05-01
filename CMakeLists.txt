@@ -14,9 +14,13 @@ cmake_minimum_required(VERSION 3.6.0)
 
 
 find_package(Git)
-execute_process(COMMAND ${GIT_EXECUTABLE} describe --tags --abbrev=0 OUTPUT_VARIABLE infoware_version WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET)
+
+execute_process(COMMAND ${GIT_EXECUTABLE} describe --tags --abbrev=0
+	RESULT_VARIABLE infoware_git_version_result
+	OUTPUT_VARIABLE infoware_version
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET)
 string(STRIP "${infoware_version}" infoware_version)
-if(infoware_version STREQUAL "")
+if(infoware_version STREQUAL "" OR NOT infoware_git_version_result)
 	set(infoware_version "0.1.0")
 else()
 	string(REPLACE "v" "" infoware_version "${infoware_version}")
@@ -34,6 +38,8 @@ option(INFOWARE_USE_X11 "Add public, transitive define to infoware to use X11 fo
 option(INFOWARE_EXAMPLES "Add infoware examples to the build." OFF)
 option(INFOWARE_TESTS    "Input tests for infoware."           OFF)
 
+set(INFOWARE_PCI_IDS_PATH "" CACHE FILEPATH "Path to PCI IDs file; used to override git pull of suitable PCI file from https://github.com/pciutils/pciids.")
+set(INFOWARE_PCI_IDS_REPOSITORY "https://github.com/pciutils/pciids" CACHE STRING "Git repository containing a pci.ids file at its root. Used if a local PCI IDs file is not specified by INFOWARE_PCI_IDS_PATH.")
 
 if(INFOWARE_USE_D3D)
 	if(INFOWARE_USE_OPENCL)
@@ -80,12 +86,26 @@ set_target_properties(infoware PROPERTIES CXX_STANDARD 14
 target_compile_definitions(infoware PRIVATE INFOWARE_VERSION="${infoware_version}")
 
 
-# Thanks, @griwes
-if(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/pciids/pci.ids")
-	execute_process(COMMAND ${GIT_EXECUTABLE} pull
-	                WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/pciids)
+if (EXISTS "${INFOWARE_PCI_IDS_PATH}")
+	set(infoware_pci_ids_file ${INFOWARE_PCI_IDS_PATH})
 else()
-	execute_process(COMMAND ${GIT_EXECUTABLE} clone https://github.com/pciutils/pciids -- ${CMAKE_CURRENT_BINARY_DIR}/pciids)
+	# Thanks, @griwes
+	set(infoware_pci_ids_file "${CMAKE_CURRENT_BINARY_DIR}/pciids/pci.ids")
+	if(EXISTS "${infoware_pci_ids_file}")
+		execute_process(COMMAND ${GIT_EXECUTABLE} pull
+					WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/pciids)
+	else()
+		execute_process(COMMAND ${GIT_EXECUTABLE} clone ${INFOWARE_PCI_IDS_REPOSITORY} -- ${CMAKE_CURRENT_BINARY_DIR}/pciids
+			RESULT_VARIABLE infoware_git_pciids_clone_result
+			# using same name for both concats output
+			# in the order produces by the process
+			ERROR_VARIABLE infoware_git_pciids_clone_output
+			OUTPUT_VARIABLE infoware_git_pciids_clone_output)
+		if (${infoware_git_pciids_clone_result})
+			# non-zero value; we fucked up
+			message(SEND_ERROR "The git clone of the pciids repository has failed and the PCI IDs were not obtained. Make sure you have a proper git executable installed on your machine and on PATH -- see https://git-scm.com/ for more information. The error value was ${infoware_git_pciids_clone_result} and the error message was:\n\t${infoware_git_pciids_clone_output}")
+		endif()
+	endif()
 endif()
 
 add_executable(infoware_pci_generator tools/pci_generator.cpp)
@@ -98,8 +118,8 @@ set(INFOWARE_PCI_DATA_GEN "infoware_generated/${INFOWARE_PCI_DATA_HPP}")
 
 add_custom_command(OUTPUT ${INFOWARE_PCI_DATA_GEN}
                    COMMAND ${CMAKE_COMMAND} -E make_directory infoware_generated/
-                   COMMAND $<TARGET_FILE:infoware_pci_generator> "${CMAKE_CURRENT_BINARY_DIR}/pciids/pci.ids" > "infoware_generated/pci_data.hpp"
-                   DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/pciids/pci.ids"
+                   COMMAND $<TARGET_FILE:infoware_pci_generator> "${infoware_pci_ids_file}" > "infoware_generated/pci_data.hpp"
+                   DEPENDS "${infoware_pci_ids_file}"
                    COMMENT "Generating ${INFOWARE_PCI_DATA_HPP}")
 
 add_custom_target(infoware_generate_pcis DEPENDS "${INFOWARE_PCI_DATA_GEN}")

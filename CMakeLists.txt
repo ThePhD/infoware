@@ -15,11 +15,16 @@ cmake_minimum_required(VERSION 3.6.0)
 
 find_package(Git)
 
-execute_process(COMMAND ${GIT_EXECUTABLE} describe --tags --abbrev=0
-	RESULT_VARIABLE infoware_git_version_result
-	OUTPUT_VARIABLE infoware_version
-	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET)
-string(STRIP "${infoware_version}" infoware_version)
+if(Git_FOUND)
+	execute_process(COMMAND ${GIT_EXECUTABLE} describe --tags --abbrev=0
+		RESULT_VARIABLE infoware_git_version_result
+		OUTPUT_VARIABLE infoware_version
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET)
+	string(STRIP "${infoware_version}" infoware_version)
+else()
+	set(infoware_version "")
+endif()
+
 if(infoware_version STREQUAL "" OR NOT infoware_git_version_result)
 	set(infoware_version "0.1.0")
 else()
@@ -89,6 +94,9 @@ target_compile_definitions(infoware PRIVATE INFOWARE_VERSION="${infoware_version
 if (EXISTS "${INFOWARE_PCI_IDS_PATH}")
 	set(infoware_pci_ids_file ${INFOWARE_PCI_IDS_PATH})
 else()
+	if(Git_FOUND)
+		message(SEND_ERROR "The git executable was not found on your machine and thusly we cannot execute the git command to pull the necessary PCI IDs. Please download the PCI IDs ('pci.ids') file manually from https://github.com/pciutils/pciids or http://pci-ids.ucw.cz/ and set the CMake variable INFOWARE_PCI_IDS_PATH to that file path to avoid needing to use git.")
+	endif()
 	# Thanks, @griwes
 	set(infoware_pci_ids_file "${CMAKE_CURRENT_BINARY_DIR}/pciids/pci.ids")
 	if(EXISTS "${infoware_pci_ids_file}")

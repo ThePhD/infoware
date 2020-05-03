@@ -13,7 +13,7 @@
 cmake_minimum_required(VERSION 3.6.0)
 
 
-set(infoware_version "0.5.0")
+set(infoware_version "0.5.1")
 
 find_package(Git)
 if(Git_FOUND)

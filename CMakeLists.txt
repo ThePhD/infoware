@@ -115,7 +115,7 @@ else()
 		                RESULT_VARIABLE infoware_git_pciids_clone_err)
 	else()
 		execute_process(COMMAND "${GIT_EXECUTABLE}" clone "${INFOWARE_PCI_IDS_REPOSITORY}" -- pciids
-			              WORKING_DIRECTORY CMAKE_CURRENT_BINARY_DIR
+		                WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
 		                RESULT_VARIABLE infoware_git_pciids_clone_err)
 	endif()
 	if(infoware_git_pciids_clone_err)

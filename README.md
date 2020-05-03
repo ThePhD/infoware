@@ -8,6 +8,10 @@ Some libraries are required for extended functionality. See the [Configurability
 
 On Windows one needs to link to `gdi32`, `version`, `Ole32`, `OleAut32` and `wbemuuid`.
 
+A usable `git` binary is required by default, to clone https://github.com/pciutils/pciids.
+	`INFOWARE_PCI_IDS_REPOSITORY` can be set to override that clone URI.
+	`INFOWARE_PCI_IDS_PATH` can be set to use the specified file instead of using git at all.
+
 ## Configurability
 |CMake definition and C++ preprocessor macro|              Meaning              |Linker library|    Priority   |
 |-------------------------------------------|-----------------------------------|--------------|---------------|

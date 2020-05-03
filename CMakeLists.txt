@@ -13,25 +13,26 @@
 cmake_minimum_required(VERSION 3.6.0)
 
 
+set(infoware_version "0.1.0")
+
 find_package(Git)
-
 if(Git_FOUND)
-	execute_process(COMMAND ${GIT_EXECUTABLE} describe --tags --abbrev=0
-		RESULT_VARIABLE infoware_git_version_result
-		OUTPUT_VARIABLE infoware_version
-		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET)
-	string(STRIP "${infoware_version}" infoware_version)
-else()
-	set(infoware_version "")
+	execute_process(COMMAND "${GIT_EXECUTABLE}" describe --tags
+	                RESULT_VARIABLE infoware_git_version_err
+	                OUTPUT_VARIABLE infoware_git_version
+	                WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+	                ERROR_QUIET)
+	if(NOT infoware_git_version_err)
+		# git-describe returns something like v0.4.3-3-g4cafb61, cmake only accepts M.M.P.T
+		# this uses commits-since-tag after the first dash as cmake TWEAK; the version above will turn into 0.4.3.3;
+		# tagged versions are still three parts
+		string(STRIP "${infoware_git_version}" infoware_git_version)
+		string(REPLACE "v" "" infoware_git_version "${infoware_git_version}")
+		string(REGEX REPLACE "([0123456789]+\\.[0123456789]+\\.[0123456789]+)-([0123456789]+).*" "\\1.\\2" infoware_version "${infoware_git_version}")
+	endif()
 endif()
 
-if(infoware_version STREQUAL "" OR NOT infoware_git_version_result)
-	set(infoware_version "0.1.0")
-else()
-	string(REPLACE "v" "" infoware_version "${infoware_version}")
-endif()
-
-project(infoware VERSION ${infoware_version} LANGUAGES CXX)
+project(infoware VERSION "${infoware_version}" LANGUAGES CXX)
 
 
 option(INFOWARE_USE_D3D    "Add public, transitive define to infoware to use Direct 3D for GPU detection."                       OFF)
@@ -43,8 +44,9 @@ option(INFOWARE_USE_X11 "Add public, transitive define to infoware to use X11 fo
 option(INFOWARE_EXAMPLES "Add infoware examples to the build." OFF)
 option(INFOWARE_TESTS    "Input tests for infoware."           OFF)
 
-set(INFOWARE_PCI_IDS_PATH "" CACHE FILEPATH "Path to PCI IDs file; used to override git pull of suitable PCI file from https://github.com/pciutils/pciids.")
-set(INFOWARE_PCI_IDS_REPOSITORY "https://github.com/pciutils/pciids" CACHE STRING "Git repository containing a pci.ids file at its root. Used if a local PCI IDs file is not specified by INFOWARE_PCI_IDS_PATH.")
+set(INFOWARE_PCI_IDS_PATH       ""                                   CACHE FILEPATH "pci.ids file to use. Overrides cloning from INFOWARE_PCI_IDS_REPOSITORY.")
+set(INFOWARE_PCI_IDS_REPOSITORY "https://github.com/pciutils/pciids" CACHE STRING
+		"Path/URL to clone a pciids git repository from if override path not supplied. Defaults to https://github.com/pciutils/pciids.")
 
 if(INFOWARE_USE_D3D)
 	if(INFOWARE_USE_OPENCL)
@@ -91,28 +93,33 @@ set_target_properties(infoware PROPERTIES CXX_STANDARD 14
 target_compile_definitions(infoware PRIVATE INFOWARE_VERSION="${infoware_version}")
 
 
-if (EXISTS "${INFOWARE_PCI_IDS_PATH}")
-	set(infoware_pci_ids_file ${INFOWARE_PCI_IDS_PATH})
-else()
-	if(NOT Git_FOUND)
-		message(SEND_ERROR "The git executable was not found on your machine and thusly we cannot execute the git command to pull the necessary PCI IDs. Please download the PCI IDs ('pci.ids') file manually from https://github.com/pciutils/pciids or http://pci-ids.ucw.cz/ and set the CMake variable INFOWARE_PCI_IDS_PATH to that file path to avoid needing to use git.")
+set(infoware_pci_ids_error "\
+The pci.ids file, downloadable from https://github.com/pciutils/pciids or http://pci-ids.ucw.cz, is required for building infoware,\
+and cloned automatically from that GitHub repository by default.\n\
+To use a local copy, set INFOWARE_PCI_IDS_PATH to its location.")
+if(INFOWARE_PCI_IDS_PATH)
+	if(NOT EXISTS "${INFOWARE_PCI_IDS_PATH}")
+		message(WARNING "The specified pci.ids file INFOWARE_PCI_IDS_PATH=${INFOWARE_PCI_IDS_PATH} doesn't seem to exist.")
 	endif()
+	set(infoware_pci_ids_file "${INFOWARE_PCI_IDS_PATH}")
+elseif(NOT Git_FOUND)
+	message(SEND_ERROR "Couldn't find a usable git executable in the environment, and the CMake variable INFOWARE_PCI_IDS_PATH is empty.\n${infoware_pci_ids_error}")
+else()
 	# Thanks, @griwes
 	set(infoware_pci_ids_file "${CMAKE_CURRENT_BINARY_DIR}/pciids/pci.ids")
 	if(EXISTS "${infoware_pci_ids_file}")
-		execute_process(COMMAND ${GIT_EXECUTABLE} pull
-					WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/pciids)
+		execute_process(COMMAND "${GIT_EXECUTABLE}" remote set-url origin "${INFOWARE_PCI_IDS_REPOSITORY}"
+		                WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/pciids")
+		execute_process(COMMAND "${GIT_EXECUTABLE}" pull
+		                WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/pciids"
+		                RESULT_VARIABLE infoware_git_pciids_clone_err)
 	else()
-		execute_process(COMMAND ${GIT_EXECUTABLE} clone ${INFOWARE_PCI_IDS_REPOSITORY} -- ${CMAKE_CURRENT_BINARY_DIR}/pciids
-			RESULT_VARIABLE infoware_git_pciids_clone_result
-			# using same name for both concats output
-			# in the order produces by the process
-			ERROR_VARIABLE infoware_git_pciids_clone_output
-			OUTPUT_VARIABLE infoware_git_pciids_clone_output)
-		if (${infoware_git_pciids_clone_result})
-			# non-zero value; we fucked up
-			message(SEND_ERROR "The git clone of the pciids repository has failed and the PCI IDs were not obtained. Make sure you have a proper git executable installed on your machine and on PATH -- see https://git-scm.com/ for more information. The error value was ${infoware_git_pciids_clone_result} and the error message was:\n\t${infoware_git_pciids_clone_output}")
-		endif()
+		execute_process(COMMAND "${GIT_EXECUTABLE}" clone "${INFOWARE_PCI_IDS_REPOSITORY}" -- pciids
+			              WORKING_DIRECTORY CMAKE_CURRENT_BINARY_DIR
+		                RESULT_VARIABLE infoware_git_pciids_clone_err)
+	endif()
+	if(infoware_git_pciids_clone_err)
+		message(SEND_ERROR "Cloning/pulling pciids repository from ${INFOWARE_PCI_IDS_REPOSITORY} failed with ${infoware_git_pciids_clone_err}.\n${infoware_pci_ids_error}")
 	endif()
 endif()
 

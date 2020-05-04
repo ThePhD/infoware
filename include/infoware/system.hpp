@@ -17,6 +17,11 @@
 #include <string>
 #include <vector>
 
+// Some garbage compilers define this, doesn't seem deterministic; see https://github.com/ThePhD/infoware/issues/42
+#ifdef linux
+#undef linux
+#endif
+
 
 namespace iware {
 	namespace system {

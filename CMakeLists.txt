@@ -21,7 +21,8 @@ if(NOT Git_FOUND)
 	# should prevent vcpkg failures from destroying us...
 	find_program(GIT_EXECUTABLE
 			   NAMES git git.exe)
-	if (GIT_EXECUTABLE)
+	message(STATUS "${GIT_EXECUTABLE}")
+	if (${GIT_EXECUTABLE})
 		set(Git_FOUND true)
 	else()
 		set(Git_FOUND false)

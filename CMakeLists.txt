@@ -16,6 +16,17 @@ cmake_minimum_required(VERSION 3.6.0)
 set(infoware_version "0.5.2")
 
 find_package(Git)
+if(NOT Git_FOUND)
+	# fall back to using find_program as well
+	# should prevent vcpkg failures from destroying us...
+	find_program(GIT_EXECUTABLE
+			   NAMES git git.exe)
+	if (GIT_EXECUTABLE)
+		set(Git_FOUND true)
+	else()
+		set(Git_FOUND false)
+	endif()
+endif()
 if(Git_FOUND)
 	execute_process(COMMAND "${GIT_EXECUTABLE}" describe --tags
 	                RESULT_VARIABLE infoware_git_version_err
@@ -94,7 +105,7 @@ target_compile_definitions(infoware PRIVATE INFOWARE_VERSION="${infoware_version
 
 
 set(infoware_pci_ids_error "\
-The pci.ids file, downloadable from https://github.com/pciutils/pciids or http://pci-ids.ucw.cz, is required for building infoware,\
+The pci.ids file, downloadable from https://github.com/pciutils/pciids or http://pci-ids.ucw.cz, is required for building infoware, \
 and cloned automatically from that GitHub repository by default.\n\
 To use a local copy, set INFOWARE_PCI_IDS_PATH to its location.")
 if(INFOWARE_PCI_IDS_PATH)

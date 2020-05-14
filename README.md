@@ -3,7 +3,7 @@ C++ Library for pulling system and hardware information, without hitting the com
 
 
 ## Requirements
-No non-built-in ones by default.<br />
+No non-built-in ones by default.  
 Some libraries are required for extended functionality. See the [Configurability](#configurability) section below for details.
 
 On Windows one needs to link to `gdi32`, `version`, `Ole32`, `OleAut32` and `wbemuuid`.

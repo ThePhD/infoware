@@ -13,28 +13,8 @@
 cmake_minimum_required(VERSION 3.6.0)
 
 
+# Remember to update distribution/vcpkg/* too
 set(infoware_version "0.5.3")
-
-# check if we pre-injected the Git_FOUND value
-if(NOT Git_FOUND)
-	# if not, do the find_package
-	find_package(Git)
-endif()
-if(Git_FOUND)
-	execute_process(COMMAND "${GIT_EXECUTABLE}" describe --tags
-	                RESULT_VARIABLE infoware_git_version_err
-	                OUTPUT_VARIABLE infoware_git_version
-	                WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-	                ERROR_QUIET)
-	if(NOT infoware_git_version_err)
-		# git-describe returns something like v0.4.3-3-g4cafb61, cmake only accepts M.M.P.T
-		# this uses commits-since-tag after the first dash as cmake TWEAK; the version above will turn into 0.4.3.3;
-		# tagged versions are still three parts
-		string(STRIP "${infoware_git_version}" infoware_git_version)
-		string(REPLACE "v" "" infoware_git_version "${infoware_git_version}")
-		string(REGEX REPLACE "([0123456789]+\\.[0123456789]+\\.[0123456789]+)-([0123456789]+).*" "\\1.\\2" infoware_version "${infoware_git_version}")
-	endif()
-endif()
 
 project(infoware VERSION "${infoware_version}" LANGUAGES CXX)
 
@@ -98,6 +78,10 @@ target_compile_definitions(infoware PRIVATE INFOWARE_VERSION="${infoware_version
                                             INFOWARE_BUILDING=1
                                     PUBLIC $<$<STREQUAL:$<TARGET_PROPERTY:infoware,TYPE>,SHARED_LIBRARY>:INFOWARE_DLL=1>)
 
+
+if(NOT Git_FOUND)  # Could be pre-injected
+	find_package(Git)
+endif()
 
 set(infoware_pci_ids_error "\
 The pci.ids file, downloadable from https://github.com/pciutils/pciids or http://pci-ids.ucw.cz, is required for building infoware, \

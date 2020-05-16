@@ -13,6 +13,8 @@
 #pragma once
 
 
+#include <infoware/detail/linkage.hpp>
+
 namespace iware {
-	extern const char * const version;
+	INFOWARE_API_LINKAGE extern const char * const version;
 }

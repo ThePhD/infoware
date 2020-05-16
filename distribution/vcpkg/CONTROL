@@ -1,0 +1,27 @@
+# infoware - C++ System information Library
+#
+# Written in 2016-2020 by nabijaczleweli <nabijaczleweli@gmail.com> and ThePhD <phdofthehouse@gmail.com>
+#
+# To the extent possible under law, the author(s) have dedicated all copyright and related
+# and neighboring rights to this software to the public domain worldwide. This software is
+# distributed without any warranty.
+#
+# You should have received a copy of the CC0 Public Domain Dedication along with this software.
+# If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
+
+# vcpkg CONTROL file for infoware
+Source: infoware
+Version: v0.5.2
+Description: C++ Library for pulling system and hardware information, without hitting the command line.
+
+Feature: x11
+Description: Prefer usage of X11 to find graphical capabilities.
+
+Feature: d3d
+Description: Prefer usage of Direct3D to find graphical capabilities (typically only works on Windows systems).
+
+Feature: opencl
+Description: Prefer usage of OpenCL to find graphical capabilities of the system.
+
+Feature: opengl
+Description: Prefer usage of OpenGL to find graphical capabilities (may require additional libraries to be available for linking depending on the system).

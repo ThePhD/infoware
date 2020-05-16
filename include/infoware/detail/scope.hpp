@@ -13,6 +13,8 @@
 #pragma once
 
 
+#include <infoware/detail/linkage.hpp>
+
 #include <functional>
 
 
@@ -22,7 +24,7 @@ namespace iware {
 			std::function<void()> func;
 
 			quickscope_wrapper(const quickscope_wrapper&) = delete;
-			~quickscope_wrapper();
+			INFOWARE_API_LINKAGE_INTERNAL ~quickscope_wrapper();
 		};
 	}  // namespace detail
 }  // namespace iware

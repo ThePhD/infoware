@@ -13,12 +13,14 @@
 #pragma once
 
 
+#include <infoware/detail/linkage.hpp>
+
 #include <string>
 
 
 namespace iware {
 	namespace detail {
-		std::string narrowen_bstring(const wchar_t* wstr);
-		std::string narrowen_winstring(const wchar_t* wstr);
+		INFOWARE_API_LINKAGE_INTERNAL std::string narrowen_bstring(const wchar_t* wstr);
+		INFOWARE_API_LINKAGE_INTERNAL std::string narrowen_winstring(const wchar_t* wstr);
 	}  // namespace detail
 }  // namespace iware

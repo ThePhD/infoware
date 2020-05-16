@@ -13,6 +13,8 @@
 #pragma once
 
 
+#include <infoware/detail/linkage.hpp>
+
 #include <cstdint>
 #include <utility>
 #include <vector>
@@ -21,9 +23,9 @@
 namespace iware {
 	namespace detail {
 		/// https://github.com/ThePhD/infoware/issues/13
-		std::vector<char> sysctl(const char* name);
-		std::vector<char> sysctl(int mib_0, int mib_1);
+		INFOWARE_API_LINKAGE_INTERNAL std::vector<char> sysctl(const char* name);
+		INFOWARE_API_LINKAGE_INTERNAL std::vector<char> sysctl(int mib_0, int mib_1);
 
-		std::pair<bool, std::uint64_t> deconstruct_sysctl_int(const std::vector<char>& data);
+		INFOWARE_API_LINKAGE_INTERNAL std::pair<bool, std::uint64_t> deconstruct_sysctl_int(const std::vector<char>& data);
 	}  // namespace detail
 }  // namespace iware

@@ -13,6 +13,8 @@
 #pragma once
 
 
+#include <infoware/detail/linkage.hpp>
+
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -39,6 +41,6 @@ namespace iware {
 
 
 		/// Returns all GPU's properties.
-		std::vector<device_properties_t> device_properties();
+		INFOWARE_API_LINKAGE std::vector<device_properties_t> device_properties();
 	}  // namespace gpu
 }  // namespace iware

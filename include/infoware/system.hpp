@@ -13,6 +13,8 @@
 #pragma once
 
 
+#include <infoware/detail/linkage.hpp>
+
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -72,31 +74,31 @@ namespace iware {
 		};
 
 		/// Get amount of connected mice.
-		std::size_t mouse_amount() noexcept;
+		INFOWARE_API_LINKAGE std::size_t mouse_amount() noexcept;
 
 		/// Get amount of connected keyboards.
 		///
 		/// Always returns 0 on Linuxish kernels, as it can not be detected there.
-		std::size_t keyboard_amount() noexcept;
+		INFOWARE_API_LINKAGE std::size_t keyboard_amount() noexcept;
 
 		/// Get amount of other connected HIDs.
 		///
 		/// Always returns 0 on Linuxish kernels, as it can not be detected there.
-		std::size_t other_HID_amount() noexcept;
+		INFOWARE_API_LINKAGE std::size_t other_HID_amount() noexcept;
 
 		/// Get RAM statistics.
-		memory_t memory() noexcept;
+		INFOWARE_API_LINKAGE memory_t memory() noexcept;
 
 		/// Get kernel information.
-		kernel_info_t kernel_info();
+		INFOWARE_API_LINKAGE kernel_info_t kernel_info();
 
 		/// Get system information.
-		OS_info_t OS_info();
+		INFOWARE_API_LINKAGE OS_info_t OS_info();
 
 		/// Get information about displays.
-		std::vector<display_t> displays();
+		INFOWARE_API_LINKAGE std::vector<display_t> displays();
 
 		/// Get information about available configurations for each display.
-		std::vector<std::vector<display_config_t>> available_display_configurations();
+		INFOWARE_API_LINKAGE std::vector<std::vector<display_config_t>> available_display_configurations();
 	}  // namespace system
 }  // namespace iware

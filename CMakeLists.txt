@@ -15,18 +15,10 @@ cmake_minimum_required(VERSION 3.6.0)
 
 set(infoware_version "0.5.2")
 
-find_package(Git)
+# check if we pre-injected the Git_FOUND value
 if(NOT Git_FOUND)
-	# fall back to using find_program as well
-	# should prevent vcpkg failures from destroying us...
-	find_program(GIT_EXECUTABLE
-			   NAMES git git.exe)
-	message(STATUS "${GIT_EXECUTABLE}")
-	if (${GIT_EXECUTABLE})
-		set(Git_FOUND true)
-	else()
-		set(Git_FOUND false)
-	endif()
+	# if not, do the find_package
+	find_package(Git)
 endif()
 if(Git_FOUND)
 	execute_process(COMMAND "${GIT_EXECUTABLE}" describe --tags
@@ -102,7 +94,9 @@ set_target_properties(infoware PROPERTIES CXX_STANDARD 14
                                           MINSIZEREL_POSTFIX "msr"
                                           RELWITHDEBINFO_POSTFIX "rwdi")
 
-target_compile_definitions(infoware PRIVATE INFOWARE_VERSION="${infoware_version}")
+target_compile_definitions(infoware PRIVATE INFOWARE_VERSION="${infoware_version}"
+                                            INFOWARE_BUILDING=1
+                                    PUBLIC $<$<STREQUAL:$<TARGET_PROPERTY:infoware,TYPE>,SHARED_LIBRARY>:INFOWARE_DLL=1>)
 
 
 set(infoware_pci_ids_error "\
@@ -206,7 +200,7 @@ if(NOT DARWIN AND INFOWARE_USE_X11)
 	if(X11_Xrandr_FOUND)
 		target_link_libraries(infoware PUBLIC ${X11_Xrandr_LIB})
 	else()
-  	message(FATAL_ERROR "Xrandr is required for infoware")
+		message(FATAL_ERROR "Xrandr is required for infoware")
 	endif()
 endif()
 
@@ -248,7 +242,9 @@ include(GNUInstallDirs)
 # Specify where library and headers will be installed
 install(TARGETS infoware
         EXPORT infowareTargets
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+        LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/infoware)
 target_include_directories(infoware PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
                                            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)

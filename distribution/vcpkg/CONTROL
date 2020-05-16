@@ -11,7 +11,7 @@
 
 # vcpkg CONTROL file for infoware
 Source: infoware
-Version: v0.5.2
+Version: v0.5.3
 Description: C++ Library for pulling system and hardware information, without hitting the command line.
 
 Feature: x11

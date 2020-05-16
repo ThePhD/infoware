@@ -13,7 +13,7 @@
 cmake_minimum_required(VERSION 3.6.0)
 
 
-set(infoware_version "0.5.2")
+set(infoware_version "0.5.3")
 
 # check if we pre-injected the Git_FOUND value
 if(NOT Git_FOUND)

@@ -16,7 +16,7 @@ include(vcpkg_common_functions)
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO ThePhD/infoware
-    REF v0.5.2
+    REF v0.5.3
     SHA512 ed3b4384c135ebdcead21afc3b5ccb790d7058f5dadfb31a5be52e10078d9140851e2971f3e974a9915dd8a5d2615be3bcee2270baf145b921f46b27c8182cd7
     HEAD_REF master
 )

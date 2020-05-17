@@ -17,36 +17,39 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO ThePhD/infoware
     REF v0.5.3
-    SHA512 ed3b4384c135ebdcead21afc3b5ccb790d7058f5dadfb31a5be52e10078d9140851e2971f3e974a9915dd8a5d2615be3bcee2270baf145b921f46b27c8182cd7
+    SHA512 64a4f0b1027a20bf9c90bf99d638947cb1c0d6bad1b22c8b0403713c5e2c69756435906996b154989f9eaa41e5d55743d7bf5ef51f7bbf8d99eae94d29af1b2c
     HEAD_REF master
 )
 
 vcpkg_check_features(
-  OUT_FEATURE_OPTIONS FEATURE_OPTIONS
-  x11 INFOWARE_USE_X11
-  d3d INFOWARE_USE_D3D
-  opencl INFOWARE_USE_OPENCL
-  opengl INFOWARE_USE_OPENGL
+    OUT_FEATURE_OPTIONS FEATURE_OPTIONS
+    x11 INFOWARE_USE_X11
+    d3d INFOWARE_USE_D3D
+    opencl INFOWARE_USE_OPENCL
+    opengl INFOWARE_USE_OPENGL
 )
 
+# git must be injected, because vcpkg isolates the build 
+# from the environment entirely to have reproducible builds
 vcpkg_find_acquire_program(GIT)
 
 vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
     PREFER_NINJA
     OPTIONS
-      ${FEATURE_OPTIONS}
-      -DINFOWARE_EXAMPLES=OFF
-      -DINFOWARE_TESTS=OFF
-      -DGIT_EXECUTABLE=${GIT}
-      -DGIT_FOUND=true
+        ${FEATURE_OPTIONS}
+        -DINFOWARE_EXAMPLES=OFF
+        -DINFOWARE_TESTS=OFF
+        -DGIT_EXECUTABLE=${GIT}
+        -DGIT_FOUND=true
 )
 
 vcpkg_install_cmake()
 
 # make sure the LICENSE file is present as the copyright file
 file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/infoware RENAME copyright)
-# remove things for debug version of how vcpkg does stuff...?
-# they also handle share stuff and configuration for debug vs. release, so not our responsibility
+# remove things for debug version
+# vcpkg also handle share stuff and configuration for debug vs. release,
+# so not our responsibility!
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")

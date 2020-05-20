@@ -9,15 +9,11 @@
 # You should have received a copy of the CC0 Public Domain Dedication along with this software.
 # If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
-# vcpkg portfile.cmake file for infoware
-
-include(vcpkg_common_functions)
-
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO ThePhD/infoware
     REF v0.5.3
-    SHA512 64a4f0b1027a20bf9c90bf99d638947cb1c0d6bad1b22c8b0403713c5e2c69756435906996b154989f9eaa41e5d55743d7bf5ef51f7bbf8d99eae94d29af1b2c
+    SHA512 217bb9332214d823445e19f2c465199536e89a36faccea8cb72f8dd41a177e1739969d131ad25d1878e688a3a6cc1290c2125ef9d2205ad4fd334b24b27d491a
     HEAD_REF master
 )
 
@@ -29,7 +25,7 @@ vcpkg_check_features(
     opengl INFOWARE_USE_OPENGL
 )
 
-# git must be injected, because vcpkg isolates the build 
+# git must be injected, because vcpkg isolates the build
 # from the environment entirely to have reproducible builds
 vcpkg_find_acquire_program(GIT)
 
@@ -46,10 +42,6 @@ vcpkg_configure_cmake(
 
 vcpkg_install_cmake()
 
-# make sure the LICENSE file is present as the copyright file
-file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/infoware RENAME copyright)
-# remove things for debug version
-# vcpkg also handle share stuff and configuration for debug vs. release,
-# so not our responsibility!
+file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")

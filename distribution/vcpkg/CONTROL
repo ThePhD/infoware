@@ -9,10 +9,10 @@
 # You should have received a copy of the CC0 Public Domain Dedication along with this software.
 # If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
-# vcpkg CONTROL file for infoware
 Source: infoware
-Version: v0.5.3
+Version: 0.5.3
 Description: C++ Library for pulling system and hardware information, without hitting the command line.
+Homepage: https://github.com/ThePhD/infoware
 
 Feature: x11
 Description: Prefer usage of X11 to find graphical capabilities.

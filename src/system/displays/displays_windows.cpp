@@ -44,10 +44,13 @@ std::vector<iware::system::display_t> iware::system::displays() {
 		    const unsigned int monitor_dpi    = GetDeviceCaps(hdc, LOGPIXELSX);
 		    const unsigned int monitor_bpp    = GetDeviceCaps(hdc, BITSPIXEL) * GetDeviceCaps(hdc, PLANES);
 		    const double monitor_refresh_rate = GetDeviceCaps(hdc, VREFRESH);
+		    const auto width                  = std::abs(rect->right - rect->left);
+		    const auto height                 = std::abs(rect->bottom - rect->top);
+
 
 		    auto& ret = *reinterpret_cast<std::vector<iware::system::display_t>*>(userdata);
 		    // See http://stackoverflow.com/a/12654433/2851815 and up for DPI. In short: can't be done too too well, go with best solution.
-		    ret.push_back({static_cast<unsigned int>(rect->right), static_cast<unsigned int>(rect->bottom), monitor_dpi ? monitor_dpi : desktop_dpi,
+		    ret.push_back({static_cast<unsigned int>(width), static_cast<unsigned int>(height), monitor_dpi ? monitor_dpi : desktop_dpi,
 		                   monitor_bpp ? monitor_bpp : desktop_bpp, monitor_refresh_rate ? monitor_refresh_rate : desktop_refresh_rate});
 
 		    return 1;

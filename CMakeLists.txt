@@ -13,7 +13,6 @@
 cmake_minimum_required(VERSION 3.6.0)
 
 
-# Remember to update distribution/vcpkg/* too
 set(infoware_version "0.5.4")
 
 project(infoware VERSION "${infoware_version}" LANGUAGES CXX)

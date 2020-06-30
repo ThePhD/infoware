@@ -5,8 +5,6 @@
 !examples/**
 !include
 !include/**
-!distribution
-!distribution/**
 !tools
 !tools/**
 !.git*

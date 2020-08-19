@@ -13,7 +13,7 @@
 cmake_minimum_required(VERSION 3.6.0)
 
 
-set(infoware_version "0.5.4")
+set(infoware_version "0.5.5")
 
 project(infoware VERSION "${infoware_version}" LANGUAGES CXX)
 

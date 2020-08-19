@@ -13,7 +13,7 @@
 #pragma once
 
 
-#include <infoware/detail/linkage.hpp>
+#include <infoware/linkage.hpp>
 
 #include <functional>
 

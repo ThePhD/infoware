@@ -28,6 +28,7 @@ namespace iware {
 			nvidia,
 			microsoft,
 			qualcomm,
+			apple,
 			unknown,
 		};
 

@@ -24,12 +24,14 @@
 
 
 static iware::gpu::vendor_t parse_vendor(const char* name) {
-	if(!std::strcmp(name, "Intel(R) Corporation"))
+	if(!std::strcmp(name, "Intel(R) Corporation") || !std::strcmp(name, "Intel"))
 		return iware::gpu::vendor_t::intel;
-	else if(!std::strcmp(name, "Advanced Micro Devices, Inc."))
+	else if(!std::strcmp(name, "Advanced Micro Devices, Inc.") || !std::strcmp(name, "AMD"))
 		return iware::gpu::vendor_t::amd;
 	else if(!std::strcmp(name, "NVIDIA Corporation"))
 		return iware::gpu::vendor_t::nvidia;
+	else if(!std::strcmp(name, "Apple"))
+		return iware::gpu::vendor_t::apple;
 	else
 		return iware::gpu::vendor_t::unknown;
 }

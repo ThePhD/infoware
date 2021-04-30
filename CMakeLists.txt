@@ -161,7 +161,7 @@ if(INFOWARE_USE_D3D)
 	endif()
 elseif(INFOWARE_USE_OPENCL)
 	target_compile_definitions(infoware PUBLIC INFOWARE_USE_OPENCL)
-	target_link_libraries(infoware PUBLIC OpenCL)
+	target_link_libraries(infoware PUBLIC "-framework OpenCL")
 elseif(INFOWARE_USE_OPENGL)
 	target_compile_definitions(infoware PUBLIC INFOWARE_USE_OPENGL)
 

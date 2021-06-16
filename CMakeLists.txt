@@ -242,7 +242,7 @@ write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/cmake/infowareConf
                                  VERSION ${VERSION}
                                  COMPATIBILITY AnyNewerVersion)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cmake/infowareConfigVersion.cmake
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/share/infoware
+        DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/infoware
         COMPONENT devel)
 
 # Specifying config file that will be used to find a library using find_package().
@@ -250,4 +250,4 @@ export(TARGETS ${PROJECT_NAME}
        FILE infowareConfig.cmake)
 install(EXPORT infowareTargets
         FILE infowareConfig.cmake
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/share/infoware)
+        DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/infoware)

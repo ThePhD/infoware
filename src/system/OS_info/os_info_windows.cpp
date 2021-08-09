@@ -28,8 +28,14 @@
 // https://msdn.microsoft.com/en-us/library/aa390423(v=vs.85).aspx
 static std::string version_name() {
 	auto err = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
-	if(FAILED(err) && err != RPC_E_CHANGED_MODE)
+	if(err == RPC_E_CHANGED_MODE) {
+		// User already has initialized COM library by COINIT_APARTMENTTHREADED.
+		err = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+	}
+
+	if(FAILED(err))
 		return {};
+
 	iware::detail::quickscope_wrapper com_uninitialiser{CoUninitialize};
 
 	const auto init_result =

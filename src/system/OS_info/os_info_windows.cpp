@@ -80,10 +80,41 @@ static std::string version_name() {
 	return ret.substr(0, ret.find('|'));
 }
 
+unsigned int build_number() {
+	HKEY hkey{};
+	if(RegOpenKeyExA(HKEY_LOCAL_MACHINE, R"(Software\Microsoft\Windows NT\CurrentVersion)", 0, KEY_READ, &hkey))
+		return {};
+
+	DWORD ubr      = 0;
+	DWORD ubr_size = sizeof(ubr);
+	if(!RegQueryValueExA(hkey, "UBR", nullptr, nullptr, reinterpret_cast<LPBYTE>(&ubr), &ubr_size))
+		return ubr;
+
+	// Fall back to BuildLabEx in the early version of Windows 8.1 and less.
+	constexpr auto buildlabex_name = "BuildLabEx";
+	DWORD buildlabex_size          = 0;
+	if(RegQueryValueExA(hkey, buildlabex_name, nullptr, nullptr, nullptr, &buildlabex_size))
+		return {};
+
+	std::vector<char> buildlabex_buffer(buildlabex_size);
+	if(RegQueryValueExA(hkey, buildlabex_name, nullptr, nullptr, reinterpret_cast<LPBYTE>(buildlabex_buffer.data()), &buildlabex_size))
+		return {};
+
+	const std::string buildlabex{buildlabex_buffer.begin(), buildlabex_buffer.end()};
+	const auto first_period = buildlabex.find('.');
+	if(first_period == std::string::npos)
+		return {};
+
+	const auto second_period = buildlabex.find('.', first_period + 1);
+	if(second_period == std::string::npos)
+		return {};
+
+	return std::stoul(buildlabex.substr(first_period + 1, second_period - first_period));
+}
 
 iware::system::OS_info_t iware::system::OS_info() {
 	const auto kernel_version = iware::system::kernel_info();
-	return {"Windows NT", version_name(), kernel_version.major, kernel_version.minor, kernel_version.patch, kernel_version.build_number};
+	return {"Windows NT", version_name(), kernel_version.major, kernel_version.minor, kernel_version.patch, build_number()};
 }
 
 

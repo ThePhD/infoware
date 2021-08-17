@@ -148,7 +148,7 @@ if(WIN32 AND NOT MSVC)
 endif()
 
 if(WIN32)
-	target_link_libraries(infoware PRIVATE gdi32 version Ole32 OleAut32 wbemuuid)
+	target_link_libraries(infoware PRIVATE gdi32 version Ole32 OleAut32 wbemuuid ntdll)
 endif()
 
 

@@ -22,6 +22,14 @@
 #define WIN32_LEAN_AND_MEAN
 #include <wbemidl.h>
 #include <windows.h>
+#include <winnt.h>
+#include <winternl.h>
+
+extern "C" NTSYSAPI NTSTATUS NTAPI RtlGetVersion(_Out_ PRTL_OSVERSIONINFOW lpVersionInformation);
+
+#ifdef _MSC_VER
+#define strtok_r(...) strtok_s(__VA_ARGS__)
+#endif
 
 
 // Use WIM to acquire Win32_OperatingSystem.Name
@@ -80,10 +88,39 @@ static std::string version_name() {
 	return ret.substr(0, ret.find('|'));
 }
 
+static unsigned int build_number() {
+	HKEY hkey{};
+	if(RegOpenKeyExA(HKEY_LOCAL_MACHINE, R"(Software\Microsoft\Windows NT\CurrentVersion)", 0, KEY_READ, &hkey))
+		return {};
 
+	DWORD ubr{};
+	DWORD ubr_size = sizeof(ubr);
+	if(!RegQueryValueExA(hkey, "UBR", nullptr, nullptr, reinterpret_cast<LPBYTE>(&ubr), &ubr_size))
+		return ubr;
+
+	// Fall back to BuildLabEx in the early version of Windows 8.1 and less.
+	DWORD buildlabex_size{};
+	if(RegQueryValueExA(hkey, "BuildLabEx", nullptr, nullptr, nullptr, &buildlabex_size))
+		return {};
+
+	std::string buildlabex(buildlabex_size, {});  // REG_SZ may not be NUL-terminated
+	if(RegQueryValueExA(hkey, "BuildLabEx", nullptr, nullptr, reinterpret_cast<LPBYTE>(&buildlabex[0]), &buildlabex_size))
+		return {};
+
+	char* ctx{};
+	auto token = strtok_r(&buildlabex[0], ".", &ctx);
+	token      = strtok_r(nullptr, ".", &ctx);
+	return token ? std::strtoul(token, nullptr, 10) : 0;
+}
+
+// Get OS version via RtlGetVersion which still works well in Windows 8 and above
+// https://docs.microsoft.com/en-us/windows/win32/devnotes/rtlgetversion
 iware::system::OS_info_t iware::system::OS_info() {
-	const auto kernel_version = iware::system::kernel_info();
-	return {"Windows NT", version_name(), kernel_version.major, kernel_version.minor, kernel_version.patch, kernel_version.build_number};
+	RTL_OSVERSIONINFOW os_version_info{};
+	os_version_info.dwOSVersionInfoSize = sizeof(os_version_info);
+	RtlGetVersion(&os_version_info);
+
+	return {"Windows NT", version_name(), os_version_info.dwMajorVersion, os_version_info.dwMinorVersion, os_version_info.dwBuildNumber, build_number()};
 }
 
 

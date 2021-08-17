@@ -6,7 +6,7 @@ C++ Library for pulling system and hardware information, without hitting the com
 No non-built-in ones by default.<br />
 Some libraries are required for extended functionality. See the [Configurability](#configurability) section below for details.
 
-On Windows one needs to link to `gdi32`, `version`, `Ole32`, `OleAut32` and `wbemuuid`.
+On Windows one needs to link to `gdi32`, `version`, `Ole32`, `OleAut32`, `wbemuuid` and `ntdll`.
 
 A usable `git` binary is required by default, to clone https://github.com/pciutils/pciids.
 	`INFOWARE_PCI_IDS_REPOSITORY` can be set to override that clone URI.

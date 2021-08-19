@@ -22,6 +22,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <wbemidl.h>
 #include <windows.h>
+#include <winternl.h>
 
 
 // Use WIM to acquire Win32_OperatingSystem.Name
@@ -112,9 +113,26 @@ unsigned int build_number() {
 	return std::stoul(buildlabex.substr(first_period + 1, second_period - first_period));
 }
 
+// Get OS version via RtlGetVersion which still works well in Windows 8 and above
+// https://docs.microsoft.com/en-us/windows/win32/devnotes/rtlgetversion
 iware::system::OS_info_t iware::system::OS_info() {
-	const auto kernel_version = iware::system::kernel_info();
-	return {"Windows NT", version_name(), kernel_version.major, kernel_version.minor, kernel_version.patch, build_number()};
+	using RtlGetVersionPtr = NTSTATUS(WINAPI*)(PRTL_OSVERSIONINFOW);
+
+	const auto ntdll = GetModuleHandleA("ntdll.dll");
+	if(!ntdll)
+		return {};
+
+	const auto rtlgetversion = reinterpret_cast<RtlGetVersionPtr>(GetProcAddress(ntdll, "RtlGetVersion"));
+	if(!rtlgetversion)
+		return {};
+
+	RTL_OSVERSIONINFOW os_version_info{};
+	os_version_info.dwOSVersionInfoSize = sizeof(os_version_info);
+
+	if(rtlgetversion(&os_version_info))
+		return {};
+
+	return {"Windows NT", version_name(), os_version_info.dwMajorVersion, os_version_info.dwMinorVersion, os_version_info.dwBuildNumber, build_number()};
 }
 
 

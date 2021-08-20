@@ -22,8 +22,10 @@
 #define WIN32_LEAN_AND_MEAN
 #include <wbemidl.h>
 #include <windows.h>
+#include <winnt.h>
 #include <winternl.h>
 
+extern "C" NTSYSAPI NTSTATUS NTAPI RtlGetVersion(_Out_ PRTL_OSVERSIONINFOW lpVersionInformation);
 
 // Use WIM to acquire Win32_OperatingSystem.Name
 // https://msdn.microsoft.com/en-us/library/aa390423(v=vs.85).aspx
@@ -116,20 +118,10 @@ unsigned int build_number() {
 // Get OS version via RtlGetVersion which still works well in Windows 8 and above
 // https://docs.microsoft.com/en-us/windows/win32/devnotes/rtlgetversion
 iware::system::OS_info_t iware::system::OS_info() {
-	using RtlGetVersionPtr = NTSTATUS(WINAPI*)(PRTL_OSVERSIONINFOW);
-
-	const auto ntdll = GetModuleHandleA("ntdll.dll");
-	if(!ntdll)
-		return {};
-
-	const auto rtlgetversion = reinterpret_cast<RtlGetVersionPtr>(GetProcAddress(ntdll, "RtlGetVersion"));
-	if(!rtlgetversion)
-		return {};
-
 	RTL_OSVERSIONINFOW os_version_info{};
 	os_version_info.dwOSVersionInfoSize = sizeof(os_version_info);
 
-	if(rtlgetversion(&os_version_info))
+	if(RtlGetVersion(&os_version_info))
 		return {};
 
 	return {"Windows NT", version_name(), os_version_info.dwMajorVersion, os_version_info.dwMinorVersion, os_version_info.dwBuildNumber, build_number()};

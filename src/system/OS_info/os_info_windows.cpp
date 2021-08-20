@@ -94,25 +94,17 @@ unsigned int build_number() {
 		return ubr;
 
 	// Fall back to BuildLabEx in the early version of Windows 8.1 and less.
-	constexpr auto buildlabex_name = "BuildLabEx";
-	DWORD buildlabex_size          = 0;
-	if(RegQueryValueExA(hkey, buildlabex_name, nullptr, nullptr, nullptr, &buildlabex_size))
+	DWORD buildlabex_size = 0;
+	if(RegQueryValueExA(hkey, "BuildLabEx", nullptr, nullptr, nullptr, &buildlabex_size))
 		return {};
 
-	std::vector<char> buildlabex_buffer(buildlabex_size);
-	if(RegQueryValueExA(hkey, buildlabex_name, nullptr, nullptr, reinterpret_cast<LPBYTE>(buildlabex_buffer.data()), &buildlabex_size))
+	std::vector<char> buildlabex(buildlabex_size);
+	if(RegQueryValueExA(hkey, "BuildLabEx", nullptr, nullptr, reinterpret_cast<LPBYTE>(buildlabex.data()), &buildlabex_size))
 		return {};
 
-	const std::string buildlabex{buildlabex_buffer.begin(), buildlabex_buffer.end()};
-	const auto first_period = buildlabex.find('.');
-	if(first_period == std::string::npos)
-		return {};
-
-	const auto second_period = buildlabex.find('.', first_period + 1);
-	if(second_period == std::string::npos)
-		return {};
-
-	return std::stoul(buildlabex.substr(first_period + 1, second_period - first_period));
+	auto token = std::strtok(buildlabex.data(), ".");
+	token      = std::strtok(nullptr, ".");
+	return std::strtoul(token ? token : "0", nullptr, 10);
 }
 
 // Get OS version via RtlGetVersion which still works well in Windows 8 and above

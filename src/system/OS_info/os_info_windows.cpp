@@ -120,9 +120,7 @@ unsigned int build_number() {
 iware::system::OS_info_t iware::system::OS_info() {
 	RTL_OSVERSIONINFOW os_version_info{};
 	os_version_info.dwOSVersionInfoSize = sizeof(os_version_info);
-
-	if(RtlGetVersion(&os_version_info))
-		return {};
+	RtlGetVersion(&os_version_info);
 
 	return {"Windows NT", version_name(), os_version_info.dwMajorVersion, os_version_info.dwMinorVersion, os_version_info.dwBuildNumber, build_number()};
 }

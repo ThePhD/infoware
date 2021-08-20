@@ -21,7 +21,7 @@
 // https://msdn.microsoft.com/en-us/library/windows/desktop/ms724958(v=vs.85).aspx
 iware::cpu::architecture_t iware::cpu::architecture() noexcept {
 	SYSTEM_INFO sysinfo;
-	GetSystemInfo(&sysinfo);
+	GetNativeSystemInfo(&sysinfo);
 
 	switch(sysinfo.wProcessorArchitecture) {
 		case PROCESSOR_ARCHITECTURE_AMD64:

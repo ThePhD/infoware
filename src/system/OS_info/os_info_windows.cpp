@@ -98,11 +98,11 @@ unsigned int build_number() {
 	if(RegQueryValueExA(hkey, "BuildLabEx", nullptr, nullptr, nullptr, &buildlabex_size))
 		return {};
 
-	std::vector<char> buildlabex(buildlabex_size);
-	if(RegQueryValueExA(hkey, "BuildLabEx", nullptr, nullptr, reinterpret_cast<LPBYTE>(buildlabex.data()), &buildlabex_size))
+	std::string buildlabex(buildlabex_size, {});
+	if(RegQueryValueExA(hkey, "BuildLabEx", nullptr, nullptr, reinterpret_cast<LPBYTE>(&buildlabex[0]), &buildlabex_size))
 		return {};
 
-	auto token = std::strtok(buildlabex.data(), ".");
+	auto token = std::strtok(&buildlabex[0], ".");
 	token      = std::strtok(nullptr, ".");
 	return std::strtoul(token ? token : "0", nullptr, 10);
 }

@@ -25,6 +25,10 @@
 #include <winnt.h>
 #include <winternl.h>
 
+#ifdef _MSC_VER
+#define strtok_r strtok_s
+#endif
+
 extern "C" NTSYSAPI NTSTATUS NTAPI RtlGetVersion(_Out_ PRTL_OSVERSIONINFOW lpVersionInformation);
 
 // Use WIM to acquire Win32_OperatingSystem.Name
@@ -102,8 +106,9 @@ unsigned int build_number() {
 	if(RegQueryValueExA(hkey, "BuildLabEx", nullptr, nullptr, reinterpret_cast<LPBYTE>(&buildlabex[0]), &buildlabex_size))
 		return {};
 
-	auto token = std::strtok(&buildlabex[0], ".");
-	token      = std::strtok(nullptr, ".");
+	char* context = nullptr;
+	auto token = strtok_r(&buildlabex[0], ".", &context);
+	token      = strtok_r(nullptr, ".", &context);
 	return std::strtoul(token ? token : "0", nullptr, 10);
 }
 

@@ -13,18 +13,21 @@
 #pragma once
 
 
-#include <infoware/linkage.hpp>
-
 #include <functional>
 
 
 namespace iware {
 	namespace detail {
-		struct quickscope_wrapper {
-			std::function<void()> func;
+		namespace {
+			struct quickscope_wrapper {
+				std::function<void()> func;
 
-			quickscope_wrapper(const quickscope_wrapper&) = delete;
-			INFOWARE_API_LINKAGE_INTERNAL ~quickscope_wrapper();
-		};
-	}  // namespace detail
+				quickscope_wrapper(const quickscope_wrapper&) = delete;
+				~quickscope_wrapper() {
+					if(func)
+						func();
+				}
+			};
+		}  // namespace
+	}    // namespace detail
 }  // namespace iware

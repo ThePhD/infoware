@@ -85,7 +85,11 @@ static std::string version_name() {
 
 		ret = iware::detail::narrowen_bstring(val.bstrVal);
 	}
-	return ret.substr(0, ret.find('|'));
+
+	const auto sep = ret.find('|');
+	if(sep != std::string::npos)
+		ret.resize(sep);
+	return ret;
 }
 
 static unsigned int build_number() {

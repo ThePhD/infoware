@@ -6,7 +6,7 @@ env:
 jobs:
   Window:
     runs-on: "windows-latest"
-    name: Windows InfoWare
+    name: Window InfoWare
 
     steps:
     - uses: actions/checkout@v2
@@ -23,10 +23,17 @@ jobs:
       working-directory: ${{runner.workspace}}/build
 
       run: |
-        cmake $GITHUB_WORKSPACE -G "Visual Studio 16 2019"
+        cmake $GITHUB_WORKSPACE -G "Visual Studio 16 2019" -DINFOWARE_TESTS=ON -DINFOWARE_EXAMPLES=ON
      
     - name: Build Infoware
       working-directory: ${{runner.workspace}}/build
       shell: bash
 
       run: cmake --build . --config $BUILD_TYPE
+
+    - name: Test
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+
+      run: ctest -C $BUILD_TYPE
+      

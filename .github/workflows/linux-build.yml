@@ -40,7 +40,7 @@ jobs:
         shell: bash
         working-directory: ${{runner.workspace}}/build
         run: |
-          cmake $GITHUB_WORKSPACE ..
+          cmake $GITHUB_WORKSPACE .. -DINFOWARE_TESTS=ON -DINFOWARE_EXAMPLES=ON
 
       - name: Build Infoware
         working-directory: ${{runner.workspace}}/build

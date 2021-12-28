@@ -1,9 +1,4 @@
-<p>
-	<h1>infoware</h1>
-	<a href="LICENSE"><img src="https://img.shields.io/badge/license-CC0-green.svg?style=flat"/></a>
-	<a href="https://github.com/ThePhD/infoware/actions/workflows/ci.yml"><img src="https://github.com/ThePhD/infoware/actions/workflows/ci.yml/badge.svg"/></a>
-</p>
-
+# infoware [![License](//img.shields.io/badge/license-CC0-green.svg?style=flat)](LICENSE) [![CI status](//github.com/ThePhD/infoware/actions/workflows/ci.yml/badge.svg)](//github.com/ThePhD/infoware/actions/workflows/ci.yml)
 
 C++ Library for pulling system and hardware information, without hitting the command line.
 

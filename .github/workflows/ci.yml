@@ -31,3 +31,29 @@ jobs:
 
       - name: Build Project
         run: cd main/build && ninja
+
+  macos:
+    name: macOS x64 ${{matrix.cfg.name}}
+    runs-on: ${{matrix.cfg.os}}
+    strategy:
+      fail-fast: false
+      matrix:
+        cfg:
+          - { os: macos-10.15,  name: "Catalina", dist: true}
+          - { os: macos-11,     name: "Big Sur",  dist: false}
+
+    steps:
+      - name: Checkout infoware
+        uses: actions/checkout@v2
+        with:
+          path: main
+
+      - name: Install homebrew packages
+        run: brew install cmake ninja openssl
+
+      - name: Generate CMake
+        run: mkdir main/build && cd main/build && cmake -DCMAKE_BUILD_TYPE=Release -DINFOWARE_USE_OPENCL=ON -DINFOWARE_EXAMPLES=ON -DINFOWARE_TESTS=ON -G Ninja ..
+
+      - name: Build Project
+        run: cd main/build && ninja
+

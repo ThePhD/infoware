@@ -1,0 +1,94 @@
+name: infoware CI
+on:
+  push:
+  pull_request:
+
+jobs:
+  linux:
+    name: Ubuntu 18.04 amd64 (${{matrix.cpp-version}})
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: false
+      matrix:
+        cpp-version: [g++, clang++]
+
+    steps:
+      - name: Checkout infoware
+        uses: actions/checkout@v2
+        with:
+          path: infoware
+
+      - name: Install apt packages
+        run: sudo apt update && sudo apt install -y cmake ninja-build ocl-icd-opencl-dev
+
+      - name: Generate CMake
+        run: mkdir infoware/build && cd infoware/build && cmake -DCMAKE_BUILD_TYPE=Release -DINFOWARE_USE_OPENCL=ON -DINFOWARE_EXAMPLES=ON -DINFOWARE_TESTS=ON -G Ninja ..
+        env:
+          CXX: ${{matrix.cpp-version}}
+
+      - name: Build Project
+        run: cmake --build infoware/build
+
+      - name: Run Tests
+        run: ctest --test-dir infoware/build
+
+  macos:
+    name: macOS amd64 ${{matrix.cfg.name}}
+    runs-on: ${{matrix.cfg.os}}
+    strategy:
+      fail-fast: false
+      matrix:
+        cfg:
+          - { os: macos-10.15,  name: "Catalina", dist: true}
+          - { os: macos-11,     name: "Big Sur",  dist: false}
+
+    steps:
+      - name: Checkout infoware
+        uses: actions/checkout@v2
+        with:
+          path: infoware
+
+      - name: Install homebrew packages
+        run: brew install cmake ninja openssl
+
+      - name: Generate CMake
+        run: mkdir infoware/build && cd infoware/build && cmake -DCMAKE_BUILD_TYPE=Release -DINFOWARE_USE_OPENCL=ON -DINFOWARE_EXAMPLES=ON -DINFOWARE_TESTS=ON -G Ninja ..
+
+      - name: Build Project
+        run: cmake --build infoware/build
+
+      - name: Run Tests
+        run: ctest --test-dir infoware/build
+
+  windows: # Windows amd64 and i386 build matrix
+    strategy:
+      fail-fast: false # Don't cancel other matrix jobs if one fails
+      matrix:
+        cfg:
+        - { name: i386,   arch: x86, chocoargs: "--x86"}
+        - { name: amd64,  arch: x64, chocoargs: ""}
+
+    name: "Windows MSVC ${{matrix.cfg.name}}"
+    runs-on: windows-2019
+    steps:
+      - name: Checkout infoware
+        uses: actions/checkout@v2
+        with:
+          path: infoware
+
+      - name: Configure MSBuild
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ matrix.cfg.arch }}
+
+      - name: Install chocolatey packages (${{ matrix.cfg.name }})
+        run: choco install ninja -y ${{ matrix.cfg.chocargs }}
+
+      - name: Generate CMake
+        run: mkdir infoware/build && cd infoware/build && cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DINFOWARE_EXAMPLES=ON -DINFOWARE_TESTS=ON ..
+
+      - name: Build Project
+        run: cmake --build infoware/build
+
+      - name: Run Tests
+        run: ctest --test-dir infoware/build

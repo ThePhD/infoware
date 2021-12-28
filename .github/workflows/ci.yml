@@ -84,6 +84,14 @@ jobs:
         with:
           arch: ${{ matrix.cfg.arch }}
 
+      - name: Install chocolatey packages (i386)
+        if: ${{ matrix.cfg.arch == 'x86' }}
+        run: choco install ninja -y --x86
+
+      - name: Install chocolatey packages (x64)
+        if: ${{ matrix.cfg.arch == 'x64' }}
+        run: choco install ninja -y
+
       - name: Generate CMake
         run: mkdir main/build && cd main/build && cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DINFOWARE_EXAMPLES=ON -DINFOWARE_TESTS=ON ..
 

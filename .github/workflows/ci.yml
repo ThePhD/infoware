@@ -16,21 +16,21 @@ jobs:
       - name: Checkout infoware
         uses: actions/checkout@v2
         with:
-          path: main
+          path: infoware
 
       - name: Install apt packages
         run: sudo apt update && sudo apt install -y cmake ninja-build ocl-icd-opencl-dev
 
       - name: Generate CMake
-        run: mkdir main/build && cd main/build && cmake -DCMAKE_BUILD_TYPE=Release -DINFOWARE_USE_OPENCL=ON -DINFOWARE_EXAMPLES=ON -DINFOWARE_TESTS=ON -G Ninja ..
+        run: mkdir infoware/build && cd infoware/build && cmake -DCMAKE_BUILD_TYPE=Release -DINFOWARE_USE_OPENCL=ON -DINFOWARE_EXAMPLES=ON -DINFOWARE_TESTS=ON -G Ninja ..
         env:
           CXX: ${{matrix.cpp-version}}
 
       - name: Build Project
-        run: cmake --build main/build
+        run: cmake --build infoware/build
 
       - name: Run Tests
-        run: ctest --test-dir main/build
+        run: ctest --test-dir infoware/build
 
   macos:
     name: macOS amd64 ${{matrix.cfg.name}}
@@ -46,19 +46,19 @@ jobs:
       - name: Checkout infoware
         uses: actions/checkout@v2
         with:
-          path: main
+          path: infoware
 
       - name: Install homebrew packages
         run: brew install cmake ninja openssl
 
       - name: Generate CMake
-        run: mkdir main/build && cd main/build && cmake -DCMAKE_BUILD_TYPE=Release -DINFOWARE_USE_OPENCL=ON -DINFOWARE_EXAMPLES=ON -DINFOWARE_TESTS=ON -G Ninja ..
+        run: mkdir infoware/build && cd infoware/build && cmake -DCMAKE_BUILD_TYPE=Release -DINFOWARE_USE_OPENCL=ON -DINFOWARE_EXAMPLES=ON -DINFOWARE_TESTS=ON -G Ninja ..
 
       - name: Build Project
-        run: cmake --build main/build
+        run: cmake --build infoware/build
 
       - name: Run Tests
-        run: ctest --test-dir main/build
+        run: ctest --test-dir infoware/build
 
   windows: # Windows amd64 and i386 build matrix
     strategy:
@@ -74,7 +74,7 @@ jobs:
       - name: Checkout infoware
         uses: actions/checkout@v2
         with:
-          path: main
+          path: infoware
 
       - name: Configure MSBuild
         uses: ilammy/msvc-dev-cmd@v1
@@ -85,10 +85,10 @@ jobs:
         run: choco install ninja -y ${{ matrix.cfg.chocargs }}
 
       - name: Generate CMake
-        run: mkdir main/build && cd main/build && cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DINFOWARE_EXAMPLES=ON -DINFOWARE_TESTS=ON ..
+        run: mkdir infoware/build && cd infoware/build && cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DINFOWARE_EXAMPLES=ON -DINFOWARE_TESTS=ON ..
 
       - name: Build Project
-        run: cmake --build main/build
+        run: cmake --build infoware/build
 
       - name: Run Tests
-        run: ctest --test-dir main/build
+        run: ctest --test-dir infoware/build

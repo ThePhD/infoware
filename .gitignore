@@ -9,8 +9,6 @@
 !tools/**
 !.git*
 !.clang-format
-!.travis.yml
-!appveyor.yml
 !CMakeLists.txt
 !LICENSE
 !README.md

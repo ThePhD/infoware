@@ -1,0 +1,56 @@
+name: Linux Build
+on: [push, pull_request]
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+jobs:
+  linuxbuild:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        platform: [x32, x64]
+        compiler: [gcc, clang]
+        flavor: [ RelWithDebInfo, Coverage ]
+        include:
+        - os: ubuntu-latest
+          platform: x64
+          compiler: clang
+        - os: ubuntu-latest
+          platform: x32
+          compiler: clang
+        - os: ubuntu-latest
+          platform: x64
+          compiler: gcc
+        - os: ubuntu-latest
+          platform: x32
+          compiler: gcc
+    name: Linux InfoWare
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: "recursive"
+
+      - name: Create Build Environment
+        run: cmake -E make_directory ${{runner.workspace}}/build
+
+      - name: Configure CMake
+
+        shell: bash
+        working-directory: ${{runner.workspace}}/build
+        run: |
+          cmake $GITHUB_WORKSPACE ..
+
+      - name: Build Infoware
+        working-directory: ${{runner.workspace}}/build
+        shell: bash
+
+        run: cmake --build . --config $BUILD_TYPE
+
+      - name: Test
+        working-directory: ${{runner.workspace}}/build
+        shell: bash
+
+        run: ctest -C $BUILD_TYPE
+        

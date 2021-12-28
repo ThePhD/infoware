@@ -1,0 +1,32 @@
+name: Window Build
+on: [push,pull_request]
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  Window:
+    runs-on: "windows-latest"
+    name: Windows InfoWare
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: "recursive"
+
+    - name: Create Build Environment
+
+      run: cmake -E make_directory ${{runner.workspace}}/build
+
+    - name: Configure CMake
+
+      shell: bash
+      working-directory: ${{runner.workspace}}/build
+
+      run: |
+        cmake $GITHUB_WORKSPACE -G "Visual Studio 16 2019"
+     
+    - name: Build Infoware
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+
+      run: cmake --build . --config $BUILD_TYPE

@@ -57,3 +57,29 @@ jobs:
       - name: Build Project
         run: cd main/build && ninja
 
+  windows: # Windows x64 and x86 build matrix
+    strategy:
+      fail-fast: false # Don't cancel other matrix jobs if one fails
+      matrix:
+        cfg:
+        - { name: 32 Bit, arch: x86 }
+        - { name: 64 Bit, arch: x64 }
+
+    name: "Windows MSVC ${{matrix.cfg.name}}"
+    runs-on: windows-2019
+    steps:
+      - name: Checkout infoware
+        uses: actions/checkout@v2
+        with:
+          path: main
+
+      - name: Configure MSBuild
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ matrix.cfg.arch }}
+
+      - name: Generate CMake
+        run: mkdir main/build && cd main/build && cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DINFOWARE_EXAMPLES=ON -DINFOWARE_TESTS=ON ..
+
+      - name: Build Project
+        run: cmake --build main/build

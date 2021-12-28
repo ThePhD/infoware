@@ -24,10 +24,12 @@ jobs:
           path: main
 
       - name: Install apt packages
-        run: sudo apt update && sudo apt install -y cmake ninja-build ocl-icd-opencl-dev
+        run: sudo apt update && sudo apt install -y cmake ${{ matrix.cfg.cpp-version }} ninja-build ocl-icd-opencl-dev
 
       - name: Generate CMake
         run: mkdir main/build && cd main/build && cmake -DCMAKE_BUILD_TYPE=Release -DINFOWARE_USE_OPENCL=ON -DINFOWARE_EXAMPLES=ON -DINFOWARE_TESTS=ON -G Ninja ..
+        env:
+          CXX: ${{matrix.cfg.cpp-version}}
 
       - name: Build Project
         run: cd main/build && ninja

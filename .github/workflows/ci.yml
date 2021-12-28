@@ -32,6 +32,9 @@ jobs:
       - name: Build Project
         run: cd main/build && ninja
 
+      - name: Run Tests
+        run: cd main/build && ctest
+
   macos:
     name: macOS x64 ${{matrix.cfg.name}}
     runs-on: ${{matrix.cfg.os}}
@@ -56,6 +59,9 @@ jobs:
 
       - name: Build Project
         run: cd main/build && ninja
+
+      - name: Run Tests
+        run: cd main/build && ctest
 
   windows: # Windows x64 and x86 build matrix
     strategy:
@@ -83,3 +89,6 @@ jobs:
 
       - name: Build Project
         run: cmake --build main/build
+
+      - name: Run Tests
+        run: cd main/build && ctest

@@ -1,4 +1,10 @@
-# infoware [![License](https://img.shields.io/badge/license-CC0-green.svg?style=flat)](LICENSE) [![TravisCI build status](https://travis-ci.org/ThePhD/infoware.svg?branch=master)](https://travis-ci.org/ThePhD/infoware) [![AppVeyorCI build status](https://ci.appveyor.com/api/projects/status/github/ThePhD/infoware?branch=master&svg=true)](https://ci.appveyor.com/project/ThePhD/infoware/branch/master)
+<p>
+	<h1>infoware</h1>
+	<a href="LICENSE"><img src="https://img.shields.io/badge/license-CC0-green.svg?style=flat"/></a>
+	<a href="https://github.com/ThePhD/infoware/actions/workflows/ci.yml"><img src="https://github.com/ThePhD/infoware/actions/workflows/ci.yml/badge.svg"/></a>
+</p>
+
+
 C++ Library for pulling system and hardware information, without hitting the command line.
 
 

@@ -60,6 +60,9 @@ int main(int argc, const char** argv) {
 		if(!std::isxdigit(line[tabcount]) || tabcount >= 3)
 			continue;
 
+		if(*line.rbegin() == '\r')  // Remove carriage return if present for CRLF encoded files.
+			line.erase(line.length() - 1);
+
 		char* current_name{};
 		auto current_number = std::strtoull(line.c_str() + tabcount, &current_name, 16);
 		while(std::isspace(*current_name))

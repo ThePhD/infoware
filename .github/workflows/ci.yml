@@ -65,13 +65,13 @@ jobs:
       - name: Run Tests
         run: cd main/build && ctest
 
-  windows: # Windows x64 and x86 build matrix
+  windows: # Windows x64 and i386 build matrix
     strategy:
       fail-fast: false # Don't cancel other matrix jobs if one fails
       matrix:
         cfg:
-        - { name: 32 Bit, arch: x86 }
-        - { name: 64 Bit, arch: x64 }
+        - { name: i386,   arch: x86, chocoargs: "--x86"}
+        - { name: amd64,  arch: x64, chocoargs: ""}
 
     name: "Windows MSVC ${{matrix.cfg.name}}"
     runs-on: windows-2019
@@ -86,13 +86,8 @@ jobs:
         with:
           arch: ${{ matrix.cfg.arch }}
 
-      - name: Install chocolatey packages (x86)
-        if: ${{ matrix.cfg.arch == 'x86' }}
-        run: choco install ninja -y --x86
-
-      - name: Install chocolatey packages (x64)
-        if: ${{ matrix.cfg.arch == 'x64' }}
-        run: choco install ninja -y
+      - name: Install chocolatey packages (${{ matrix.cfg.name }})
+        run: choco install ninja -y ${{ matrix.cfg.chocargs }}
 
       - name: Generate CMake
         run: mkdir main/build && cd main/build && cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DINFOWARE_EXAMPLES=ON -DINFOWARE_TESTS=ON ..

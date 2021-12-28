@@ -1,0 +1,33 @@
+name: infoware CI
+on:
+  push:
+  pull_request:
+
+jobs:
+  linux-x64:
+    name: Linux x64 (${{matrix.cfg.cpp-version}})
+    runs-on: ${{matrix.cfg.os}}
+    strategy:
+      fail-fast: false
+      matrix:
+        cfg:
+          - { os: ubuntu-18.04, cpp-version: g++-8 }
+          - { os: ubuntu-18.04, cpp-version: g++-9 }
+          - { os: ubuntu-18.04, cpp-version: clang++-7 }
+          - { os: ubuntu-18.04, cpp-version: clang++-8 }
+          - { os: ubuntu-18.04, cpp-version: clang++-9 }
+
+    steps:
+      - name: Checkout infoware
+        uses: actions/checkout@v2
+        with:
+          path: main
+
+      - name: Install apt packages
+        run: sudo apt update && sudo apt install -y cmake ninja-build ocl-icd-opencl-dev
+
+      - name: Generate CMake
+        run: mkdir main/build && cd main/build && cmake -DCMAKE_BUILD_TYPE=Release -DINFOWARE_USE_OPENCL=ON -DINFOWARE_EXAMPLES=ON -DINFOWARE_TESTS=ON -G Ninja ..
+
+      - name: Build Project
+        run: cd main/build && ninja

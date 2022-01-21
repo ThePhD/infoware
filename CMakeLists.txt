@@ -77,9 +77,11 @@ set_target_properties(infoware PROPERTIES CXX_STANDARD 14
                                           RELWITHDEBINFO_POSTFIX "rwdi")
 
 target_compile_definitions(infoware PRIVATE INFOWARE_VERSION="${infoware_version}"
-                                            INFOWARE_BUILDING=1
-                                    PUBLIC $<$<STREQUAL:$<TARGET_PROPERTY:infoware,TYPE>,SHARED_LIBRARY>:INFOWARE_DLL=1>)
+                                            INFOWARE_BUILDING=1)
 
+if (BUILD_SHARED_LIBS)
+	target_compile_definitions(infoware PUBLIC "INFOWARE_DLL=1")
+endif()
 
 if(NOT Git_FOUND)  # Could be pre-injected
 	find_package(Git)

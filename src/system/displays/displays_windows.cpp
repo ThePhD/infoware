@@ -13,6 +13,7 @@
 #ifdef _WIN32
 
 
+#include "infoware/detail/scope.hpp"
 #include "infoware/system.hpp"
 #include <algorithm>
 #include <cstdlib>
@@ -26,11 +27,13 @@ std::vector<iware::system::display_t> iware::system::displays() {
 	EnumDisplayMonitors(
 	    nullptr, nullptr,
 	    [](auto, auto hdc, auto rect, auto userdata) {
-		    static const auto desktop_dc          = GetDC(nullptr);
-		    static const unsigned int desktop_dpi = GetDeviceCaps(desktop_dc, LOGPIXELSX);
+		    const auto desktop_dc = GetDC(nullptr);
+		    iware::detail::quickscope_wrapper desktop_dc_deleter{[&]() { ReleaseDC(nullptr, desktop_dc); }};
+
+		    const unsigned int desktop_dpi = GetDeviceCaps(desktop_dc, LOGPIXELSX);
 		    // https://blogs.msdn.microsoft.com/oldnewthing/20101013-00/?p=12543
-		    static const unsigned int desktop_bpp    = GetDeviceCaps(desktop_dc, BITSPIXEL) * GetDeviceCaps(desktop_dc, PLANES);
-		    static const double desktop_refresh_rate = GetDeviceCaps(desktop_dc, VREFRESH);
+		    const unsigned int desktop_bpp    = GetDeviceCaps(desktop_dc, BITSPIXEL) * GetDeviceCaps(desktop_dc, PLANES);
+		    const double desktop_refresh_rate = GetDeviceCaps(desktop_dc, VREFRESH);
 
 
 		    // https://msdn.microsoft.com/en-us/library/windows/desktop/dn280510(v=vs.85).aspx
@@ -54,7 +57,7 @@ std::vector<iware::system::display_t> iware::system::displays() {
 		    ret.push_back({width, height, monitor_dpi ? monitor_dpi : desktop_dpi, monitor_bpp ? monitor_bpp : desktop_bpp,
 		                   monitor_refresh_rate ? monitor_refresh_rate : desktop_refresh_rate});
 
-		    return 1;
+		    return TRUE;
 	    },
 	    reinterpret_cast<LPARAM>(&ret));
 

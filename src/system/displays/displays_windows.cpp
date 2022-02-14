@@ -36,15 +36,7 @@ std::vector<iware::system::display_t> iware::system::displays() {
 		    const double desktop_refresh_rate = GetDeviceCaps(desktop_dc, VREFRESH);
 
 
-		    // https://msdn.microsoft.com/en-us/library/windows/desktop/dn280510(v=vs.85).aspx
-		    // Doesn't work, can't link to shcore
-		    //
-		    // unsigned int dpi_x;
-		    // unsigned int dpi_y;
-		    // GetDpiForMonitor(monitor /* arg #1 */, MDT_DEFAULT, &dpi_x, &dpi_y);
-
-		    // Sometimes returns 0 for some reason?
-		    // Fall back to the desktop's globals if so.
+		    // Sometimes returns 0 – fall back to the desktop's globals if so.
 		    const unsigned int monitor_dpi    = GetDeviceCaps(hdc, LOGPIXELSX);
 		    const unsigned int monitor_bpp    = GetDeviceCaps(hdc, BITSPIXEL) * GetDeviceCaps(hdc, PLANES);
 		    const double monitor_refresh_rate = GetDeviceCaps(hdc, VREFRESH);

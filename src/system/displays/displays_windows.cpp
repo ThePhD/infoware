@@ -13,35 +13,34 @@
 #ifdef _WIN32
 
 
+#include "infoware/detail/scope.hpp"
 #include "infoware/system.hpp"
 #include <algorithm>
 #include <cstdlib>
+#include <utility>
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
 
 std::vector<iware::system::display_t> iware::system::displays() {
-	std::vector<iware::system::display_t> ret;
+	const struct bundle {
+		HDC desktop_dc;
+		std::vector<iware::system::display_t> ret;
+	} bundle{GetDC(nullptr), {}};
+	iware::detail::quickscope_wrapper desktop_dc_deleter{[&]() { ReleaseDC(nullptr, bundle.desktop_dc); }};
 
 	EnumDisplayMonitors(
-	    nullptr, nullptr,
+	    bundle.desktop_dc, nullptr,
 	    [](auto, auto hdc, auto rect, auto userdata) {
-		    static const auto desktop_dc          = GetDC(nullptr);
-		    static const unsigned int desktop_dpi = GetDeviceCaps(desktop_dc, LOGPIXELSX);
+		    auto& bundle = *reinterpret_cast<struct bundle*>(userdata);
+
+		    const unsigned int desktop_dpi = GetDeviceCaps(bundle.desktop_dc, LOGPIXELSX);
 		    // https://blogs.msdn.microsoft.com/oldnewthing/20101013-00/?p=12543
-		    static const unsigned int desktop_bpp    = GetDeviceCaps(desktop_dc, BITSPIXEL) * GetDeviceCaps(desktop_dc, PLANES);
-		    static const double desktop_refresh_rate = GetDeviceCaps(desktop_dc, VREFRESH);
+		    const unsigned int desktop_bpp    = GetDeviceCaps(bundle.desktop_dc, BITSPIXEL) * GetDeviceCaps(bundle.desktop_dc, PLANES);
+		    const double desktop_refresh_rate = GetDeviceCaps(bundle.desktop_dc, VREFRESH);
 
 
-		    // https://msdn.microsoft.com/en-us/library/windows/desktop/dn280510(v=vs.85).aspx
-		    // Doesn't work, can't link to shcore
-		    //
-		    // unsigned int dpi_x;
-		    // unsigned int dpi_y;
-		    // GetDpiForMonitor(monitor /* arg #1 */, MDT_DEFAULT, &dpi_x, &dpi_y);
-
-		    // Sometimes returns 0 for some reason?
-		    // Fall back to the desktop's globals if so.
+		    // Sometimes returns 0 – fall back to the desktop's globals if so.
 		    const unsigned int monitor_dpi    = GetDeviceCaps(hdc, LOGPIXELSX);
 		    const unsigned int monitor_bpp    = GetDeviceCaps(hdc, BITSPIXEL) * GetDeviceCaps(hdc, PLANES);
 		    const double monitor_refresh_rate = GetDeviceCaps(hdc, VREFRESH);
@@ -49,16 +48,15 @@ std::vector<iware::system::display_t> iware::system::displays() {
 		    const unsigned int width  = std::abs(rect->right - rect->left);
 		    const unsigned int height = std::abs(rect->bottom - rect->top);
 
-		    auto& ret = *reinterpret_cast<std::vector<iware::system::display_t>*>(userdata);
 		    // See http://stackoverflow.com/a/12654433/2851815 and up for DPI. In short: can't be done too too well, go with best solution.
-		    ret.push_back({width, height, monitor_dpi ? monitor_dpi : desktop_dpi, monitor_bpp ? monitor_bpp : desktop_bpp,
-		                   monitor_refresh_rate ? monitor_refresh_rate : desktop_refresh_rate});
+		    bundle.ret.push_back({width, height, monitor_dpi ? monitor_dpi : desktop_dpi, monitor_bpp ? monitor_bpp : desktop_bpp,
+		                          monitor_refresh_rate ? monitor_refresh_rate : desktop_refresh_rate});
 
-		    return 1;
+		    return TRUE;
 	    },
-	    reinterpret_cast<LPARAM>(&ret));
+	    reinterpret_cast<LPARAM>(&bundle));
 
-	return ret;
+	return std::move(bundle.ret);
 }
 
 std::vector<std::vector<iware::system::display_config_t>> iware::system::available_display_configurations() {

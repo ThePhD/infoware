@@ -17,6 +17,7 @@
 #include "infoware/system.hpp"
 #include <algorithm>
 #include <cstdlib>
+#include <utility>
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
@@ -55,7 +56,7 @@ std::vector<iware::system::display_t> iware::system::displays() {
 	    },
 	    reinterpret_cast<LPARAM>(&bundle));
 
-	return bundle.ret;
+	return std::move(bundle.ret);
 }
 
 std::vector<std::vector<iware::system::display_config_t>> iware::system::available_display_configurations() {

@@ -58,6 +58,13 @@ namespace iware {
 			unsigned int build_number;
 		};
 
+		enum class orientation_t {
+			rotate_0   = 0x01,
+			rotate_90  = 0x02,
+			rotate_180 = 0x04,
+			rotate_270 = 0x08,
+		};
+
 		struct display_t {
 			std::uint32_t width;
 			std::uint32_t height;
@@ -65,6 +72,13 @@ namespace iware {
 			/// Bits Per Pixel a.k.a. depth
 			std::uint32_t bpp;
 			double refresh_rate;
+#ifdef _WIN32
+			std::int32_t x;
+			std::int32_t y;
+			double scale;
+			bool primary;
+			orientation_t orientation;
+#endif  // _WIN32
 		};
 
 		struct display_config_t {

@@ -19,44 +19,112 @@
 #include <cstdlib>
 #include <utility>
 #define WIN32_LEAN_AND_MEAN
+#include <ShellScalingApi.h>
 #include <windows.h>
 
 
+typedef DPI_AWARENESS_CONTEXT (*STDAC)(DPI_AWARENESS_CONTEXT);
+static STDAC set_dpi_awareness = nullptr;
+
+// https://learn.microsoft.com/en-us/windows/win32/hidpi/setting-the-default-dpi-awareness-for-a-process
+// <  Windows 8.1       : GetDeviceCaps(hdc, LOGPIXELSX)
+// >= Windows 8.1       : GetDpiForMonitor(, MDT_EFFECTIVE_DPI, ,) with SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE), but can lead to
+//                        unexpected application behavior.
+// >= Windows 10, 1607  : GetDpiForMonitor(, MDT_EFFECTIVE_DPI, ,) with SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2) in
+//                        an irrelevant thread
+static UINT retrieve_dpi_for_monitor(HMONITOR monitor) {
+	UINT dpi = 96, _;  // default value without scaling
+
+	// >= windows 10.0.14393, 1607
+	if(set_dpi_awareness) {
+		auto PRE_DAC = set_dpi_awareness(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+		iware::detail::quickscope_wrapper dpi_awareness_resetter{[&]() { set_dpi_awareness(PRE_DAC); }};
+
+		// DPI_AWARENESS_CONTEXT_UNAWARE	             : 96 because the app is unaware of any other scale factors.
+		// DPI_AWARENESS_CONTEXT_SYSTEM_AWARE	         : A value set to the system DPI because the app assumes all applications use the system DPI.
+		// DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE(_V2)  : The actual DPI value set by the user for that display.
+		if(::GetDpiForMonitor(monitor, MDT_EFFECTIVE_DPI, &dpi, &_) == S_OK) {  // Minimum supported clien: Windows 8.1
+			return dpi;
+		}
+	}
+
+	// < windows 10.0.14393, 1607
+	// system (primary monitor) or 96 DPI depending the global DPI avareness setting.
+	auto hdc = ::GetDC(nullptr);
+	dpi      = ::GetDeviceCaps(hdc, LOGPIXELSX);
+	::ReleaseDC(nullptr, hdc);
+
+	return dpi;
+}
+
 std::vector<iware::system::display_t> iware::system::displays() {
-	const struct bundle {
-		HDC desktop_dc;
-		std::vector<iware::system::display_t> ret;
-	} bundle{GetDC(nullptr), {}};
-	iware::detail::quickscope_wrapper desktop_dc_deleter{[&]() { ReleaseDC(nullptr, bundle.desktop_dc); }};
+	std::vector<iware::system::display_t> ret;
 
-	EnumDisplayMonitors(
-	    bundle.desktop_dc, nullptr,
-	    [](auto, auto hdc, auto rect, auto userdata) {
-		    auto& bundle = *reinterpret_cast<struct bundle*>(userdata);
+	DPI_AWARENESS_CONTEXT PRE_DAC = nullptr;
+	HMODULE user32_dll            = nullptr;
+	// >= windows 10.0.14393, 1607
+	auto ver = iware::system::kernel_info();
+	if(ver.major >= 10 && ver.patch >= 14393) {
+		// for preventing lower version windows link error
+		user32_dll        = ::LoadLibrary(L"user32.dll");
+		set_dpi_awareness = reinterpret_cast<STDAC>(::GetProcAddress(user32_dll, "SetThreadDpiAwarenessContext"));
 
-		    const unsigned int desktop_dpi = GetDeviceCaps(bundle.desktop_dc, LOGPIXELSX);
-		    // https://blogs.msdn.microsoft.com/oldnewthing/20101013-00/?p=12543
-		    const unsigned int desktop_bpp    = GetDeviceCaps(bundle.desktop_dc, BITSPIXEL) * GetDeviceCaps(bundle.desktop_dc, PLANES);
-		    const double desktop_refresh_rate = GetDeviceCaps(bundle.desktop_dc, VREFRESH);
+		// we will set thread dpi awareness to block the influence of global dpi awareness settings, 
+		// such as Qt, SetProcessDPIAware, SetProcessDpiAwarenessContext.
+		if(set_dpi_awareness != nullptr) {
+			PRE_DAC = set_dpi_awareness(DPI_AWARENESS_CONTEXT_UNAWARE);  // make GetMonitorInfoA to get virtual resolution for computing the scale factor
+		}
+	}
 
+	// https://learn.microsoft.com/en-us/windows/win32/gdi/multiple-display-monitors
+	//
+	// The bounding rectangle of all the monitors is the `virtual screen`.
+	// The `desktop` covers the virtual screen instead of a single monitor.
+	// The `primary monitor` contains the origin (0,0) for compatibility.
+	//
+	// Each `physical display` is represented by a monitor handle of type HMONITOR.
+	// A valid HMONITOR is guaranteed to be non-NULL.
+	// A physical display has the same HMONITOR as long as it is part of the desktop.
+	//
+	// To enumerate all the devices in the virtual screen, use EnumDisplayMonitors.
+	::EnumDisplayMonitors(
+	    nullptr, nullptr,
+	    [](auto monitor, auto, auto, auto userdata) {
+		    auto& ret = *reinterpret_cast<std::vector<iware::system::display_t>*>(userdata);
 
-		    // Sometimes returns 0 – fall back to the desktop's globals if so.
-		    const unsigned int monitor_dpi    = GetDeviceCaps(hdc, LOGPIXELSX);
-		    const unsigned int monitor_bpp    = GetDeviceCaps(hdc, BITSPIXEL) * GetDeviceCaps(hdc, PLANES);
-		    const double monitor_refresh_rate = GetDeviceCaps(hdc, VREFRESH);
+		    MONITORINFOEXA info{};
+		    info.cbSize = sizeof(MONITORINFOEXA);
+		    // GetMonitorInfoA will be affected by DPI_AWARENESS
+		    // DPI_AWARENESS_CONTEXT_UNAWARE                : virtual resolution
+		    // DPI_AWARENESS_CONTEXT_SYSTEM_AWARE           : virtual resolution
+		    // DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE(_V2) : physical resolution
+		    if(::GetMonitorInfoA(monitor, &info)) {
+			    DEVMODEA settings = {};
+			    settings.dmSize   = sizeof(DEVMODEA);
 
-		    const unsigned int width  = std::abs(rect->right - rect->left);
-		    const unsigned int height = std::abs(rect->bottom - rect->top);
-
-		    // See http://stackoverflow.com/a/12654433/2851815 and up for DPI. In short: can't be done too too well, go with best solution.
-		    bundle.ret.push_back({width, height, monitor_dpi ? monitor_dpi : desktop_dpi, monitor_bpp ? monitor_bpp : desktop_bpp,
-		                          monitor_refresh_rate ? monitor_refresh_rate : desktop_refresh_rate});
+			    if(::EnumDisplaySettingsA(info.szDevice, ENUM_CURRENT_SETTINGS, &settings)) {  // not affected by DPI_AWARENESS
+				    ret.push_back(
+				        {settings.dmPelsWidth, settings.dmPelsHeight, retrieve_dpi_for_monitor(monitor), settings.dmBitsPerPel,
+				         static_cast<double>(settings.dmDisplayFrequency), static_cast<std::int32_t>(settings.dmPosition.x),
+				         static_cast<std::int32_t>(settings.dmPosition.y), static_cast<double>(settings.dmPelsWidth) / (info.rcMonitor.right - info.rcMonitor.left),
+				         (settings.dmPosition.x == 0 && settings.dmPosition.y == 0), static_cast<iware::system::orientation_t>(0x01 << settings.dmDisplayOrientation)});
+			    }
+		    }
 
 		    return TRUE;
 	    },
-	    reinterpret_cast<LPARAM>(&bundle));
+	    reinterpret_cast<LPARAM>(&ret));
 
-	return std::move(bundle.ret);
+	if(set_dpi_awareness) {
+		set_dpi_awareness(PRE_DAC);
+		set_dpi_awareness = nullptr;
+	}
+
+	if(user32_dll) {
+		::FreeLibrary(user32_dll);
+	}
+
+	return std::move(ret);
 }
 
 std::vector<std::vector<iware::system::display_config_t>> iware::system::available_display_configurations() {

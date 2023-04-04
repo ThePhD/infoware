@@ -40,8 +40,8 @@ static UINT retrieve_dpi_for_monitor(HMONITOR monitor) {
 		auto PRE_DAC = set_dpi_awareness(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 		iware::detail::quickscope_wrapper dpi_awareness_resetter{[&]() { set_dpi_awareness(PRE_DAC); }};
 
-		// DPI_AWARENESS_CONTEXT_UNAWARE	             : 96 because the app is unaware of any other scale factors.
-		// DPI_AWARENESS_CONTEXT_SYSTEM_AWARE	         : A value set to the system DPI because the app assumes all applications use the system DPI.
+		// DPI_AWARENESS_CONTEXT_UNAWARE                 : 96 because the app is unaware of any other scale factors.
+		// DPI_AWARENESS_CONTEXT_SYSTEM_AWARE            : A value set to the system DPI because the app assumes all applications use the system DPI.
 		// DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE(_V2)  : The actual DPI value set by the user for that display.
 		if(::GetDpiForMonitor(monitor, MDT_EFFECTIVE_DPI, &dpi, &_) == S_OK) {  // Minimum supported clien: Windows 8.1
 			return dpi;
@@ -72,7 +72,7 @@ std::vector<iware::system::display_t> iware::system::displays() {
 		// we will set thread dpi awareness to block the influence of global dpi awareness settings, 
 		// such as Qt, SetProcessDPIAware, SetProcessDpiAwarenessContext.
 		if(set_dpi_awareness != nullptr) {
-			PRE_DAC = set_dpi_awareness(DPI_AWARENESS_CONTEXT_UNAWARE);  // make GetMonitorInfoA to get virtual resolution for computing the scale factor
+			PRE_DAC = set_dpi_awareness(DPI_AWARENESS_CONTEXT_UNAWARE);  // make GetMonitorInfo to get virtual resolution for computing the scale factor
 		}
 	}
 
@@ -92,17 +92,17 @@ std::vector<iware::system::display_t> iware::system::displays() {
 	    [](auto monitor, auto, auto, auto userdata) {
 		    auto& ret = *reinterpret_cast<std::vector<iware::system::display_t>*>(userdata);
 
-		    MONITORINFOEXA info{};
-		    info.cbSize = sizeof(MONITORINFOEXA);
-		    // GetMonitorInfoA will be affected by DPI_AWARENESS
+		    MONITORINFOEX info{};
+		    info.cbSize = sizeof(MONITORINFOEX);
+		    // GetMonitorInfo will be affected by DPI_AWARENESS
 		    // DPI_AWARENESS_CONTEXT_UNAWARE                : virtual resolution
 		    // DPI_AWARENESS_CONTEXT_SYSTEM_AWARE           : virtual resolution
 		    // DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE(_V2) : physical resolution
-		    if(::GetMonitorInfoA(monitor, &info)) {
-			    DEVMODEA settings = {};
-			    settings.dmSize   = sizeof(DEVMODEA);
+		    if(::GetMonitorInfo(monitor, &info)) {
+			    DEVMODE settings = {};
+			    settings.dmSize   = sizeof(DEVMODE);
 
-			    if(::EnumDisplaySettingsA(info.szDevice, ENUM_CURRENT_SETTINGS, &settings)) {  // not affected by DPI_AWARENESS
+			    if(::EnumDisplaySettings(info.szDevice, ENUM_CURRENT_SETTINGS, &settings)) {  // not affected by DPI_AWARENESS
 				    ret.push_back(
 				        {settings.dmPelsWidth, settings.dmPelsHeight, retrieve_dpi_for_monitor(monitor), settings.dmBitsPerPel,
 				         static_cast<double>(settings.dmDisplayFrequency), static_cast<std::int32_t>(settings.dmPosition.x),

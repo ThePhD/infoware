@@ -12,6 +12,8 @@
 
 #ifndef _WIN32
 
+#include "infoware/platform.hpp"
+#if INFOWARE_X86
 
 #include "infoware/detail/cpuid.hpp"
 #include <cpuid.h>
@@ -29,4 +31,5 @@ std::uint64_t iware::detail::xgetbv(std::uint32_t index) {
 }
 
 
-#endif
+#endif /* INFOWARE_X86 */
+#endif /* _WIN32 */

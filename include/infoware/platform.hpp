@@ -10,20 +10,13 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#include <cstring>
-#include <infoware/cpu.hpp>
-#include <infoware/detail/cpuid.hpp>
+#pragma once
 
 
-std::string iware::cpu::vendor_id() {
-	std::int32_t info[4];
-	char name[13];
+#if defined(__i386__) || defined(__x86_64__) || defined(_M_X64) || defined(_M_IX86)
+#define INFOWARE_X86 1
+#endif /* x86 */
 
-	iware::detail::cpuid(info, 0);
-	std::memcpy(name + 0, &info[1], 4);
-	std::memcpy(name + 4, &info[3], 4);
-	std::memcpy(name + 8, &info[2], 4);
-	name[12] = '\0';
-
-	return name;
-}
+#if defined(__arm64__) || defined(_M_ARM64)
+#define INFOWARE_ARM 1
+#endif /* ARM */

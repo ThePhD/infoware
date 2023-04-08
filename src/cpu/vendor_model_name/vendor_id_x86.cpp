@@ -10,20 +10,27 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#ifdef __APPLE__
+#include "infoware/platform.hpp"
+#if INFOWARE_X86
 
 
-#include "infoware/cpu.hpp"
-#include "infoware/detail/sysctl.hpp"
+#include <cstring>
+#include <infoware/cpu.hpp>
+#include <infoware/detail/cpuid.hpp>
 
 
-std::string iware::cpu::vendor() {
-	return iware::detail::sysctl("machdep.cpu.vendor");
+std::string iware::cpu::vendor_id() {
+	std::int32_t info[4];
+	char name[13];
+
+	iware::detail::cpuid(info, 0);
+	std::memcpy(name + 0, &info[1], 4);
+	std::memcpy(name + 4, &info[3], 4);
+	std::memcpy(name + 8, &info[2], 4);
+	name[12] = '\0';
+
+	return name;
 }
 
-std::string iware::cpu::model_name() {
-	return iware::detail::sysctl("machdep.cpu.brand_string");
-}
 
-
-#endif
+#endif /* INFOWARE_X86 */

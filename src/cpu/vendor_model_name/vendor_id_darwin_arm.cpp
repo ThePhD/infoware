@@ -10,20 +10,17 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
-#ifdef __APPLE__
-
-
 #include "infoware/cpu.hpp"
 #include "infoware/detail/sysctl.hpp"
+#include "infoware/platform.hpp"
+#include <cstring>
+#include <string>
 
 
-std::string iware::cpu::vendor() {
-	return iware::detail::sysctl("machdep.cpu.vendor");
+#if __APPLE__ && INFOWARE_ARM
+#include <sys/sysctl.h>
+
+std::string iware::cpu::vendor_id() {
+	return iware::detail::sysctl(CTL_KERN, HW_MACHINE);
 }
-
-std::string iware::cpu::model_name() {
-	return iware::detail::sysctl("machdep.cpu.brand_string");
-}
-
-
-#endif
+#endif /* INFOWARE_ARM */

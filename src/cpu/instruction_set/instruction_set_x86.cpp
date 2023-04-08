@@ -10,6 +10,9 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
+#include "infoware/platform.hpp"
+#if INFOWARE_X86
+
 #include "infoware/cpu.hpp"
 #include "infoware/detail/cpuid.hpp"
 
@@ -20,7 +23,6 @@
 #else
 #define INFOWARE_XCR_XFEATURE_ENABLED_MASK 0
 #endif  // Is MSVC
-
 
 static bool has_os_avx() {
 	bool avxsupport = false;
@@ -134,3 +136,6 @@ std::vector<iware::cpu::instruction_set_t> iware::cpu::supported_instruction_set
 
 	return supported;
 }
+
+
+#endif /* INFOWARE_X86 */

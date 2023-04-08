@@ -53,7 +53,7 @@ if(INFOWARE_USE_X11 AND WIN32)
 endif()
 
 
-file(GLOB_RECURSE infoware_source_files    LIST_DIRECTORIES false CONFIGURE_DEPENDS src/*.cpp)
+file(GLOB_RECURSE infoware_source_files    LIST_DIRECTORIES false CONFIGURE_DEPENDS src/*.cpp src/*.mm)
 file(GLOB_RECURSE infoware_private_headers LIST_DIRECTORIES false CONFIGURE_DEPENDS include/infoware/detail/*.hpp)
 file(GLOB         infoware_public_headers  LIST_DIRECTORIES false CONFIGURE_DEPENDS include/infoware/*.hpp)
 
@@ -154,7 +154,7 @@ endif()
 
 
 if(APPLE)
-	target_link_libraries(infoware PRIVATE "-framework CoreFoundation" "-framework CoreGraphics")
+	target_link_libraries(infoware PRIVATE "-framework CoreFoundation" "-framework CoreGraphics" "-framework Metal")
 endif()
 
 

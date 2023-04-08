@@ -15,13 +15,14 @@
 #ifndef INFOWARE_USE_D3D
 
 
+#include "infoware/platform.hpp"
 #include "infoware/gpu.hpp"
 
-
+#ifndef INFOWARE_APPLE
 std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 	return {};
 }
-
+#endif /* INFOWARE_APPLE */
 
 #endif
 #endif

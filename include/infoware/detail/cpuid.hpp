@@ -12,7 +12,7 @@
 
 #pragma once
 
-
+#include <infoware/platform.hpp>
 #include <infoware/linkage.hpp>
 
 #include <cstdint>
@@ -20,8 +20,10 @@
 
 namespace iware {
 	namespace detail {
+#if INFOWARE_X86_FAMILY
 		INFOWARE_API_LINKAGE_INTERNAL void cpuid(std::int32_t (&out)[4], std::int32_t x);
 
 		INFOWARE_API_LINKAGE_INTERNAL std::uint64_t xgetbv(std::uint32_t x);
+#endif
 	}  // namespace detail
 }  // namespace iware

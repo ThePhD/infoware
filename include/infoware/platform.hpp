@@ -21,4 +21,4 @@
 
 #if __APPLE__ || __MACH__
 #define INFOWARE_APPLE 1
-#endif
+#endif /* apple */

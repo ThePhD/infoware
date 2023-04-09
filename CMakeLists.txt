@@ -52,8 +52,11 @@ if(INFOWARE_USE_X11 AND WIN32)
 	message(WARNING "INFOWARE_USE_X11 specified, but compiling for Win32, WinAPI will be used instead.")
 endif()
 
-
-file(GLOB_RECURSE infoware_source_files    LIST_DIRECTORIES false CONFIGURE_DEPENDS src/*.cpp src/*.mm)
+file(GLOB_RECURSE infoware_source_files    LIST_DIRECTORIES false CONFIGURE_DEPENDS src/*.cpp)
+if (APPLE)
+      file(GLOB_RECURSE infoware_objc_source_files LIST_DIRECTORIES FALSE CONFIGURE_DEPENDS src/*.mm)
+      list(APPEND infoware_source_files ${infoware_objc_source_files})
+endif()
 file(GLOB_RECURSE infoware_private_headers LIST_DIRECTORIES false CONFIGURE_DEPENDS include/infoware/detail/*.hpp)
 file(GLOB         infoware_public_headers  LIST_DIRECTORIES false CONFIGURE_DEPENDS include/infoware/*.hpp)
 

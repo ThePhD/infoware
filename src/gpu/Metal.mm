@@ -1,9 +1,10 @@
 #include "infoware/platform.hpp"
 #include "infoware/gpu.hpp"
-#import <Metal/Metal.h>
 #include <vector>
 
 #if INFOWARE_APPLE && !defined (INFOWARE_USE_OPENCL)
+#import <Metal/Metal.h>
+
 std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
       NSArray<id<MTLDevice>>* devices = MTLCopyAllDevices();
       std::vector<iware::gpu::device_properties_t> results{};

@@ -5,12 +5,13 @@ on:
 
 jobs:
   linux:
-    name: Ubuntu 18.04 amd64 (${{matrix.cpp-version}})
-    runs-on: ubuntu-18.04
+    name: ${{matrix.os}} amd64 (${{matrix.cpp-version}})
+    runs-on: ${{matrix.os}}
     strategy:
       fail-fast: false
       matrix:
         cpp-version: [g++, clang++]
+        os: ["ubuntu-20.04", "ubuntu-22.04"]
 
     steps:
       - name: Checkout infoware

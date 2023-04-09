@@ -11,11 +11,11 @@
 
 #pragma once
 
-#if defined(__i386__) || defined(__x86_64__)
+#if defined(__i386__) || defined(__x86_64__) || defined (_M_X64) || defined (_M_IX86)
 #define INFOWARE_X86_FAMILY 1
 #endif /* x86 family */
 
-#if defined (__arm64__)
+#if defined (__arm64__) || defined (_M_ARM64)
 #define INFOWARE_ARM 1
 #endif /* arm */
 

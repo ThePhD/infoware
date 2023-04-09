@@ -64,7 +64,8 @@ int main() {
 		                  std::make_pair("SSE    ", iware::cpu::instruction_set_t::sse),      //
 		                  std::make_pair("SSE2   ", iware::cpu::instruction_set_t::sse2),     //
 		                  std::make_pair("SSE3   ", iware::cpu::instruction_set_t::sse3),     //
-		                  std::make_pair("AVX    ", iware::cpu::instruction_set_t::avx)})
+		                  std::make_pair("AVX    ", iware::cpu::instruction_set_t::avx),
+                              std::make_pair("Neon   ", iware::cpu::instruction_set_t::neon)})
 			std::cout << "    " << set.first << ": " << iware::cpu::instruction_set_supported(set.second) << '\n';
 	}
 

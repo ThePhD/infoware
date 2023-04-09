@@ -12,7 +12,6 @@
 
 #include "infoware/cpu.hpp"
 #include "infoware/detail/cpuid.hpp"
-#include <unistd.h>
 #include <vector>
 
 
@@ -136,6 +135,7 @@ std::vector<iware::cpu::instruction_set_t> iware::cpu::supported_instruction_set
 	return supported;
 }
 #elif INFOWARE_APPLE
+#include <unistd.h>
 #include <sys/sysctl.h>
 
 static bool has_feature(const char* feature) {

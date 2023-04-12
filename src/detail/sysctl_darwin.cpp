@@ -35,7 +35,7 @@ static std::pair<bool, T> deconstruct_specific_int(const std::string& data) {
 	if(fname(__VA_ARGS__, nullptr, &len, nullptr, 0))    \
 		return {};                                         \
                                                        \
-	std::string ret(' ', len);                          \
+	std::string ret(len, '\0');                          \
 	if(fname(__VA_ARGS__, &ret[0], &len, nullptr, 0)) \
 		return {};                                         \
                                                        \

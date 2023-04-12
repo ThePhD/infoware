@@ -18,11 +18,11 @@
 #include "infoware/platform.hpp"
 #include "infoware/gpu.hpp"
 
-#ifndef INFOWARE_APPLE
+#ifndef __APPLE__
 std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 	return {};
 }
-#endif /* INFOWARE_APPLE */
+#endif /* __APPLE__ */
 
 #endif
 #endif

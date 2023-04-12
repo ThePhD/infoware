@@ -2,7 +2,7 @@
 #include "infoware/gpu.hpp"
 #include <vector>
 
-#if INFOWARE_APPLE && !defined (INFOWARE_USE_OPENCL)
+#if __APPLE__ && !defined (INFOWARE_USE_OPENCL)
 #import <Metal/Metal.h>
 
 std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
@@ -23,4 +23,4 @@ std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
       }
 	return results;
 }
-#endif /* INFOWARE_APPLE && !defined (INFOWARE_USE_OPENCL) */
+#endif /* __APPLE__ && !defined (INFOWARE_USE_OPENCL) */

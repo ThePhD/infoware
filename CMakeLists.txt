@@ -28,8 +28,7 @@ option(INFOWARE_EXAMPLES "Add infoware examples to the build." OFF)
 option(INFOWARE_TESTS    "Input tests for infoware."           OFF)
 
 set(INFOWARE_PCI_IDS_PATH       ""                                   CACHE FILEPATH "pci.ids file to use. Overrides cloning from INFOWARE_PCI_IDS_REPOSITORY.")
-set(INFOWARE_PCI_IDS_REPOSITORY "https://github.com/pciutils/pciids" CACHE STRING
-		"Path/URL to clone a pciids git repository from if override path not supplied. Defaults to https://github.com/pciutils/pciids.")
+set(INFOWARE_PCI_IDS_REPOSITORY "https://github.com/pciutils/pciids" CACHE STRING   "Path/URL to clone a pciids git repository from if override path not supplied. Defaults to https://github.com/pciutils/pciids.")
 
 if(INFOWARE_USE_D3D)
 	if(NOT WIN32)

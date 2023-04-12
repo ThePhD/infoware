@@ -10,14 +10,14 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
+#include "infoware/platform.hpp"
+#include "infoware/cpu.hpp"
+#include "infoware/detail/cpuid.hpp"
 #include <cstring>
-#include <infoware/platform.hpp>
-#include <infoware/cpu.hpp>
-#include <infoware/detail/cpuid.hpp>
 #include <string>
 
 
-#if INFOWARE_X86_FAMILY
+#if INFOWARE_X86
 std::string iware::cpu::vendor_id() {
 	std::int32_t info[4];
 	char name[13];
@@ -30,22 +30,4 @@ std::string iware::cpu::vendor_id() {
 
 	return name;
 }
-#elif INFOWARE_APPLE && INFOWARE_ARM
-#include <sys/sysctl.h>
-
-std::string iware::cpu::vendor_id() {
-      int cmd[2] = { CTL_KERN, HW_MACHINE };
-
-      size_t buf_len = 0;
-      std::string name;
-      int ret = sysctl(cmd, 2, nullptr, &buf_len, nullptr, 0);
-
-      if (ret < 0) {
-            return "Unknown";     
-      }
-      name.resize(buf_len);
-      ret = sysctl(cmd, 2, &name[0], &buf_len, nullptr, 0);
-      
-      return ret < 0? "Unknown" : name;
-}
-#endif /* INFOWARE_X86_FAMILY */
+#endif /* INFOWARE_X86 */

@@ -8,7 +8,7 @@
 
 static bool has_feature(const char* feature) {
       int value = 0;
-      size_t size;
+      std::size_t size;
       int ret = sysctlbyname(feature, &value, &size, nullptr, 0);
       return value && ret == 0;
 }

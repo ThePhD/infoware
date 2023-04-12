@@ -23,8 +23,7 @@ iware::system::OS_info_t iware::system::OS_info() {
 	auto ctl_version_data = iware::detail::sysctl("kern.version");
 
 	auto ctl_osrelease_data = iware::detail::sysctl("kern.osrelease");
-	char buf{};
-	char* osrelease_marker = ctl_osrelease_data.empty() ? &buf : ctl_osrelease_data.data();
+	char* osrelease_marker = &ctl_osrelease_data[0];
 
 	const auto ctl_osrevision_data = iware::detail::sysctl("kern.osrevision");
 	unsigned int build_number{};
@@ -34,8 +33,8 @@ iware::system::OS_info_t iware::system::OS_info() {
 			build_number = osrevision_data.second;
 	}
 
-	return {ctl_ostype_data.empty() ? "" : ctl_ostype_data.data(),                                 //
-	        ctl_version_data.empty() ? "" : ctl_version_data.data(),                               //
+	return {iware::detail::sysctl("kern.ostype"),                                                  //
+	        iware::detail::sysctl("kern.version"),                                                 //
 	        static_cast<unsigned int>(std::strtoul(osrelease_marker, &osrelease_marker, 10)),      //
 	        static_cast<unsigned int>(std::strtoul(osrelease_marker + 1, &osrelease_marker, 10)),  //
 	        static_cast<unsigned int>(std::strtoul(osrelease_marker + 1, nullptr, 10)),            //

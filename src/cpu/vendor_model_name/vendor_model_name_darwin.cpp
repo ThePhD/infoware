@@ -20,22 +20,12 @@
 
 using namespace std::literals;
 
-
-static std::string sysctl_value(const char* subkey) {
-	auto ctl_data = iware::detail::sysctl(("machdep.cpu."s + subkey).c_str());
-	if(ctl_data.empty())
-		return {};
-	else
-		return ctl_data.data();
-}
-
-
 std::string iware::cpu::vendor() {
-	return sysctl_value("vendor");
+	return iware::detail::sysctl("machdep.cpu.vendor");
 }
 
 std::string iware::cpu::model_name() {
-	return sysctl_value("brand_string");
+	return iware::detail::sysctl("machdep.cpu.brand_string");
 }
 
 

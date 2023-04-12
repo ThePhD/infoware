@@ -62,7 +62,7 @@ bool iware::cpu::instruction_set_supported(iware::cpu::instruction_set_t set) {
 	if(ctl_data.empty())
 		return 0;
 
-	for(auto cur_name = std::strtok(ctl_data.data(), " \t\n"); cur_name; cur_name = std::strtok(nullptr, " \t\n"))
+	for(auto cur_name = std::strtok(&ctl_data[0], " \t\n"); cur_name; cur_name = std::strtok(nullptr, " \t\n"))
 		if(std::any_of(set_names.first, set_names.second, [&](auto name) { return name == cur_name; }))
 			return true;
 

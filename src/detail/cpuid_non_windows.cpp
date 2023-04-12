@@ -17,7 +17,7 @@
 #include "infoware/platform.hpp"
 #include <cstdint>
 
-#if INFOWARE_X86_FAMILY
+#if INFOWARE_X86
 #include <cpuid.h>
 
 void iware::detail::cpuid(std::int32_t (&out)[4], std::int32_t x) {

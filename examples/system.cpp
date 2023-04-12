@@ -8,6 +8,7 @@
 
 
 static const char* kernel_variant_name(iware::system::kernel_t variant) noexcept;
+static const char* orientation_name(iware::system::orientation_t o) noexcept;
 
 
 int main() {
@@ -61,9 +62,15 @@ int main() {
 				const auto& display = displays[i];
 				std::cout << "    #" << (i + 1) << ":\n"
 				          << "      Resolution  : " << display.width << 'x' << display.height << '\n'
-				          << "      DPI         : " << display.dpi << '\n'
+				          << "      Logical DPI : " << display.dpi << '\n'
 				          << "      Colour depth: " << display.bpp << "b\n"
 				          << "      Refresh rate: " << display.refresh_rate << "Hz\n";
+#ifdef _WIN32
+				std::cout << "      Position    : " << display.x << ", " << display.y << '\n'
+				          << "      Scale factor: " << static_cast<int>(display.scale * 100) << "%\n"
+				          << "      Primary     : " << display.primary << '\n'
+				          << "      Orientation : " << orientation_name(display.orientation) << '\n';
+#endif  // _WIN32
 			}
 	}
 
@@ -111,6 +118,21 @@ static const char* kernel_variant_name(iware::system::kernel_t variant) noexcept
 			return "Linux";
 		case iware::system::kernel_t::darwin:
 			return "Darwin";
+		default:
+			return "Unknown";
+	}
+}
+
+static const char* orientation_name(iware::system::orientation_t o) noexcept {
+	switch(o) {
+		case iware::system::orientation_t::rotate_0:
+			return "Landscape";
+		case iware::system::orientation_t::rotate_90:
+			return "Portrait";
+		case iware::system::orientation_t::rotate_180:
+			return "Landscape (flipped)";
+		case iware::system::orientation_t::rotate_270:
+			return "Portrait (flipped)";
 		default:
 			return "Unknown";
 	}

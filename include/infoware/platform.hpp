@@ -12,13 +12,9 @@
 #pragma once
 
 #if defined(__i386__) || defined(__x86_64__) || defined (_M_X64) || defined (_M_IX86)
-#define INFOWARE_X86_FAMILY 1
-#endif /* x86 family */
+#define INFOWARE_X86 1
+#endif /* x86 */
 
 #if defined (__arm64__) || defined (_M_ARM64)
 #define INFOWARE_ARM 1
 #endif /* arm */
-
-#if __APPLE__ || __MACH__
-#define INFOWARE_APPLE 1
-#endif /* apple */

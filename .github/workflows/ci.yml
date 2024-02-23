@@ -33,6 +33,31 @@ jobs:
       - name: Run Tests
         run: ctest --test-dir infoware/build
 
+  mingw:
+    name: Linux MinGW (${{matrix.arch.pkg}})
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        arch:
+          - { pkg: i686,   paths: i686 }
+          - { pkg: x86-64, paths: x86_64 }
+
+    steps:
+      - name: Checkout infoware
+        uses: actions/checkout@v2
+        with:
+          path: infoware
+
+      - name: Install apt packages
+        run: sudo apt update && sudo apt install -y cmake ninja-build g++-mingw-w64-${{matrix.arch.pkg}}
+
+      - name: Generate CMake
+        run: mkdir infoware/build && cd infoware/build && cmake -DCMAKE_BUILD_TYPE=Release -DMINGW_ARCH=${{matrix.arch.paths}} -DCMAKE_TOOLCHAIN_FILE=../.github/workflows/mingw.cmake -G Ninja ..
+
+      - name: Build Project
+        run: cmake --build infoware/build
+
   macos:
     name: macOS ${{matrix.os}} ${{matrix.arch}}
     runs-on: ${{matrix.os}}

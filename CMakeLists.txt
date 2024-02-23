@@ -84,51 +84,62 @@ if(NOT Git_FOUND)  # Could be pre-injected
 	find_package(Git)
 endif()
 
+set(INFOWARE_PCI_DATA_DIR infoware_generated CACHE PATH "Output directory for the PCI ids generator")
+set(INFOWARE_PCI_DATA_HPP pci_data.hpp)
+set(INFOWARE_PCI_DATA_GEN "${INFOWARE_PCI_DATA_DIR}/${INFOWARE_PCI_DATA_HPP}")
 set(infoware_pci_ids_error "\
 The pci.ids file, downloadable from https://github.com/pciutils/pciids or http://pci-ids.ucw.cz, is required for building infoware, \
 and cloned automatically from that GitHub repository by default.\n\
 To use a local copy, set INFOWARE_PCI_IDS_PATH to its location.")
-if(INFOWARE_PCI_IDS_PATH)
-	if(NOT EXISTS "${INFOWARE_PCI_IDS_PATH}")
-		message(WARNING "The specified pci.ids file INFOWARE_PCI_IDS_PATH=${INFOWARE_PCI_IDS_PATH} doesn't seem to exist.")
-	endif()
-	set(infoware_pci_ids_file "${INFOWARE_PCI_IDS_PATH}")
-elseif(NOT Git_FOUND)
-	message(SEND_ERROR "Couldn't find a usable git executable in the environment, and the CMake variable INFOWARE_PCI_IDS_PATH is empty.\n${infoware_pci_ids_error}")
-else()
-	# Thanks, @griwes
-	set(infoware_pci_ids_file "${CMAKE_CURRENT_BINARY_DIR}/pciids/pci.ids")
-	if(EXISTS "${infoware_pci_ids_file}")
-		execute_process(COMMAND "${GIT_EXECUTABLE}" remote set-url origin "${INFOWARE_PCI_IDS_REPOSITORY}"
-		                WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/pciids")
-		execute_process(COMMAND "${GIT_EXECUTABLE}" pull
-		                WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/pciids"
-		                RESULT_VARIABLE infoware_git_pciids_clone_err)
+if(NOT CMAKE_CROSSCOMPILING)
+	if(INFOWARE_PCI_IDS_PATH)
+		if(NOT EXISTS "${INFOWARE_PCI_IDS_PATH}")
+			message(WARNING "The specified pci.ids file INFOWARE_PCI_IDS_PATH=${INFOWARE_PCI_IDS_PATH} doesn't seem to exist.")
+		endif()
+		set(infoware_pci_ids_file "${INFOWARE_PCI_IDS_PATH}")
+	elseif(NOT Git_FOUND)
+		message(SEND_ERROR "Couldn't find a usable git executable in the environment, and the CMake variable INFOWARE_PCI_IDS_PATH is empty.\n${infoware_pci_ids_error}")
 	else()
-		execute_process(COMMAND "${GIT_EXECUTABLE}" clone "${INFOWARE_PCI_IDS_REPOSITORY}" -- pciids
-		                WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
-		                RESULT_VARIABLE infoware_git_pciids_clone_err)
+		# Thanks, @griwes
+		set(infoware_pci_ids_file "${CMAKE_CURRENT_BINARY_DIR}/pciids/pci.ids")
+		if(EXISTS "${infoware_pci_ids_file}")
+			execute_process(COMMAND "${GIT_EXECUTABLE}" remote set-url origin "${INFOWARE_PCI_IDS_REPOSITORY}"
+			                WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/pciids")
+			execute_process(COMMAND "${GIT_EXECUTABLE}" pull
+			                WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/pciids"
+			                RESULT_VARIABLE infoware_git_pciids_clone_err)
+		else()
+			execute_process(COMMAND "${GIT_EXECUTABLE}" clone "${INFOWARE_PCI_IDS_REPOSITORY}" -- pciids
+			                WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+			                RESULT_VARIABLE infoware_git_pciids_clone_err)
+		endif()
+		if(infoware_git_pciids_clone_err)
+			message(SEND_ERROR "Cloning/pulling pciids repository from ${INFOWARE_PCI_IDS_REPOSITORY} failed with ${infoware_git_pciids_clone_err}.\n${infoware_pci_ids_error}")
+		endif()
 	endif()
-	if(infoware_git_pciids_clone_err)
-		message(SEND_ERROR "Cloning/pulling pciids repository from ${INFOWARE_PCI_IDS_REPOSITORY} failed with ${infoware_git_pciids_clone_err}.\n${infoware_pci_ids_error}")
-	endif()
+
+	add_executable(infoware_pci_generator tools/pci_generator.cpp)
+	set_target_properties(infoware_pci_generator PROPERTIES CXX_STANDARD 14
+	                                                        CXX_STANDARD_REQUIRED ON
+	                                                        CXX_EXTENSIONS OFF)
+
+	add_custom_command(OUTPUT ${INFOWARE_PCI_DATA_GEN}
+	                   COMMAND ${CMAKE_COMMAND} -E make_directory "${INFOWARE_PCI_DATA_DIR}"
+	                   COMMAND $<TARGET_FILE:infoware_pci_generator> "${infoware_pci_ids_file}" > "${INFOWARE_PCI_DATA_GEN}"
+	                   DEPENDS "${infoware_pci_ids_file}"
+	                   COMMENT "Generating ${INFOWARE_PCI_DATA_HPP}")
+	add_custom_target(infoware_generate_pcis DEPENDS "${INFOWARE_PCI_DATA_GEN}")
+else()
+	include(ExternalProject)
+	ExternalProject_Add(infoware_generate_pcis
+	                    SOURCE_DIR ${CMAKE_SOURCE_DIR}
+	                    PREFIX ${CMAKE_BINARY_DIR}/pci_generator
+	                    BINARY_DIR ${CMAKE_BINARY_DIR}/pci_generator
+	                    BUILD_COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --target infoware_generate_pcis
+	                    INSTALL_COMMAND ""
+	                    BUILD_ALWAYS ON
+	                    CMAKE_ARGS -DINFOWARE_PCI_DATA_DIR:PATH=${CMAKE_BINARY_DIR}/${INFOWARE_PCI_DATA_DIR})
 endif()
-
-add_executable(infoware_pci_generator tools/pci_generator.cpp)
-set_target_properties(infoware_pci_generator PROPERTIES CXX_STANDARD 14
-                                                        CXX_STANDARD_REQUIRED ON
-                                                        CXX_EXTENSIONS OFF)
-
-set(INFOWARE_PCI_DATA_HPP pci_data.hpp)
-set(INFOWARE_PCI_DATA_GEN "infoware_generated/${INFOWARE_PCI_DATA_HPP}")
-
-add_custom_command(OUTPUT ${INFOWARE_PCI_DATA_GEN}
-                   COMMAND ${CMAKE_COMMAND} -E make_directory infoware_generated/
-                   COMMAND $<TARGET_FILE:infoware_pci_generator> "${infoware_pci_ids_file}" > "infoware_generated/pci_data.hpp"
-                   DEPENDS "${infoware_pci_ids_file}"
-                   COMMENT "Generating ${INFOWARE_PCI_DATA_HPP}")
-
-add_custom_target(infoware_generate_pcis DEPENDS "${INFOWARE_PCI_DATA_GEN}")
 add_dependencies(infoware infoware_generate_pcis)
 
 
@@ -147,7 +158,7 @@ if(WIN32 AND NOT MSVC)
 endif()
 
 if(WIN32)
-	target_link_libraries(infoware PRIVATE gdi32 version Ole32 OleAut32 wbemuuid ntdll)
+	target_link_libraries(infoware PRIVATE gdi32 version ole32 oleaut32 wbemuuid ntdll)
 endif()
 
 

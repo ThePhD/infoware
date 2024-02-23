@@ -14,39 +14,42 @@
 #include <windows.h>
 
 
+struct bundle {
+	HDC desktop_dc;
+	std::vector<iware::system::display_t> ret;
+};
+
+static BOOL CALLBACK consume_one_display(HMONITOR, HDC hdc, LPRECT rect, LPARAM userdata) {
+	auto& bundle = *reinterpret_cast<struct bundle*>(userdata);
+
+	const unsigned int desktop_dpi = GetDeviceCaps(bundle.desktop_dc, LOGPIXELSX);
+	// https://blogs.msdn.microsoft.com/oldnewthing/20101013-00/?p=12543
+	const unsigned int desktop_bpp    = GetDeviceCaps(bundle.desktop_dc, BITSPIXEL) * GetDeviceCaps(bundle.desktop_dc, PLANES);
+	const double desktop_refresh_rate = GetDeviceCaps(bundle.desktop_dc, VREFRESH);
+
+
+	// Sometimes returns 0 – fall back to the desktop's globals if so.
+	const unsigned int monitor_dpi    = GetDeviceCaps(hdc, LOGPIXELSX);
+	const unsigned int monitor_bpp    = GetDeviceCaps(hdc, BITSPIXEL) * GetDeviceCaps(hdc, PLANES);
+	const double monitor_refresh_rate = GetDeviceCaps(hdc, VREFRESH);
+
+	const unsigned int width  = std::abs(rect->right - rect->left);
+	const unsigned int height = std::abs(rect->bottom - rect->top);
+
+	// See http://stackoverflow.com/a/12654433/2851815 and up for DPI. In short: can't be done too too well, go with best solution.
+	bundle.ret.push_back({width, height, monitor_dpi ? monitor_dpi : desktop_dpi, monitor_bpp ? monitor_bpp : desktop_bpp,
+	                      monitor_refresh_rate ? monitor_refresh_rate : desktop_refresh_rate});
+
+	return TRUE;
+}
+
 std::vector<iware::system::display_t> iware::system::displays() {
-	const struct bundle {
-		HDC desktop_dc;
-		std::vector<iware::system::display_t> ret;
-	} bundle{GetDC(nullptr), {}};
+	const struct bundle bundle {
+		GetDC(nullptr), {}
+	};
 	iware::detail::quickscope_wrapper desktop_dc_deleter{[&]() { ReleaseDC(nullptr, bundle.desktop_dc); }};
 
-	EnumDisplayMonitors(
-	    bundle.desktop_dc, nullptr,
-	    [](auto, auto hdc, auto rect, auto userdata) {
-		    auto& bundle = *reinterpret_cast<struct bundle*>(userdata);
-
-		    const unsigned int desktop_dpi = GetDeviceCaps(bundle.desktop_dc, LOGPIXELSX);
-		    // https://blogs.msdn.microsoft.com/oldnewthing/20101013-00/?p=12543
-		    const unsigned int desktop_bpp    = GetDeviceCaps(bundle.desktop_dc, BITSPIXEL) * GetDeviceCaps(bundle.desktop_dc, PLANES);
-		    const double desktop_refresh_rate = GetDeviceCaps(bundle.desktop_dc, VREFRESH);
-
-
-		    // Sometimes returns 0 – fall back to the desktop's globals if so.
-		    const unsigned int monitor_dpi    = GetDeviceCaps(hdc, LOGPIXELSX);
-		    const unsigned int monitor_bpp    = GetDeviceCaps(hdc, BITSPIXEL) * GetDeviceCaps(hdc, PLANES);
-		    const double monitor_refresh_rate = GetDeviceCaps(hdc, VREFRESH);
-
-		    const unsigned int width  = std::abs(rect->right - rect->left);
-		    const unsigned int height = std::abs(rect->bottom - rect->top);
-
-		    // See http://stackoverflow.com/a/12654433/2851815 and up for DPI. In short: can't be done too too well, go with best solution.
-		    bundle.ret.push_back({width, height, monitor_dpi ? monitor_dpi : desktop_dpi, monitor_bpp ? monitor_bpp : desktop_bpp,
-		                          monitor_refresh_rate ? monitor_refresh_rate : desktop_refresh_rate});
-
-		    return TRUE;
-	    },
-	    reinterpret_cast<LPARAM>(&bundle));
+	EnumDisplayMonitors(bundle.desktop_dc, nullptr, &consume_one_display, reinterpret_cast<LPARAM>(&bundle));
 
 	return std::move(bundle.ret);
 }

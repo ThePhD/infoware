@@ -23,7 +23,7 @@ static std::pair<const char* const*, const char* const*> instruction_set_to_name
 	static const char* const dotprod[]           = {"DOTPROD"};
 	static const char* const rdm[]               = {"RDM"};
 	static const char* const lse[]               = {"LSE"};
-	static const char* const pmnull[]            = {"PMNULL"};
+	static const char* const pmull[]             = {"PMULL"};
 	static const char* const specres[]           = {"SPECRES"};
 	static const char* const sb[]                = {"SB"};
 	static const char* const frintts[]           = {"FRINTTS"};
@@ -75,7 +75,7 @@ static std::pair<const char* const*, const char* const*> instruction_set_to_name
 		HANDLED_CASE(dotprod, dotprod)
 		HANDLED_CASE(rdm, rdm)
 		HANDLED_CASE(lse, lse)
-		HANDLED_CASE(pmnull, pmnull)
+		HANDLED_CASE(pmull, pmull)
 		HANDLED_CASE(specres, specres)
 		HANDLED_CASE(sb, sb)
 		HANDLED_CASE(frintts, frintts)

@@ -81,7 +81,7 @@ namespace iware {
 			dotprod,
 			rdm,
 			lse,
-			pmnull,
+			pmull,
 			specres,
 			sb,
 			frintts,

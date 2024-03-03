@@ -44,9 +44,7 @@ static BOOL CALLBACK consume_one_display(HMONITOR, HDC hdc, LPRECT rect, LPARAM 
 }
 
 std::vector<iware::system::display_t> iware::system::displays() {
-	const struct bundle bundle {
-		GetDC(nullptr), {}
-	};
+	struct bundle bundle = {GetDC(nullptr), {}};
 	iware::detail::quickscope_wrapper desktop_dc_deleter{[&]() { ReleaseDC(nullptr, bundle.desktop_dc); }};
 
 	EnumDisplayMonitors(bundle.desktop_dc, nullptr, &consume_one_display, reinterpret_cast<LPARAM>(&bundle));

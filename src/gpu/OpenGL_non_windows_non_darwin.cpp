@@ -4,6 +4,7 @@
 
 #ifndef INFOWARE_USE_D3D
 #ifndef INFOWARE_USE_OPENCL
+#ifndef _WIN32
 #ifndef __APPLE__
 #ifdef INFOWARE_USE_OPENGL
 
@@ -94,6 +95,7 @@ std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 }
 
 
+#endif
 #endif
 #endif
 #endif

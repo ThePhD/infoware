@@ -187,7 +187,7 @@ elseif(INFOWARE_USE_OPENGL)
 		target_link_libraries(infoware PUBLIC opengl32)
 	elseif(NOT APPLE)
 		find_package(OpenGL REQUIRED)
-		target_link_libraries(infoware PUBLIC OpenGL::EGL)
+		target_link_libraries(infoware PUBLIC OpenGL::EGL)  # libgl1-mesa-dev
 	else()
 		target_link_libraries(infoware PUBLIC "-framework OpenGL")
 	endif()

@@ -63,7 +63,7 @@ std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 	iware::detail::quickscope_wrapper context_restorer{[&]() { eglMakeCurrent(display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT); }};
 
 
-	std::string vendor   = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
+	auto vendor          = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
 	std::string renderer = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
 
 	iware::gpu::vendor_t vendor_type = vendor_from_name(vendor);

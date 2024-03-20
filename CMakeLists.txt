@@ -5,11 +5,12 @@
 cmake_minimum_required(VERSION 3.6.0)
 
 
-set(infoware_version "0.6.0")
+set(infoware_version "0.6.0")  # also update in src/gpu/vulkan.cpp
 
 project(infoware VERSION "${infoware_version}" LANGUAGES CXX)
 
 
+option(INFOWARE_USE_VULKAN "Add public, transitive define to infoware to use Vulkan for GPU detection."                          OFF)
 option(INFOWARE_USE_D3D    "Add public, transitive define to infoware to use Direct 3D for GPU detection."                       OFF)
 option(INFOWARE_USE_OPENGL "Add public, transitive define to infoware to use Open Graphics Language (OpenGL) for GPU detection." OFF)
 option(INFOWARE_USE_OPENCL "Add public, transitive define to infoware to use Open Compute Language (OpenCL) for GPU detection."  OFF)
@@ -21,6 +22,16 @@ option(INFOWARE_TESTS    "Input tests for infoware."           OFF)
 
 set(INFOWARE_PCI_IDS_PATH       ""                                   CACHE FILEPATH "pci.ids file to use. Overrides cloning from INFOWARE_PCI_IDS_REPOSITORY.")
 set(INFOWARE_PCI_IDS_REPOSITORY "https://github.com/pciutils/pciids" CACHE STRING   "Path/URL to clone a pciids git repository from if override path not supplied. Defaults to https://github.com/pciutils/pciids.")
+
+if(INFOWARE_USE_VULKAN)
+	if(INFOWARE_USE_D3D)
+		message(WARNING "INFOWARE_USE_D3D specified, but the higher-priority INFOWARE_USE_VULKAN was specified, too, and will be used instead.")
+	elseif(INFOWARE_USE_OPENCL)
+		message(WARNING "INFOWARE_USE_OPENCL specified, but the higher-priority INFOWARE_USE_VULKAN was specified, too, and will be used instead.")
+	elseif(INFOWARE_USE_OPENGL)
+		message(WARNING "INFOWARE_USE_OPENGL specified, but the higher-priority INFOWARE_USE_VULKAN was specified, too, and will be used instead.")
+	endif()
+endif()
 
 if(INFOWARE_USE_D3D)
 	if(NOT WIN32)
@@ -167,7 +178,11 @@ if(APPLE)
 endif()
 
 
-if(INFOWARE_USE_D3D)
+if(INFOWARE_USE_VULKAN)
+	target_compile_definitions(infoware PUBLIC INFOWARE_USE_VULKAN)
+	find_package(Vulkan REQUIRED)
+	target_link_libraries(infoware PUBLIC Vulkan::Vulkan)
+elseif(INFOWARE_USE_D3D)
 	target_compile_definitions(infoware PUBLIC INFOWARE_USE_D3D)
 	if (WIN32)
 		target_link_libraries(infoware PUBLIC dxgi)

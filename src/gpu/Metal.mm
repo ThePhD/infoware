@@ -2,7 +2,7 @@
 // infoware - C++ System information Library
 
 
-#if __APPLE__ && !defined(INFOWARE_USE_OPENCL)
+#if __APPLE__ && !defined(INFOWARE_USE_OPENCL) && !defined(INFOWARE_USE_VULKAN)
 
 
 #include "infoware/gpu.hpp"
@@ -27,4 +27,4 @@ std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 }
 
 
-#endif /* __APPLE__ && !defined (INFOWARE_USE_OPENCL) */
+#endif /* __APPLE__ && !defined (INFOWARE_USE_OPENCL) && !defined(INFOWARE_USE_VULKAN) */

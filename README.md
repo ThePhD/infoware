@@ -17,6 +17,7 @@ A usable `git` binary is required by default, to clone https://github.com/pciuti
 |CMake definition and C++ preprocessor macro|              Meaning              |Linker library|    Priority   |
 |-------------------------------------------|-----------------------------------|--------------|---------------|
 |             `INFOWARE_USE_X11`            |   Use X11 for display detection   |     `X11`    | <Win32/Darwin |
+|            `INFOWARE_USE_VULKAN`          |    Use Vulkan for GPU detection   |   `vulkan`   |      >D3D     |
 |             `INFOWARE_USE_D3D`            |      Use D3D for GPU detection    |    `dxgi`    |     >OpenCL   |
 |            `INFOWARE_USE_OPENCL`          |    Use OpenCL for GPU detection   |   `OpenCL`   |  <D3D >Darwin |
 |            `INFOWARE_USE_OPENGL`          |    Use OpenGL for GPU detection   |OS-dependent\*|     <Darwin   |

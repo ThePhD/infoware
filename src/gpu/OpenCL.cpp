@@ -2,6 +2,7 @@
 // infoware - C++ System information Library
 
 
+#ifndef INFOWARE_USE_VULKAN
 #ifndef INFOWARE_USE_D3D
 #ifdef INFOWARE_USE_OPENCL
 
@@ -62,5 +63,6 @@ std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 }
 
 
+#endif
 #endif
 #endif

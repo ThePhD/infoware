@@ -1,57 +1,125 @@
 // SPDX-License-Identifier: CC0-1.0
 // infoware - C++ System information Library
 
-
 #ifndef INFOWARE_USE_D3D
 #ifndef INFOWARE_USE_OPENCL
 #ifndef __APPLE__
 #ifdef INFOWARE_USE_OPENGL
 
-
-// OpenGL is literaly hitler to initialise a windowless context for, so no game.
-// Leave it for someone smarter than me :G
-//
-// Here is guidance I received from my Graphics Lord, Elim Garak, on Discord:
-// [5:44 PM] 🕴: Elim, my lord, plz tell me the simplest way of setting up a dummy OGL ctx so I can glGetString()
-// [5:46 PM] Elim | iscicadabannedyet.com: You know how to acquire your function pointers, rite? For WGL, EGL, XGL shit etc(edited)
-// [5:46 PM] Borgleader: glLoadGen >>>>> acquiring pointers manually
-// [5:46 PM] Elim | iscicadabannedyet.com: or that
-// [5:46 PM] 🕴: not really, no
-// [5:46 PM] Elim | iscicadabannedyet.com: You just want to know how to get the dummy?
-// [5:46 PM] Elim | iscicadabannedyet.com: oh
-// [5:47 PM] 🕴: from what I've read it's impl-def land
-// [5:47 PM] 🕴: OGL land is so fucking alien to me
-// [5:48 PM] 🕴: from what I read I assume you use like WGL or some shit to make a ctx which allows you to call OGL-proper functions
-// [5:48 PM] Elim | iscicadabannedyet.com: Basically, on Windows it's as trivial as wglCreateContext(GetDC(your_window_handle)
-// [5:48 PM] Elim | iscicadabannedyet.com: WGL is the glue between the Windows window system and OGL
-// [5:49 PM] 🕴: Can I use a dummy window for that?
-// [5:49 PM] Elim | iscicadabannedyet.com: yes
-// [5:49 PM] 🕴: cool
-// [5:49 PM] 🕴: And what on non-Windows?
-// [5:50 PM] Elim | iscicadabannedyet.com: On OS X, one doesn't need to jump through such hoops because the Apple lords integrated OpenGL 4.1 and below inside
-//                                         of their system SDK
-// [5:50 PM] Elim | iscicadabannedyet.com: As for lunix, it's EGL over there
-// [5:50 PM] Elim | iscicadabannedyet.com: https://www.khronos.org/registry/egl/sdk/docs/man/html/eglCreateContext.xhtml
-// [5:50 PM] 🕴: So I don't need to set up anything on OSX, it will work OOTB?(edited)
-// [5:50 PM] Borgleader: except their drivers are shit so theres no point inusing it 😛
-// [5:51 PM] Elim | iscicadabannedyet.com: It will work in the sense that you can get any core profile out of the box, yeah
-// [5:51 PM] Elim | iscicadabannedyet.com: will it work practically as borgleader mentions
-// [5:51 PM] Elim | iscicadabannedyet.com: hehehe, fun times ahead 😛(edited)
-// [5:51 PM] 🕴: right, so a raw call on OSX, WGL wglCreateContext() w/dummy window on Windooze and EGL on Linux
-// [5:52 PM] Elim | iscicadabannedyet.com: yeah, on lunix eglCreateContext attaches to the display
-// [5:52 PM] 🕴: Elim is the greatest man of all time
-// [5:52 PM] Elim | iscicadabannedyet.com: bby, write code and be quiet 😛
-// [5:53 PM] Elim | iscicadabannedyet.com: but yeah, it's p retarded
-
-
 #include "infoware/gpu.hpp"
+
+#include <EGL/egl.h>
+#include <GL/gl.h>
+#include <algorithm>
 #include <vector>
 
+#include <iostream>
 
-std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
-	return {};
+static iware::gpu::vendor_t vendor_from_name(std::string name) {
+    std::transform(name.begin(), name.end(), name.begin(), ::toupper);
+
+    if (name.find("NVIDIA") != std::string::npos)
+        return iware::gpu::vendor_t::nvidia;
+    else if (name.find("AMD") != std::string::npos || name.find("ATI") != std::string::npos ||
+             name.find("ADVANCED MICRO DEVICES") != std::string::npos)
+        return iware::gpu::vendor_t::amd;
+    else if (name.find("INTEL") != std::string::npos)
+        return iware::gpu::vendor_t::intel;
+    else if (name.find("MICROSOFT") != std::string::npos)
+        return iware::gpu::vendor_t::microsoft;
+    else if (name.find("QUALCOMM") != std::string::npos)
+        return iware::gpu::vendor_t::qualcomm;
+    else
+        return iware::gpu::vendor_t::unknown;
 }
 
+std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
+    EGLDisplay display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+    eglInitialize(display, nullptr, nullptr);
+
+    // Choose an EGL Config
+    EGLConfig config;
+    EGLint numConfigs;
+    static const EGLint config_attributes[] = {EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT, EGL_NONE};
+    eglChooseConfig(display, config_attributes, &config, 1, &numConfigs);
+    if (numConfigs == 0) {
+        std::cerr << "Failed to choose EGL config" << std::endl;
+        eglTerminate(display);
+        return {};
+    }
+
+    // Create an EGL Surface
+    static const EGLint pbuffer_attributes[] = {
+        EGL_WIDTH,
+        1,
+        EGL_HEIGHT,
+        1,
+        EGL_NONE,
+    };
+    EGLSurface surface = eglCreatePbufferSurface(display, config, pbuffer_attributes);
+    if (surface == EGL_NO_SURFACE) {
+        std::cerr << "Failed to create EGL surface" << std::endl;
+        eglTerminate(display);
+        return {};
+    }
+
+    const EGLint context_attributes[] = {//
+                                         EGL_CONTEXT_MAJOR_VERSION,
+                                         2,
+                                         EGL_CONTEXT_MINOR_VERSION,
+                                         0,
+                                         EGL_NONE};
+    EGLContext context                = eglCreateContext(display, config, EGL_NO_CONTEXT, context_attributes);
+    if (context == EGL_NO_CONTEXT) {
+        std::cerr << "Failed to create EGL context" << std::endl;
+        eglDestroySurface(display, surface);
+        eglTerminate(display);
+        return {};
+    }
+
+    eglMakeCurrent(display, surface, surface, context);
+
+    std::string vendor   = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
+    std::string renderer = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
+
+    iware::gpu::vendor_t vendor_type = vendor_from_name(vendor);
+    if (vendor_type == iware::gpu::vendor_t::unknown) {
+        // As a fallback, let's try to get the vendor from the renderer string
+        vendor_type = vendor_from_name(renderer);
+    }
+
+    // Check if context has extension for meminfo, we can access the dedicated vram using GL_NVX_gpu_memory_info
+    // which is supported using mesa on AMD and NVIDIA devices, but not on Intel (that is fine, they do not have dedicated VRAM)
+    // Funnily enough this wont work on NVIDIA devices at all because NVIDIA does not support EGL higher than OpenGL ES 2.0, this extension
+    // is available in OpenGL 2.0 but not in ES
+    // In the future there should be a fallback for GLX context especially for NVIDIA devices
+    bool has_NVX_mem_info  = false;
+    const char* extensions = reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
+    if (extensions) {
+        std::string ext(extensions);
+        has_NVX_mem_info = ext.find("GL_NVX_gpu_memory_info") != std::string::npos;
+    }
+
+    GLint total_memory = 0;
+    if (has_NVX_mem_info) {
+        glGetIntegerv(GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX, &total_memory);
+    }
+
+    // Clean up
+    eglMakeCurrent(display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+    eglDestroyContext(display, context);
+    eglDestroySurface(display, surface);
+    eglTerminate(display);
+
+    // We can't get the cache size or the max frequency, so we just set them to 0
+    return {device_properties_t{
+        vendor_type,
+        renderer,
+        static_cast<std::size_t>(total_memory),
+        0,
+        0,
+    }};
+}
 
 #endif
 #endif

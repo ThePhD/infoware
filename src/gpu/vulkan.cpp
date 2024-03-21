@@ -13,17 +13,8 @@
 
 
 std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
-	VkApplicationInfo appInfo{};
-	appInfo.sType              = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-	appInfo.pApplicationName   = "infoware";
-	appInfo.applicationVersion = VK_MAKE_VERSION(0, 6, 0);
-	appInfo.pEngineName        = "No Engine";
-	appInfo.engineVersion      = VK_MAKE_VERSION(1, 0, 0);
-	appInfo.apiVersion         = VK_API_VERSION_1_0;
-
 	VkInstanceCreateInfo createInfo{};
-	createInfo.sType            = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-	createInfo.pApplicationInfo = &appInfo;
+	createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 
 	VkInstance instance;
 	VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
@@ -43,6 +34,7 @@ std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 	devices.resize(devices_len);
 
 	std::vector<iware::gpu::device_properties_t> ret;
+	ret.reserve(devices.size());
 	for(auto&& device : devices) {
 		VkPhysicalDeviceProperties props{};
 		vkGetPhysicalDeviceProperties(device, &props);
@@ -53,7 +45,7 @@ std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 		// None of the <https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkVendorId.html>s match anything in our enum.
 		auto vendor = vendor_t::unknown;
 		switch(props.vendorID) {
-			case 0x8086:  //  Intel Corporation
+			case 0x8086:  // Intel Corporation
 				vendor = vendor_t::intel;
 				break;
 			case 0x1002:  // Advanced Micro Devices, Inc. [AMD/ATI]
@@ -64,16 +56,16 @@ std::vector<iware::gpu::device_properties_t> iware::gpu::device_properties() {
 			case 0x12d2:  // NVidia / SGS Thomson (Joint Venture)
 				vendor = vendor_t::nvidia;
 				break;
-			case 0x1414:  //  Microsoft Corporation
+			case 0x1414:  // Microsoft Corporation
 				vendor = vendor_t::microsoft;
 				break;
-			case 0x168c:  //  Qualcomm Atheros
-			case 0x17cb:  //  Qualcomm
-			case 0x1969:  //  Qualcomm Atheros
-			case 0x5143:  //  Qualcomm Inc
+			case 0x168c:  // Qualcomm Atheros
+			case 0x17cb:  // Qualcomm
+			case 0x1969:  // Qualcomm Atheros
+			case 0x5143:  // Qualcomm Inc
 				vendor = vendor_t::qualcomm;
 				break;
-			case 0x106b:  //  Apple Inc.
+			case 0x106b:  // Apple Inc.
 				vendor = vendor_t::apple;
 				break;
 		}

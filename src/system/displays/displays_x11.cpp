@@ -50,7 +50,7 @@ std::vector<iware::system::display_t> iware::system::displays() {
 		    width,
 		    static_cast<std::uint32_t>(DisplayHeight(display, screen_number)),
 		    // 25.4 millimeters per inch
-		    static_cast<std::uint32_t>(25.4 * DisplayWidthMM(display, screen_number) / width),
+		    static_cast<std::uint32_t>(width / (DisplayWidthMM(display, screen_number) / 25.4)),
 		    static_cast<std::uint32_t>(DefaultDepth(display, screen_number)),
 		    static_cast<double>(XRRConfigCurrentRate(screen_config)),
 		};

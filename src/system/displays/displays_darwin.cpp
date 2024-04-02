@@ -40,7 +40,7 @@ std::vector<iware::system::display_t> iware::system::displays() {
 	return enumerate_displays<iware::system::display_t>([](auto display_id) {
 		const std::uint32_t width = CGDisplayPixelsWide(display_id);
 		// 25.4 millimeters per inch
-		const std::uint32_t dpi = 25.4 * CGDisplayScreenSize(display_id).width / width;
+		const std::uint32_t dpi = width / (CGDisplayScreenSize(display_id).width / 25.4);
 
 		auto display_mode = CGDisplayCopyDisplayMode(display_id);
 		iware::detail::quickscope_wrapper display_mode_deleter{[&]() { CGDisplayModeRelease(display_mode); }};

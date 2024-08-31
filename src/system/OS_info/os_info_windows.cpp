@@ -88,6 +88,7 @@ static unsigned int build_number() {
 	HKEY hkey{};
 	if(RegOpenKeyExA(HKEY_LOCAL_MACHINE, R"(Software\Microsoft\Windows NT\CurrentVersion)", 0, KEY_READ, &hkey))
 		return {};
+	iware::detail::quickscope_wrapper hkey_closer{[&] { RegCloseKey(hkey); }};
 
 	DWORD ubr{};
 	DWORD ubr_size = sizeof(ubr);

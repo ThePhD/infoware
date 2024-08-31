@@ -17,8 +17,6 @@
 #include <winnt.h>
 #include <winternl.h>
 
-extern "C" NTSYSAPI NTSTATUS NTAPI RtlGetVersion(_Out_ PRTL_OSVERSIONINFOW lpVersionInformation);
-
 #ifdef _MSC_VER
 #define strtok_r(...) strtok_s(__VA_ARGS__)
 #endif
@@ -86,6 +84,8 @@ static std::string version_name() {
 
 static unsigned int build_number() {
 	HKEY hkey{};
+	iware::detail::quickscope_wrapper hkey_closer{ [&]() { if(hkey) RegCloseKey(hkey); } };
+
 	if(RegOpenKeyExA(HKEY_LOCAL_MACHINE, R"(Software\Microsoft\Windows NT\CurrentVersion)", 0, KEY_READ, &hkey))
 		return {};
 
@@ -114,7 +114,18 @@ static unsigned int build_number() {
 iware::system::OS_info_t iware::system::OS_info() {
 	RTL_OSVERSIONINFOW os_version_info{};
 	os_version_info.dwOSVersionInfoSize = sizeof(os_version_info);
-	RtlGetVersion(&os_version_info);
+
+	NTSTATUS(NTAPI * pRtlGetVersion)(_Out_ PRTL_OSVERSIONINFOW lpVersionInformation){};
+	HMODULE ntdllh = GetModuleHandleA("ntdll.dll");
+	if(ntdllh) {
+		FARPROC rgv = GetProcAddress(ntdllh, "RtlGetVersion");
+		if(rgv) {
+			std::memcpy(&pRtlGetVersion, &rgv, sizeof(rgv));
+		}
+	}
+	if(pRtlGetVersion) {
+		pRtlGetVersion(&os_version_info);
+	}
 
 	return {"Windows NT", version_name(), os_version_info.dwMajorVersion, os_version_info.dwMinorVersion, os_version_info.dwBuildNumber, build_number()};
 }

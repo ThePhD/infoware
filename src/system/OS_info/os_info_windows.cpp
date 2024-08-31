@@ -17,8 +17,6 @@
 #include <winnt.h>
 #include <winternl.h>
 
-extern "C" NTSYSAPI NTSTATUS NTAPI RtlGetVersion(_Out_ PRTL_OSVERSIONINFOW lpVersionInformation);
-
 #ifdef _MSC_VER
 #define strtok_r(...) strtok_s(__VA_ARGS__)
 #endif
@@ -110,12 +108,19 @@ static unsigned int build_number() {
 	return token ? std::strtoul(token, nullptr, 10) : 0;
 }
 
-// Get OS version via RtlGetVersion which still works well in Windows 8 and above
+// RtlGetVersion() started being phased out in Windows 8; need to load it dynamically for Windows 11(?)
 // https://docs.microsoft.com/en-us/windows/win32/devnotes/rtlgetversion
 iware::system::OS_info_t iware::system::OS_info() {
+	static NTSTATUS(NTAPI * pRtlGetVersion)(_Out_ PRTL_OSVERSIONINFOW lpVersionInformation) = [] {
+		decltype(pRtlGetVersion) ret{};
+		if(HMODULE ntdllh = GetModuleHandleA("ntdll.dll"))
+			ret = reinterpret_cast<decltype(pRtlGetVersion)>(GetProcAddress(ntdllh, "RtlGetVersion"));
+		return ret;
+	}();
 	RTL_OSVERSIONINFOW os_version_info{};
 	os_version_info.dwOSVersionInfoSize = sizeof(os_version_info);
-	RtlGetVersion(&os_version_info);
+	if(pRtlGetVersion)
+		pRtlGetVersion(&os_version_info);
 
 	return {"Windows NT", version_name(), os_version_info.dwMajorVersion, os_version_info.dwMinorVersion, os_version_info.dwBuildNumber, build_number()};
 }

@@ -28,6 +28,7 @@ static bool print_vendor(std::uint64_t vendor_id, const char* vendor_name);
 int main(int, const char** argv) {
 	std::cout << "Infoware version " << iware::version << '\n';
 
+#ifdef INFOWARE_USE_PCIIDS
 	if(argv[1] == nullptr)
 		std::cout << "Usage: " << argv[0] << " <vendor_id> [device_id]" << '\n';
 	else {
@@ -51,6 +52,9 @@ int main(int, const char** argv) {
 				return (vendor_ok ? 0 : 1) | (device.device_name ? 0 : 2);
 		}
 	}
+#else
+	std::cout << "Compiled without PCI ID support\n";
+#endif
 }
 
 

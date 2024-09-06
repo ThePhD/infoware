@@ -2,6 +2,9 @@
 // infoware - C++ System information Library
 
 
+#ifdef INFOWARE_USE_PCIIDS
+
+
 #include "infoware/pci.hpp"
 #include "infoware_generated/pci_data.hpp"
 #include <algorithm>
@@ -62,3 +65,6 @@ const char* iware::pci::identify_vendor(std::uint64_t pci_id) noexcept {
 	else
 		return nullptr;
 }
+
+
+#endif

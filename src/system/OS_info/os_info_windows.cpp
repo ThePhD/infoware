@@ -22,7 +22,7 @@
 #endif
 
 
-// Use WIM to acquire Win32_OperatingSystem.Name
+// Use WIM to acquire Win32_OperatingSystem.Caption (same as .Name, but ends before the '|')
 // https://msdn.microsoft.com/en-us/library/aa390423(v=vs.85).aspx
 static std::string version_name() {
 	auto err = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
@@ -54,7 +54,7 @@ static std::string version_name() {
 
 	IEnumWbemClassObject* query_iterator_raw;
 	wchar_t query_lang[] = L"WQL";
-	wchar_t query[]      = L"SELECT Name FROM Win32_OperatingSystem";
+	wchar_t query[]      = L"SELECT Caption FROM Win32_OperatingSystem";
 	if(FAILED(wbem_services->ExecQuery(query_lang, query, WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &query_iterator_raw)))
 		return {};
 	std::unique_ptr<IEnumWbemClassObject, iware::detail::release_deleter> query_iterator(query_iterator_raw);
@@ -70,15 +70,13 @@ static std::string version_name() {
 		std::unique_ptr<IWbemClassObject, iware::detail::release_deleter> value(value_raw);
 
 		VARIANT val;
-		value->Get(L"Name", 0, &val, 0, 0);
+		VariantInit(&val);
+		value->Get(L"Caption", 0, &val, 0, 0);
 		iware::detail::quickscope_wrapper val_destructor{[&] { VariantClear(&val); }};
 
 		ret = iware::detail::narrowen_bstring(val.bstrVal);
 	}
 
-	const auto sep = ret.find('|');
-	if(sep != std::string::npos)
-		ret.resize(sep);
 	return ret;
 }
 

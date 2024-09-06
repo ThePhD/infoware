@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: CC0-1.0
 // infoware - C++ System information Library
 
+#ifdef INFOWARE_USE_PCIIDS
 
 #include "infoware/pci.hpp"
 #include "infoware/version.hpp"
@@ -66,3 +67,14 @@ static bool print_vendor(std::uint64_t vendor_id, const char* vendor_name) {
 
 	return vendor_name;
 }
+
+#else //INFOWARE_USE_PCIIDS
+#include "infoware/version.hpp"
+#include <iostream>
+
+int main(int, const char** argv) {
+	std::cout << "Infoware version " << iware::version << '\n';
+	std::cout << "Compiled without PCI IDs support" << '\n';
+}
+#endif //INFOWARE_USE_PCIIDS
+

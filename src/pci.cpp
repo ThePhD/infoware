@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: CC0-1.0
 // infoware - C++ System information Library
 
+#ifdef INFOWARE_USE_PCIIDS
 
 #include "infoware/pci.hpp"
 #include "infoware_generated/pci_data.hpp"
@@ -62,3 +63,5 @@ const char* iware::pci::identify_vendor(std::uint64_t pci_id) noexcept {
 	else
 		return nullptr;
 }
+
+#endif //INFOWARE_USE_PCIIDS

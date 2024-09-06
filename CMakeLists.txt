@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 3.6.0)
 
 
-set(infoware_version "0.6.0")
+set(infoware_version "0.6.1")
 
 project(infoware VERSION "${infoware_version}" LANGUAGES CXX)
 
@@ -16,6 +16,8 @@ option(INFOWARE_USE_OPENGL "Add public, transitive define to infoware to use Ope
 option(INFOWARE_USE_OPENCL "Add public, transitive define to infoware to use Open Compute Language (OpenCL) for GPU detection."  OFF)
 
 option(INFOWARE_USE_X11 "Add public, transitive define to infoware to use X11 for display detection." OFF)
+
+option(INFOWARE_USE_PCIIDS "Want PCI IDs. If OFF database of PCI IDs and functions in pci.hpp will not be available"             ON)
 
 option(INFOWARE_EXAMPLES "Add infoware examples to the build." OFF)
 option(INFOWARE_TESTS    "Input tests for infoware."           OFF)
@@ -59,6 +61,7 @@ if(INFOWARE_USE_OPENGL AND APPLE)
 endif()
 
 file(GLOB_RECURSE infoware_source_files    LIST_DIRECTORIES false CONFIGURE_DEPENDS src/*.cpp)
+
 if(APPLE)
       file(GLOB_RECURSE infoware_objc_source_files LIST_DIRECTORIES FALSE CONFIGURE_DEPENDS src/*.mm)
       list(APPEND infoware_source_files ${infoware_objc_source_files})
@@ -90,6 +93,9 @@ target_compile_definitions(infoware PRIVATE INFOWARE_VERSION="${infoware_version
 if(BUILD_SHARED_LIBS)  # Controls add_library() w/o explicit mode
 	target_compile_definitions(infoware PUBLIC INFOWARE_DLL=1)
 endif()
+
+if(INFOWARE_USE_PCIIDS)
+target_compile_definitions(infoware PUBLIC INFOWARE_USE_PCIIDS)
 
 if(NOT Git_FOUND)  # Could be pre-injected
 	find_package(Git)
@@ -152,7 +158,7 @@ else()
 	                    CMAKE_ARGS -DINFOWARE_PCI_DATA_DIR:PATH=${CMAKE_BINARY_DIR}/${INFOWARE_PCI_DATA_DIR})
 endif()
 add_dependencies(infoware infoware_generate_pcis)
-
+endif(INFOWARE_USE_PCIIDS)
 
 if(MSVC)
 	# Only CMake 3.15.0 makes this stuff not necessary, but we have a shitty

@@ -6,6 +6,7 @@
 
 
 #include "infoware/cpu.hpp"
+#include "infoware/detail/scope.hpp"
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
@@ -15,6 +16,7 @@ static std::string central_processor_subkey(const char* key) {
 	HKEY hkey;
 	if(RegOpenKeyExA(HKEY_LOCAL_MACHINE, R"(HARDWARE\DESCRIPTION\System\CentralProcessor\0)", 0, KEY_READ, &hkey))
 		return {};
+	iware::detail::quickscope_wrapper hkey_closer{[&] { RegCloseKey(hkey); }};
 
 	char identifier[IdentLen];
 	DWORD identifier_len = sizeof(identifier);

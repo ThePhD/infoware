@@ -6,6 +6,7 @@
 
 
 #include "infoware/cpu.hpp"
+#include "infoware/detail/scope.hpp"
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
@@ -18,6 +19,7 @@ std::uint64_t iware::cpu::frequency() noexcept {
 		QueryPerformanceFrequency(&freq);
 		return freq.QuadPart * 1'000;
 	}
+	iware::detail::quickscope_wrapper hkey_closer{[&] { RegCloseKey(hkey); }};
 
 	DWORD freq_mhz;
 	DWORD freq_mhz_len = sizeof(freq_mhz);

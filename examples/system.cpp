@@ -4,6 +4,7 @@
 
 #include "infoware/system.hpp"
 #include "infoware/version.hpp"
+#include <iomanip>
 #include <iostream>
 
 
@@ -97,6 +98,21 @@ int main() {
 					std::cout << '\n';
 				}
 			}
+	}
+
+	{
+		const auto process_stats = iware::system::process_stats();
+		std::cout << "\n"
+		             "  Process:\n"
+		             "    user         "
+		          << process_stats.user_time.tv_sec << '.' << std::setfill('0') << std::setw(9) << process_stats.user_time.tv_nsec << "s\n"
+		          << "    sys          " << process_stats.kernel_time.tv_sec << '.' << std::setfill('0') << std::setw(9) << process_stats.kernel_time.tv_nsec << "s\n"
+		          << '\n'
+		          << "    Faults     : " << process_stats.page_faults << "\n"
+		          << "    Peak memory: " << process_stats.peak_memory_usage << "B\n"
+		          << '\n'
+		          << "    Reads      : " << process_stats.read_operations << '\n'
+		          << "    Writes     : " << process_stats.write_operations << '\n';
 	}
 
 	std::cout << '\n';

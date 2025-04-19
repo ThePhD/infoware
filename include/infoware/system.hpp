@@ -6,6 +6,7 @@
 
 
 #include <infoware/linkage.hpp>
+#include <ctime>
 
 #include <cstdint>
 #include <string>
@@ -65,6 +66,18 @@ namespace iware {
 			std::vector<double> refresh_rates;
 		};
 
+		struct process_stats_t {
+			::timespec user_time;
+			::timespec kernel_time;
+
+			std::size_t page_faults;
+			/// PeakWorkingSetSize/ru_maxrss in bytes
+			std::size_t peak_memory_usage;
+
+			std::uint64_t read_operations;
+			std::uint64_t write_operations;
+		};
+
 		/// Get amount of connected mice.
 		INFOWARE_API_LINKAGE std::size_t mouse_amount() noexcept;
 
@@ -92,5 +105,8 @@ namespace iware {
 
 		/// Get information about available configurations for each display.
 		INFOWARE_API_LINKAGE std::vector<std::vector<display_config_t>> available_display_configurations();
+
+		/// Get information about the calling process.
+		INFOWARE_API_LINKAGE process_stats_t process_stats();
 	}  // namespace system
 }  // namespace iware

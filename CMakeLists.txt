@@ -7,6 +7,12 @@ cmake_minimum_required(VERSION 3.6.0)
 
 set(infoware_version "0.6.0")
 
+if(POLICY CMP0091)
+    # https://stackoverflow.com/a/56490614
+    cmake_policy(SET CMP0091 NEW)
+endif()
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
 project(infoware VERSION "${infoware_version}" LANGUAGES CXX)
 
 
@@ -71,6 +77,10 @@ file(GLOB         infoware_public_headers  LIST_DIRECTORIES false CONFIGURE_DEPE
 add_library(infoware ${infoware_source_files} ${infoware_public_headers} ${infoware_private_headers})
 add_library(iware::infoware ALIAS infoware)
 
+# Force use of /MT or /MD depending on CMAKE_MSVC_RUNTIME_LIBRARY
+if(MSVC)
+    set_property(TARGET infoware PROPERTY MSVC_RUNTIME_LIBRARY "${CMAKE_MSVC_RUNTIME_LIBRARY}")
+endif()
 
 target_include_directories(infoware PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
 
@@ -145,6 +155,11 @@ if(INFOWARE_USE_PCIIDS)
 		                   DEPENDS "${infoware_pci_ids_file}"
 		                   COMMENT "Generating ${INFOWARE_PCI_DATA_HPP}")
 		add_custom_target(infoware_generate_pcis DEPENDS "${INFOWARE_PCI_DATA_GEN}")
+
+		if(MSVC)
+			set_property(TARGET infoware_pci_generator PROPERTY MSVC_RUNTIME_LIBRARY "${CMAKE_MSVC_RUNTIME_LIBRARY}")
+		endif()
+
 	else()
 		include(ExternalProject)
 		ExternalProject_Add(infoware_generate_pcis
@@ -166,6 +181,7 @@ if(MSVC)
 	string(REGEX REPLACE "/W[0-4]" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 	target_compile_options(infoware PRIVATE /EHsc /W4)
 	target_compile_definitions(infoware PRIVATE UNICODE _UNICODE)
+	set_property(TARGET infoware PROPERTY MSVC_RUNTIME_LIBRARY "${CMAKE_MSVC_RUNTIME_LIBRARY}")
 else()
 	target_compile_options(infoware PRIVATE -pedantic -Wall -Wextra -pipe)
 endif()
